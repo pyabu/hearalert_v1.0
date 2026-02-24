@@ -25,7 +25,8 @@ class ASLGuideScreen extends StatelessWidget {
               color: Colors.white.withOpacity(0.12),
               shape: BoxShape.circle,
             ),
-            child: const Icon(LucideIcons.arrowLeft, color: Colors.white, size: 20),
+            child: const Icon(LucideIcons.arrowLeft,
+                color: Colors.white, size: 20),
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -34,7 +35,7 @@ class ASLGuideScreen extends StatelessWidget {
           style: GoogleFonts.inter(
             color: Colors.white,
             fontWeight: FontWeight.w600,
-            fontSize: 18,
+            fontSize: 18 * AppTheme.textScale,
           ),
         ),
         centerTitle: true,
@@ -49,49 +50,62 @@ class ASLGuideScreen extends StatelessWidget {
               children: [
                 _buildHeader(),
                 const SizedBox(height: 24),
-                _SectionTitle('Emergency ASL Signs', LucideIcons.siren, AppTheme.danger),
+                _SectionTitle(
+                    'Emergency ASL Signs', LucideIcons.siren, AppTheme.danger),
                 const SizedBox(height: 12),
                 _ASLCard(
                   title: 'HELP',
-                  icon: LucideIcons.lifeBuoy,
+                  icon: LucideIcons
+                      .heartHandshake, // Better representation of assistance
                   color: AppTheme.primary,
-                  description: 'Place your closed right fist (thumbs up) on your flat open left palm. Lift both hands together quickly.',
+                  description:
+                      'Place your closed right fist (thumbs up) on your flat open left palm. Lift both hands together quickly.',
                   usage: 'If asking for help or offering assistance.',
                 ),
                 _ASLCard(
                   title: 'FIRE',
                   icon: LucideIcons.flame,
                   color: AppTheme.danger,
-                  description: 'Wiggle all 10 fingers while moving your hands up and down in front of your chest, alternating, mimicking leaping flames.',
+                  description:
+                      'Wiggle all 10 fingers while moving your hands up and down in front of your chest, alternating, mimicking leaping flames.',
                   usage: 'Smoke alarm or fire engine detected.',
                 ),
                 _ASLCard(
                   title: 'HOSPITAL / MEDICAL',
-                  icon: LucideIcons.cross,
+                  icon: LucideIcons
+                      .stethoscope, // More medical than a generic cross
                   color: AppTheme.info,
-                  description: 'Use your dominant hand to draw a cross (✚) on the upper bicep of your non-dominant arm using your index and middle fingers together.',
+                  description:
+                      'Use your dominant hand to draw a cross (✚) on the upper bicep of your non-dominant arm using your index and middle fingers together.',
                   usage: 'Ambulance siren or medical emergency.',
                 ),
                 _ASLCard(
                   title: 'POLICE',
                   icon: LucideIcons.shieldAlert,
                   color: AppTheme.secondary,
-                  description: 'Tap your right hand in a "C" shape against the left side of your chest twice, mimicking a police badge.',
+                  description:
+                      'Tap your right hand in a "C" shape against the left side of your chest twice, mimicking a police badge.',
                   usage: 'Police siren or law enforcement approach.',
                 ),
                 _ASLCard(
                   title: 'DANGER / WARNING',
-                  icon: LucideIcons.alertTriangle,
+                  icon:
+                      LucideIcons.alertTriangle, // Valid triangle warning icon
                   color: AppTheme.accentOrange,
-                  description: 'Swipe the back of your dominant A-hand (thumb extended) upwards continuously against the back of your non-dominant hand.',
+                  description:
+                      'Swipe the back of your dominant A-hand (thumb extended) upwards continuously against the back of your non-dominant hand.',
                   usage: 'Car horn, glass breaking, or general hazard.',
                 ),
                 const SizedBox(height: 32),
-                _SectionTitle('App Signal Guide', LucideIcons.activity, AppTheme.accentViolet),
+                _SectionTitle('App Signal Guide', LucideIcons.activity,
+                    AppTheme.accentViolet),
                 const SizedBox(height: 12),
-                _SignalCard('Emergency', 'Red', 'Highest priority. Sirens, Fire Alarms, Gunshots. Causes strong sustained vibration & rapid flashes.'),
-                _SignalCard('Warning', 'Orange', 'Hazards that require attention. Car horns, Glass Breaking. Moderate vibration.'),
-                _SignalCard('Info', 'Blue/Violet', 'Everyday sounds. Doorbell, Baby Crying. Single mild pulse.'),
+                _SignalCard('Emergency', 'Red',
+                    'Highest priority. Sirens, Fire Alarms, Gunshots. Causes strong sustained vibration & rapid flashes.'),
+                _SignalCard('Warning', 'Orange',
+                    'Hazards that require attention. Car horns, Glass Breaking. Moderate vibration.'),
+                _SignalCard('Info', 'Blue/Violet',
+                    'Everyday sounds. Doorbell, Baby Crying. Single mild pulse.'),
               ],
             ),
           ),
@@ -106,7 +120,8 @@ class ASLGuideScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppTheme.primary.withOpacity(0.12),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppTheme.primary.withOpacity(0.3), width: 1.5),
+        border:
+            Border.all(color: AppTheme.primary.withOpacity(0.3), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +134,7 @@ class ASLGuideScreen extends StatelessWidget {
                 'Reference Guide',
                 style: GoogleFonts.inter(
                   color: AppTheme.textPrimary,
-                  fontSize: 16,
+                  fontSize: 16 * AppTheme.textScale,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -130,7 +145,7 @@ class ASLGuideScreen extends StatelessWidget {
             'Use this guide to learn basic American Sign Language (ASL) emergency gestures and understand the color-coded alerts produced by HearAlert.',
             style: GoogleFonts.inter(
               color: AppTheme.textMuted,
-              fontSize: 13,
+              fontSize: 13 * AppTheme.textScale,
               height: 1.5,
             ),
           ),
@@ -159,7 +174,7 @@ class _SectionTitle extends StatelessWidget {
             title.toUpperCase(),
             style: GoogleFonts.inter(
               color: color,
-              fontSize: 12,
+              fontSize: 12 * AppTheme.textScale,
               fontWeight: FontWeight.w800,
               letterSpacing: 1.5,
             ),
@@ -222,7 +237,7 @@ class _ASLCard extends StatelessWidget {
                   title,
                   style: GoogleFonts.inter(
                     color: AppTheme.textPrimary,
-                    fontSize: 18,
+                    fontSize: 18 * AppTheme.textScale,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.5,
                   ),
@@ -235,7 +250,7 @@ class _ASLCard extends StatelessWidget {
             'MOTION:',
             style: GoogleFonts.inter(
               color: AppTheme.textMuted,
-              fontSize: 10,
+              fontSize: 10 * AppTheme.textScale,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.0,
             ),
@@ -245,7 +260,7 @@ class _ASLCard extends StatelessWidget {
             description,
             style: GoogleFonts.inter(
               color: AppTheme.textSecondary,
-              fontSize: 14,
+              fontSize: 14 * AppTheme.textScale,
               height: 1.5,
             ),
           ),
@@ -267,7 +282,7 @@ class _ASLCard extends StatelessWidget {
                     usage,
                     style: GoogleFonts.inter(
                       color: AppTheme.textMuted,
-                      fontSize: 12,
+                      fontSize: 12 * AppTheme.textScale,
                     ),
                   ),
                 ),
@@ -290,9 +305,12 @@ class _SignalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color indicatorColor;
-    if (level == 'Emergency') indicatorColor = AppTheme.danger;
-    else if (level == 'Warning') indicatorColor = AppTheme.accentOrange;
-    else indicatorColor = AppTheme.secondary;
+    if (level == 'Emergency')
+      indicatorColor = AppTheme.danger;
+    else if (level == 'Warning')
+      indicatorColor = AppTheme.accentOrange;
+    else
+      indicatorColor = AppTheme.secondary;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -306,7 +324,8 @@ class _SignalCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 12, height: 12,
+            width: 12,
+            height: 12,
             margin: const EdgeInsets.only(top: 4),
             decoration: BoxDecoration(
               color: indicatorColor,
@@ -325,13 +344,14 @@ class _SignalCard extends StatelessWidget {
                       level,
                       style: GoogleFonts.inter(
                         color: AppTheme.textPrimary,
-                        fontSize: 15,
+                        fontSize: 15 * AppTheme.textScale,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
                         color: indicatorColor.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(4),
@@ -340,7 +360,7 @@ class _SignalCard extends StatelessWidget {
                         colorName,
                         style: GoogleFonts.inter(
                           color: indicatorColor,
-                          fontSize: 10,
+                          fontSize: 10 * AppTheme.textScale,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -352,7 +372,7 @@ class _SignalCard extends StatelessWidget {
                   desc,
                   style: GoogleFonts.inter(
                     color: AppTheme.textMuted,
-                    fontSize: 13,
+                    fontSize: 13 * AppTheme.textScale,
                     height: 1.4,
                   ),
                 ),

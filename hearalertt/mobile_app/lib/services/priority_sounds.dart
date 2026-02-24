@@ -33,7 +33,7 @@ class PrioritySoundsDatabase {
     // ═══════════════════════════════════════════════════════════════════
     // EMERGENCY SOUNDS - Immediate attention required
     // ═══════════════════════════════════════════════════════════════════
-    
+
     // Fire & Smoke Alarms
     PrioritySound(
       yamnetIndex: 394,
@@ -89,7 +89,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.15,
       keywords: ['foghorn'],
     ),
-    
+
     // Glass Breaking - Security threat
     PrioritySound(
       yamnetIndex: 464,
@@ -127,7 +127,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.12,
       keywords: ['smash', 'crash'],
     ),
-    
+
     // Sirens
     PrioritySound(
       yamnetIndex: 390,
@@ -165,7 +165,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.15,
       keywords: ['fire engine', 'fire truck'],
     ),
-    
+
     // Human Distress
     PrioritySound(
       yamnetIndex: 11,
@@ -176,11 +176,11 @@ class PrioritySoundsDatabase {
       minThreshold: 0.12,
       keywords: ['scream', 'screaming'],
     ),
-    
+
     // ═══════════════════════════════════════════════════════════════════
     // HIGH PRIORITY - Needs prompt attention
     // ═══════════════════════════════════════════════════════════════════
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // DOOR & KNOCK SOUNDS - Comprehensive
     // ─────────────────────────────────────────────────────────────────────
@@ -238,7 +238,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.20,
       keywords: ['engine knocking'],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // BELLS - Various types
     // ─────────────────────────────────────────────────────────────────────
@@ -287,7 +287,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.22,
       keywords: ['tubular bells'],
     ),
-    
+
     // Baby Cry
     PrioritySound(
       yamnetIndex: 20,
@@ -316,7 +316,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.20,
       keywords: ['baby laughter'],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // VEHICLE SOUNDS - Comprehensive
     // ─────────────────────────────────────────────────────────────────────
@@ -437,11 +437,11 @@ class PrioritySoundsDatabase {
       minThreshold: 0.22,
       keywords: ['boat', 'water vehicle'],
     ),
-    
+
     // ═══════════════════════════════════════════════════════════════════
     // MEDIUM PRIORITY - Awareness sounds
     // ═══════════════════════════════════════════════════════════════════
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // DOGS
     // ─────────────────────────────────────────────────────────────────────
@@ -490,7 +490,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.20,
       keywords: ['whimper'],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // CATS - Enhanced Detection
     // ─────────────────────────────────────────────────────────────────────
@@ -537,9 +537,16 @@ class PrioritySoundsDatabase {
       severity: AlertSeverity.warning,
       confidenceBoost: 1.4,
       minThreshold: 0.12,
-      keywords: ['caterwaul', 'caterwauling', 'cat fight', 'cat scream', 'yowl', 'yowling'],
+      keywords: [
+        'caterwaul',
+        'caterwauling',
+        'cat fight',
+        'cat scream',
+        'yowl',
+        'yowling'
+      ],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // HORSES
     // ─────────────────────────────────────────────────────────────────────
@@ -570,7 +577,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.18,
       keywords: ['neigh', 'whinny'],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // CATTLE / COWS
     // ─────────────────────────────────────────────────────────────────────
@@ -601,7 +608,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.20,
       keywords: ['cowbell'],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // PIGS
     // ─────────────────────────────────────────────────────────────────────
@@ -623,7 +630,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.18,
       keywords: ['oink'],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // GOATS & SHEEP
     // ─────────────────────────────────────────────────────────────────────
@@ -654,7 +661,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.20,
       keywords: ['sheep'],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // POULTRY (Chickens, Ducks, Geese, Turkey)
     // ─────────────────────────────────────────────────────────────────────
@@ -748,7 +755,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.18,
       keywords: ['honk'],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // WILD ANIMALS (Lions, Tigers, etc.)
     // ─────────────────────────────────────────────────────────────────────
@@ -770,7 +777,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.12,
       keywords: ['roar'],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // BIRDS
     // ─────────────────────────────────────────────────────────────────────
@@ -873,7 +880,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.22,
       keywords: ['flapping', 'wings'],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // WOLVES / CANIDAE
     // ─────────────────────────────────────────────────────────────────────
@@ -886,7 +893,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.15,
       keywords: ['wolf', 'wolves'],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // RODENTS
     // ─────────────────────────────────────────────────────────────────────
@@ -917,7 +924,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.25,
       keywords: ['patter'],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // INSECTS
     // ─────────────────────────────────────────────────────────────────────
@@ -975,7 +982,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.18,
       keywords: ['bee', 'wasp'],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // AMPHIBIANS & REPTILES
     // ─────────────────────────────────────────────────────────────────────
@@ -1015,7 +1022,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.12,
       keywords: ['rattle', 'rattlesnake'],
     ),
-    
+
     // ─────────────────────────────────────────────────────────────────────
     // MARINE LIFE
     // ─────────────────────────────────────────────────────────────────────
@@ -1028,7 +1035,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.22,
       keywords: ['whale'],
     ),
-    
+
     // Telephone
     PrioritySound(
       yamnetIndex: 384,
@@ -1048,7 +1055,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.18,
       keywords: ['ringtone'],
     ),
-    
+
     // Alarms & Bells
     PrioritySound(
       yamnetIndex: 382,
@@ -1068,7 +1075,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.18,
       keywords: ['alarm clock'],
     ),
-    
+
     // Shout
     PrioritySound(
       yamnetIndex: 6,
@@ -1079,7 +1086,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.15,
       keywords: ['shout', 'yell'],
     ),
-    
+
     // Explosion
     PrioritySound(
       yamnetIndex: 420,
@@ -1090,7 +1097,7 @@ class PrioritySoundsDatabase {
       minThreshold: 0.10,
       keywords: ['explosion', 'blast'],
     ),
-    
+
     // Gunshot
     PrioritySound(
       yamnetIndex: 421,
@@ -1129,13 +1136,14 @@ class PrioritySoundsDatabase {
   static bool isPriority(int index) => getByIndex(index) != null;
 
   /// Get all indices that are priority sounds
-  static Set<int> get priorityIndices => sounds.map((s) => s.yamnetIndex).toSet();
+  static Set<int> get priorityIndices =>
+      sounds.map((s) => s.yamnetIndex).toSet();
 
   /// Get sounds by severity
   static List<PrioritySound> getBySeverity(AlertSeverity severity) {
     return sounds.where((s) => s.severity == severity).toList();
   }
-  
+
   /// Get sounds by priority level
   static List<PrioritySound> getByPriority(SoundPriority priority) {
     return sounds.where((s) => s.priority == priority).toList();

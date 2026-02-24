@@ -12,7 +12,7 @@ class SoundEvent {
     required this.timestamp,
     required this.type,
   });
-  
+
   bool get isEmergency => type == 'emergency';
 }
 
@@ -24,10 +24,10 @@ class Contact {
   Contact({required this.name, required this.phone, required this.relation});
 
   Map<String, dynamic> toJson() => {
-    'name': name,
-    'phone': phone,
-    'relation': relation,
-  };
+        'name': name,
+        'phone': phone,
+        'relation': relation,
+      };
 
   factory Contact.fromJson(Map<String, dynamic> json) {
     return Contact(

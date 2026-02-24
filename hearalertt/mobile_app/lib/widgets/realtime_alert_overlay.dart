@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app/config/realtime_alert_config.dart';
 
+import 'package:mobile_app/theme/app_theme.dart';
+
 /// Full-screen alert overlay for real-time sound detection
 class RealtimeAlertOverlay extends StatefulWidget {
   final String soundId;
@@ -34,11 +36,11 @@ class _RealtimeAlertOverlayState extends State<RealtimeAlertOverlay>
   @override
   void initState() {
     super.initState();
-    
+
     // Get alert configuration
     _alertConfig = RealtimeAlertDatabase.getAlertByLabel(widget.label) ??
         RealtimeAlertDatabase.getAlert(widget.soundId);
-    
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
@@ -53,16 +55,16 @@ class _RealtimeAlertOverlayState extends State<RealtimeAlertOverlay>
     );
 
     _controller.forward();
-    
+
     // Trigger vibration
     _triggerVibration();
-    
+
     // Flash effect for critical alerts
     if (widget.showFlash && _alertConfig?.priority == AlertPriority.critical) {
       _startFlashing();
     }
   }
-  
+
   void _triggerVibration() async {
     if (_alertConfig != null) {
       await _alertConfig!.triggerVibration();
@@ -70,7 +72,7 @@ class _RealtimeAlertOverlayState extends State<RealtimeAlertOverlay>
       await HapticFeedback.mediumImpact();
     }
   }
-  
+
   void _startFlashing() async {
     for (int i = 0; i < 6 && mounted; i++) {
       setState(() => _flashing = !_flashing);
@@ -91,10 +93,11 @@ class _RealtimeAlertOverlayState extends State<RealtimeAlertOverlay>
   Widget build(BuildContext context) {
     final alertConfig = _alertConfig;
     final icon = alertConfig?.icon ?? '🔊';
-    final message = alertConfig?.alertMessage ?? 'Sound Detected: ${widget.label}';
+    final message =
+        alertConfig?.alertMessage ?? 'Sound Detected: ${widget.label}';
     final shortMessage = alertConfig?.shortMessage ?? widget.label;
     final priority = alertConfig?.priority ?? AlertPriority.medium;
-    
+
     // Determine background color based on priority
     Color backgroundColor;
     switch (priority) {
@@ -137,22 +140,22 @@ class _RealtimeAlertOverlayState extends State<RealtimeAlertOverlay>
                         // Icon
                         Text(
                           icon,
-                          style: const TextStyle(fontSize: 100),
+                          style: TextStyle(fontSize: 100 * AppTheme.textScale),
                         ),
                         const SizedBox(height: 24),
-                        
+
                         // Main Alert Message
                         Text(
                           message,
-                          style: const TextStyle(
-                            fontSize: 32,
+                          style: TextStyle(
+                            fontSize: 32 * AppTheme.textScale,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 16),
-                        
+
                         // Sound Type Badge
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -169,8 +172,8 @@ class _RealtimeAlertOverlayState extends State<RealtimeAlertOverlay>
                           ),
                           child: Text(
                             shortMessage.toUpperCase(),
-                            style: const TextStyle(
-                              fontSize: 24,
+                            style: TextStyle(
+                              fontSize: 24 * AppTheme.textScale,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
                               letterSpacing: 2,
@@ -178,37 +181,37 @@ class _RealtimeAlertOverlayState extends State<RealtimeAlertOverlay>
                           ),
                         ),
                         const SizedBox(height: 24),
-                        
+
                         // Confidence indicator
                         Text(
                           '${(widget.confidence * 100).toStringAsFixed(0)}% confidence',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 18 * AppTheme.textScale,
                             color: Colors.white.withOpacity(0.8),
                           ),
                         ),
                         const SizedBox(height: 8),
-                        
+
                         // Timestamp
                         Text(
                           'Detected at ${TimeOfDay.now().format(context)}',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16 * AppTheme.textScale,
                             color: Colors.white.withOpacity(0.7),
                           ),
                         ),
-                        
+
                         const SizedBox(height: 48),
-                        
+
                         // Dismiss button
                         OutlinedButton.icon(
                           onPressed: widget.onDismiss,
                           icon: const Icon(Icons.close, color: Colors.white),
-                          label: const Text(
+                          label: Text(
                             'TAP TO DISMISS',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 18 * AppTheme.textScale,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -217,21 +220,22 @@ class _RealtimeAlertOverlayState extends State<RealtimeAlertOverlay>
                               horizontal: 32,
                               vertical: 16,
                             ),
-                            side: const BorderSide(color: Colors.white, width: 2),
+                            side:
+                                const BorderSide(color: Colors.white, width: 2),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
                         ),
-                        
+
                         const SizedBox(height: 24),
-                        
+
                         // Description
                         if (alertConfig?.description != null)
                           Text(
                             alertConfig!.description,
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 14 * AppTheme.textScale,
                               color: Colors.white.withOpacity(0.6),
                             ),
                             textAlign: TextAlign.center,
@@ -270,13 +274,12 @@ class RealtimeAlertBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final alertConfig = RealtimeAlertDatabase.getAlertByLabel(label) ??
         RealtimeAlertDatabase.getAlert(soundId);
-    
-    final color = alertConfig != null 
-        ? Color(alertConfig.colorHex) 
-        : Colors.orange;
+
+    final color =
+        alertConfig != null ? Color(alertConfig.colorHex) : Colors.orange;
     final icon = alertConfig?.icon ?? '🔊';
     final message = alertConfig?.shortMessage ?? label;
-    
+
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -309,11 +312,12 @@ class RealtimeAlertBanner extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Center(
-                    child: Text(icon, style: const TextStyle(fontSize: 32)),
+                    child: Text(icon,
+                        style: TextStyle(fontSize: 32 * AppTheme.textScale)),
                   ),
                 ),
                 const SizedBox(width: 16),
-                
+
                 // Text content
                 Expanded(
                   child: Column(
@@ -323,7 +327,7 @@ class RealtimeAlertBanner extends StatelessWidget {
                       Text(
                         message,
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 18 * AppTheme.textScale,
                           fontWeight: FontWeight.bold,
                           color: color,
                         ),
@@ -332,14 +336,18 @@ class RealtimeAlertBanner extends StatelessWidget {
                       Text(
                         '${(confidence * 100).toStringAsFixed(0)}% confidence',
                         style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                          fontSize: 14 * AppTheme.textScale,
+                          color: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.color
+                              ?.withOpacity(0.7),
                         ),
                       ),
                     ],
                   ),
                 ),
-                
+
                 // Dismiss button
                 IconButton(
                   onPressed: onDismiss,

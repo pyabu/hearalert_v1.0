@@ -35,11 +35,11 @@ class ScreenAlertOverlay extends StatelessWidget {
     return Consumer<SoundProvider>(
       builder: (context, provider, _) {
         final event = provider.lastEvent;
-        
+
         if (event == null || !provider.screenAlertsEnabled) {
           return const SizedBox.shrink();
         }
-        
+
         return _AlertOverlayContent(event: event);
       },
     );
@@ -67,7 +67,7 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
       vsync: this,
       duration: const Duration(milliseconds: 800),
     )..repeat(reverse: true);
-    
+
     _pulseAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
@@ -81,7 +81,7 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
 
   _AlertConfig _getAlertConfig(String label) {
     final lower = label.toLowerCase();
-    
+
     // Try to get from the new realtime alert database first
     final alertConfig = RealtimeAlertDatabase.getAlertByLabel(label);
     if (alertConfig != null) {
@@ -93,11 +93,13 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         isEmergency: alertConfig.priority == AlertPriority.critical,
       );
     }
-    
+
     // ═══════════════════════════════════════════════════════════════════
     // CRITICAL PRIORITY - Emergency Alerts
     // ═══════════════════════════════════════════════════════════════════
-    if (lower.contains('fire') || lower.contains('smoke') || lower.contains('alarm')) {
+    if (lower.contains('fire') ||
+        lower.contains('smoke') ||
+        lower.contains('alarm')) {
       return const _AlertConfig(
         icon: LucideIcons.flame,
         color: Color(0xFFEF4444),
@@ -106,7 +108,9 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         isEmergency: true,
       );
     }
-    if (lower.contains('siren') || lower.contains('ambulance') || lower.contains('police')) {
+    if (lower.contains('siren') ||
+        lower.contains('ambulance') ||
+        lower.contains('police')) {
       return const _AlertConfig(
         icon: LucideIcons.siren,
         color: Color(0xFFFF4444),
@@ -115,7 +119,9 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         isEmergency: true,
       );
     }
-    if (lower.contains('glass') || lower.contains('break') || lower.contains('shatter')) {
+    if (lower.contains('glass') ||
+        lower.contains('break') ||
+        lower.contains('shatter')) {
       return const _AlertConfig(
         icon: LucideIcons.shieldAlert,
         color: Color(0xFFEF4444),
@@ -124,7 +130,9 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         isEmergency: true,
       );
     }
-    if (lower.contains('gunshot') || lower.contains('firework') || lower.contains('explosion')) {
+    if (lower.contains('gunshot') ||
+        lower.contains('firework') ||
+        lower.contains('explosion')) {
       return const _AlertConfig(
         icon: LucideIcons.alertTriangle,
         color: Color(0xFFDC143C),
@@ -133,7 +141,9 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         isEmergency: true,
       );
     }
-    if (lower.contains('scream') || lower.contains('shout') || lower.contains('distress')) {
+    if (lower.contains('scream') ||
+        lower.contains('shout') ||
+        lower.contains('distress')) {
       return const _AlertConfig(
         icon: LucideIcons.helpCircle,
         color: Color(0xFFEF4444),
@@ -142,11 +152,13 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         isEmergency: true,
       );
     }
-    
+
     // ═══════════════════════════════════════════════════════════════════
-    // HIGH PRIORITY - Safety & Important Alerts  
+    // HIGH PRIORITY - Safety & Important Alerts
     // ═══════════════════════════════════════════════════════════════════
-    if (lower.contains('baby') || lower.contains('cry') || lower.contains('infant')) {
+    if (lower.contains('baby') ||
+        lower.contains('cry') ||
+        lower.contains('infant')) {
       return const _AlertConfig(
         icon: LucideIcons.baby,
         color: Color(0xFFFF6B9D),
@@ -162,7 +174,9 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         displayMessage: '🚪 Someone is knocking!',
       );
     }
-    if (lower.contains('doorbell') || lower.contains('bell') || lower.contains('ding')) {
+    if (lower.contains('doorbell') ||
+        lower.contains('bell') ||
+        lower.contains('ding')) {
       return const _AlertConfig(
         icon: LucideIcons.bellRing,
         color: Color(0xFF32CD32),
@@ -186,7 +200,9 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         displayMessage: '🚂 Train approaching!',
       );
     }
-    if (lower.contains('traffic') || lower.contains('vehicle') || lower.contains('engine')) {
+    if (lower.contains('traffic') ||
+        lower.contains('vehicle') ||
+        lower.contains('engine')) {
       return const _AlertConfig(
         icon: LucideIcons.car,
         color: Color(0xFF808080),
@@ -194,7 +210,9 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         displayMessage: '🚦 Heavy traffic nearby',
       );
     }
-    if (lower.contains('speech') || lower.contains('voice') || lower.contains('talking')) {
+    if (lower.contains('speech') ||
+        lower.contains('voice') ||
+        lower.contains('talking')) {
       return const _AlertConfig(
         icon: LucideIcons.mic,
         color: Color(0xFF6B5B95),
@@ -202,7 +220,9 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         displayMessage: '🗣️ Someone is speaking!',
       );
     }
-    if (lower.contains('creak') || lower.contains('squeak') || lower.contains('hinge')) {
+    if (lower.contains('creak') ||
+        lower.contains('squeak') ||
+        lower.contains('hinge')) {
       return const _AlertConfig(
         icon: LucideIcons.doorOpen,
         color: Color(0xFFA0522D),
@@ -210,7 +230,9 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         displayMessage: '🚪 Door opening detected!',
       );
     }
-    if (lower.contains('chainsaw') || lower.contains('power tool') || lower.contains('saw')) {
+    if (lower.contains('chainsaw') ||
+        lower.contains('power tool') ||
+        lower.contains('saw')) {
       return const _AlertConfig(
         icon: LucideIcons.wrench,
         color: Color(0xFFFF4500),
@@ -218,11 +240,13 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         displayMessage: '⚡ Power tools detected!',
       );
     }
-    
+
     // ═══════════════════════════════════════════════════════════════════
     // MEDIUM PRIORITY - Informational Alerts
     // ═══════════════════════════════════════════════════════════════════
-    if (lower.contains('phone') || lower.contains('ring') || lower.contains('telephone')) {
+    if (lower.contains('phone') ||
+        lower.contains('ring') ||
+        lower.contains('telephone')) {
       return const _AlertConfig(
         icon: LucideIcons.phone,
         color: Color(0xFF1E90FF),
@@ -270,7 +294,9 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         displayMessage: '🚁 Helicopter nearby!',
       );
     }
-    if (lower.contains('footstep') || lower.contains('walking') || lower.contains('step')) {
+    if (lower.contains('footstep') ||
+        lower.contains('walking') ||
+        lower.contains('step')) {
       return const _AlertConfig(
         icon: LucideIcons.footprints,
         color: Color(0xFF8B4513),
@@ -278,7 +304,9 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         displayMessage: '👣 Footsteps approaching!',
       );
     }
-    if (lower.contains('washing') || lower.contains('washer') || lower.contains('laundry')) {
+    if (lower.contains('washing') ||
+        lower.contains('washer') ||
+        lower.contains('laundry')) {
       return const _AlertConfig(
         icon: LucideIcons.home,
         color: Color(0xFF4682B4),
@@ -286,7 +314,7 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         displayMessage: '🧺 Washing machine running!',
       );
     }
-    
+
     // ═══════════════════════════════════════════════════════════════════
     // LOW PRIORITY - Ambient Alerts
     // ═══════════════════════════════════════════════════════════════════
@@ -306,7 +334,9 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         displayMessage: '🧹 Vacuum cleaner running!',
       );
     }
-    if (lower.contains('airplane') || lower.contains('plane') || lower.contains('jet')) {
+    if (lower.contains('airplane') ||
+        lower.contains('plane') ||
+        lower.contains('jet')) {
       return const _AlertConfig(
         icon: LucideIcons.plane,
         color: Color(0xFF4169E1),
@@ -314,7 +344,9 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         displayMessage: '✈️ Airplane overhead!',
       );
     }
-    if (lower.contains('keyboard') || lower.contains('typing') || lower.contains('click')) {
+    if (lower.contains('keyboard') ||
+        lower.contains('typing') ||
+        lower.contains('click')) {
       return const _AlertConfig(
         icon: LucideIcons.keyboard,
         color: Color(0xFF2F4F4F),
@@ -347,7 +379,7 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
         isEmergency: true,
       );
     }
-    
+
     // Default
     return const _AlertConfig(
       icon: LucideIcons.volume2,
@@ -356,36 +388,63 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
       displayMessage: '🔊 Sound detected nearby',
     );
   }
-  
+
   IconData _getIconForCategory(String soundId) {
     switch (soundId) {
-      case 'baby_cry': return LucideIcons.baby;
-      case 'car_horn': return LucideIcons.car;
-      case 'siren': return LucideIcons.siren;
-      case 'fire_alarm': return LucideIcons.flame;
-      case 'gunshot_firework': return LucideIcons.alertTriangle;
-      case 'train': return LucideIcons.train;
-      case 'glass_breaking': return LucideIcons.shieldAlert;
-      case 'traffic': return LucideIcons.car;
-      case 'door_knock': return LucideIcons.doorOpen;
-      case 'doorbell': return LucideIcons.bellRing;
-      case 'speech': return LucideIcons.mic;
-      case 'door_creaking': return LucideIcons.doorOpen;
-      case 'chainsaw': return LucideIcons.wrench;
-      case 'phone_ring': return LucideIcons.phone;
-      case 'dog_bark': return LucideIcons.dog;
-      case 'thunderstorm': return LucideIcons.cloudLightning;
-      case 'coughing': return LucideIcons.heart;
-      case 'breathing': return LucideIcons.wind;
-      case 'helicopter': return LucideIcons.plane;
-      case 'footsteps': return LucideIcons.footprints;
-      case 'washing_machine': return LucideIcons.home;
-      case 'cat_meow': return LucideIcons.cat;
-      case 'vacuum_cleaner': return LucideIcons.sparkles;
-      case 'airplane': return LucideIcons.plane;
-      case 'keyboard_typing': return LucideIcons.keyboard;
-      case 'clock_tick': return LucideIcons.clock;
-      default: return LucideIcons.volume2;
+      case 'baby_cry':
+        return LucideIcons.baby;
+      case 'car_horn':
+        return LucideIcons.car;
+      case 'siren':
+        return LucideIcons.siren;
+      case 'fire_alarm':
+        return LucideIcons.flame;
+      case 'gunshot_firework':
+        return LucideIcons.alertTriangle;
+      case 'train':
+        return LucideIcons.train;
+      case 'glass_breaking':
+        return LucideIcons.shieldAlert;
+      case 'traffic':
+        return LucideIcons.car;
+      case 'door_knock':
+        return LucideIcons.doorOpen;
+      case 'doorbell':
+        return LucideIcons.bellRing;
+      case 'speech':
+        return LucideIcons.mic;
+      case 'door_creaking':
+        return LucideIcons.doorOpen;
+      case 'chainsaw':
+        return LucideIcons.wrench;
+      case 'phone_ring':
+        return LucideIcons.phone;
+      case 'dog_bark':
+        return LucideIcons.dog;
+      case 'thunderstorm':
+        return LucideIcons.cloudLightning;
+      case 'coughing':
+        return LucideIcons.heart;
+      case 'breathing':
+        return LucideIcons.wind;
+      case 'helicopter':
+        return LucideIcons.plane;
+      case 'footsteps':
+        return LucideIcons.footprints;
+      case 'washing_machine':
+        return LucideIcons.home;
+      case 'cat_meow':
+        return LucideIcons.cat;
+      case 'vacuum_cleaner':
+        return LucideIcons.sparkles;
+      case 'airplane':
+        return LucideIcons.plane;
+      case 'keyboard_typing':
+        return LucideIcons.keyboard;
+      case 'clock_tick':
+        return LucideIcons.clock;
+      default:
+        return LucideIcons.volume2;
     }
   }
 
@@ -393,7 +452,7 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
   Widget build(BuildContext context) {
     final config = _getAlertConfig(widget.event.label);
     final size = MediaQuery.of(context).size;
-    
+
     return Material(
       color: Colors.transparent,
       child: AnimatedBuilder(
@@ -422,7 +481,8 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
               children: [
                 // Category Badge
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: config.color.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(20),
@@ -431,29 +491,29 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
                   child: Text(
                     config.category,
                     style: GoogleFonts.spaceGrotesk(
-                      fontSize: 14,
+                      fontSize: 14 * AppTheme.textScale,
                       fontWeight: FontWeight.w700,
                       color: config.color,
                       letterSpacing: 2,
                     ),
                   ),
                 ).animate().fadeIn().slideY(begin: -0.2),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Main Icon with Glow
                 _AnimatedAlertIcon(
                   icon: config.icon,
                   color: config.color,
                   isEmergency: config.isEmergency,
                 ),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Sound Label - Show displayMessage if available
                 Text(
-                  config.displayMessage.isNotEmpty 
-                      ? config.displayMessage 
+                  config.displayMessage.isNotEmpty
+                      ? config.displayMessage
                       : widget.event.label.toUpperCase(),
                   style: GoogleFonts.spaceGrotesk(
                     fontSize: config.displayMessage.isNotEmpty ? 28 : 36,
@@ -462,10 +522,8 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
                     height: 1.1,
                   ),
                   textAlign: TextAlign.center,
-                ).animate()
-                  .fadeIn(delay: 100.ms)
-                  .slideY(begin: 0.1),
-                
+                ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.1),
+
                 // Show raw label as subtitle for context
                 if (config.displayMessage.isNotEmpty)
                   Padding(
@@ -473,20 +531,20 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
                     child: Text(
                       widget.event.label.toUpperCase(),
                       style: GoogleFonts.inter(
-                        fontSize: 14,
+                        fontSize: 14 * AppTheme.textScale,
                         fontWeight: FontWeight.w500,
                         color: Colors.white.withOpacity(0.6),
                         letterSpacing: 1,
                       ),
                     ),
-                  ).animate()
-                    .fadeIn(delay: 130.ms),
-                
+                  ).animate().fadeIn(delay: 130.ms),
+
                 const SizedBox(height: 16),
-                
+
                 // Confidence Badge
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: AppTheme.glassLow,
                     borderRadius: BorderRadius.circular(20),
@@ -499,18 +557,17 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
                       Text(
                         '${(widget.event.confidence * 100).toStringAsFixed(0)}% Confidence',
                         style: GoogleFonts.inter(
-                          fontSize: 14,
+                          fontSize: 14 * AppTheme.textScale,
                           fontWeight: FontWeight.w600,
                           color: AppTheme.textSecondary,
                         ),
                       ),
                     ],
                   ),
-                ).animate()
-                  .fadeIn(delay: 150.ms),
-                
+                ).animate().fadeIn(delay: 150.ms),
+
                 const SizedBox(height: 48),
-                
+
                 // Action Button
                 LiquidGlassContainer(
                   onTap: () {
@@ -520,16 +577,18 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
                   opacity: 0.3,
                   glow: true,
                   glowColor: config.color,
-                  padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 18),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 48, vertical: 18),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(LucideIcons.check, color: Colors.white, size: 20),
+                      const Icon(LucideIcons.check,
+                          color: Colors.white, size: 20),
                       const SizedBox(width: 12),
                       Text(
                         "DISMISS",
                         style: GoogleFonts.inter(
-                          fontSize: 16,
+                          fontSize: 16 * AppTheme.textScale,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           letterSpacing: 1,
@@ -537,31 +596,29 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
                       ),
                     ],
                   ),
-                ).animate()
-                  .fadeIn(delay: 200.ms)
-                  .slideY(begin: 0.2),
-                
+                ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2),
+
                 const SizedBox(height: 24),
-                
+
                 // Timestamp
                 Text(
                   _formatTime(widget.event.timestamp),
                   style: GoogleFonts.inter(
-                    fontSize: 12,
+                    fontSize: 12 * AppTheme.textScale,
                     color: AppTheme.textMuted,
                   ),
-                ).animate()
-                  .fadeIn(delay: 250.ms),
+                ).animate().fadeIn(delay: 250.ms),
               ],
             ),
           ),
         ),
       ),
-    ).animate()
-      .fadeIn(duration: 200.ms)
-      .scale(begin: const Offset(1.05, 1.05), end: const Offset(1, 1));
+    )
+        .animate()
+        .fadeIn(duration: 200.ms)
+        .scale(begin: const Offset(1.05, 1.05), end: const Offset(1, 1));
   }
-  
+
   String _formatTime(DateTime time) {
     final hour = time.hour.toString().padLeft(2, '0');
     final minute = time.minute.toString().padLeft(2, '0');
@@ -599,7 +656,7 @@ class _AnimatedAlertIconState extends State<_AnimatedAlertIcon>
       vsync: this,
       duration: Duration(milliseconds: widget.isEmergency ? 500 : 1200),
     )..repeat(reverse: true);
-    
+
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: widget.isEmergency ? 1.15 : 1.05,
@@ -607,7 +664,7 @@ class _AnimatedAlertIconState extends State<_AnimatedAlertIcon>
       parent: _controller,
       curve: Curves.easeInOut,
     ));
-    
+
     _glowAnimation = Tween<double>(
       begin: 0.2,
       end: widget.isEmergency ? 0.8 : 0.5,

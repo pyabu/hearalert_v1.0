@@ -84,7 +84,8 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
         fit: StackFit.expand,
         children: [
           // Background gradient
-          Container(decoration: const BoxDecoration(gradient: AppTheme.surfaceGradient)),
+          Container(
+              decoration: BoxDecoration(gradient: AppTheme.surfaceGradient)),
 
           // Ambient glow
           _buildAmbientGlow(settings),
@@ -110,13 +111,18 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
                 return const SizedBox.shrink();
               }
               final isEmergency = data.event!.type == 'emergency';
-              final flashColor = isEmergency ? AppTheme.danger : AppTheme.primary;
+              final flashColor =
+                  isEmergency ? AppTheme.danger : AppTheme.primary;
               return IgnorePointer(
                 child: TweenAnimationBuilder<double>(
                   tween: Tween(begin: 0.0, end: 1.0),
-                  duration: isEmergency ? const Duration(milliseconds: 350) : const Duration(milliseconds: 700),
+                  duration: isEmergency
+                      ? const Duration(milliseconds: 350)
+                      : const Duration(milliseconds: 700),
                   builder: (_, val, __) {
-                    final flash = (val * 8).toInt() % 2 == 0 ? 0.0 : (isEmergency ? 0.25 : 0.10);
+                    final flash = (val * 8).toInt() % 2 == 0
+                        ? 0.0
+                        : (isEmergency ? 0.25 : 0.10);
                     return Container(color: flashColor.withOpacity(flash));
                   },
                 ),
@@ -143,12 +149,12 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
             decoration: BoxDecoration(
               gradient: RadialGradient(
                 center: Alignment.center,
-                radius: (0.7 + _pulseController.value * 0.12) * settings.glowBrightness,
+                radius: (0.7 + _pulseController.value * 0.12) *
+                    settings.glowBrightness,
                 colors: [
-                  glow.withOpacity(
-                      (event != null ? 0.18 : 0.05) *
-                          settings.glowBrightness *
-                          (1.0 + _pulseController.value * 0.3)),
+                  glow.withOpacity((event != null ? 0.18 : 0.05) *
+                      settings.glowBrightness *
+                      (1.0 + _pulseController.value * 0.3)),
                   Colors.transparent,
                 ],
               ),
@@ -177,7 +183,8 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
                 gradient: AppTheme.biosonicGradient,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(LucideIcons.radar, color: Colors.white, size: 16),
+              child:
+                  const Icon(LucideIcons.radar, color: Colors.white, size: 16),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -199,7 +206,8 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
                     builder: (_, listening, __) => Text(
                       listening ? 'Actively scanning...' : 'Standby mode',
                       style: GoogleFonts.inter(
-                        color: listening ? AppTheme.primary : AppTheme.textMuted,
+                        color:
+                            listening ? AppTheme.primary : AppTheme.textMuted,
                         fontSize: 11 * scale,
                         fontWeight: FontWeight.w500,
                       ),
@@ -227,8 +235,11 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
   Widget _buildCentralRing(SettingsProvider settings) {
     return Selector<SoundProvider,
         ({bool isListening, double amplitude, SoundEvent? event})>(
-      selector: (_, p) =>
-          (isListening: p.isListening, amplitude: p.amplitude, event: p.lastEvent),
+      selector: (_, p) => (
+        isListening: p.isListening,
+        amplitude: p.amplitude,
+        event: p.lastEvent
+      ),
       builder: (context, data, _) {
         final isEmergency = data.event?.type == 'emergency';
         final ringColor = isEmergency
@@ -261,7 +272,8 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
 
             // Center content
             Selector<SoundProvider, ({SoundEvent? event, bool isListening})>(
-              selector: (_, p) => (event: p.lastEvent, isListening: p.isListening),
+              selector: (_, p) =>
+                  (event: p.lastEvent, isListening: p.isListening),
               builder: (_, d, __) {
                 if (d.event != null) {
                   return _buildDetectedEventCenter(d.event!, settings);
@@ -271,7 +283,8 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
                   children: [
                     Icon(
                       d.isListening ? LucideIcons.waves : LucideIcons.radio,
-                      color: d.isListening ? AppTheme.primary : AppTheme.textMuted,
+                      color:
+                          d.isListening ? AppTheme.primary : AppTheme.textMuted,
                       size: 32,
                     ),
                     const SizedBox(height: 10),
@@ -281,7 +294,7 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
                         color: d.isListening
                             ? AppTheme.primary
                             : AppTheme.textMuted,
-                        fontSize: 13,
+                        fontSize: 13 * AppTheme.textScale,
                         letterSpacing: 3,
                         fontWeight: FontWeight.w700,
                       ),
@@ -296,7 +309,8 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
     );
   }
 
-  Widget _buildDetectedEventCenter(SoundEvent event, SettingsProvider settings) {
+  Widget _buildDetectedEventCenter(
+      SoundEvent event, SettingsProvider settings) {
     final scale = settings.largeText ? 1.2 : 1.0;
     Color color = AppTheme.primary;
     if (event.type == 'emergency') color = AppTheme.danger;
@@ -317,9 +331,7 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
             boxShadow: AppTheme.glow(color, intensity: 1.2),
           ),
           child: Icon(_iconFor(event.label), color: Colors.white, size: 36),
-        )
-            .animate(onPlay: (c) => c.repeat(reverse: true))
-            .scale(
+        ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(
               begin: const Offset(1, 1),
               end: const Offset(1.08, 1.08),
               duration: 700.ms,
@@ -360,7 +372,8 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
               final cat = cats[i];
               final color = _catColor(cat);
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(14),
@@ -375,7 +388,7 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
                       cat,
                       style: GoogleFonts.inter(
                         color: color,
-                        fontSize: 11,
+                        fontSize: 11 * AppTheme.textScale,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -395,8 +408,11 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
   Widget _buildDetectionCard(SettingsProvider settings) {
     return Selector<SoundProvider,
         ({List<double> waveform, bool isListening, SoundEvent? event})>(
-      selector: (_, p) =>
-          (waveform: p.waveformData, isListening: p.isListening, event: p.lastEvent),
+      selector: (_, p) => (
+        waveform: p.waveformData,
+        isListening: p.isListening,
+        event: p.lastEvent
+      ),
       builder: (_, data, __) {
         return Container(
           height: 90,
@@ -424,7 +440,9 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
               // Label overlay
               if (data.event != null)
                 Positioned(
-                  bottom: 0, left: 0, right: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 10),
@@ -446,14 +464,14 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
                           style: GoogleFonts.inter(
                             color: AppTheme.textPrimary,
                             fontWeight: FontWeight.w600,
-                            fontSize: 12,
+                            fontSize: 12 * AppTheme.textScale,
                           ),
                         ),
                         Text(
                           '${(data.event!.confidence * 100).toInt()}% confidence',
                           style: GoogleFonts.inter(
                             color: AppTheme.primary,
-                            fontSize: 11,
+                            fontSize: 11 * AppTheme.textScale,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -466,7 +484,8 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
                   child: Text(
                     'Tap power to start listening',
                     style: GoogleFonts.inter(
-                        color: AppTheme.textMuted, fontSize: 12),
+                        color: AppTheme.textMuted,
+                        fontSize: 12 * AppTheme.textScale),
                   ),
                 ),
             ],
@@ -491,8 +510,8 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
             _DockButton(
               icon: LucideIcons.zap,
               label: 'Flash',
-              isActive:
-                  context.select<SoundProvider, bool>((p) => p.flashlightEnabled),
+              isActive: context
+                  .select<SoundProvider, bool>((p) => p.flashlightEnabled),
               color: AppTheme.accentYellow,
               onTap: () => context.read<SoundProvider>().toggleFlashlight(),
             ),
@@ -560,7 +579,8 @@ class _CircularAmplitudeRingPainter extends CustomPainter {
     for (int i = 1; i <= 3; i++) {
       final r = maxR * (i / 3);
       canvas.drawCircle(
-        center, r,
+        center,
+        r,
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 0.5
@@ -571,7 +591,8 @@ class _CircularAmplitudeRingPainter extends CustomPainter {
     if (!isListening) {
       // Idle ring
       canvas.drawCircle(
-        center, maxR * 0.65,
+        center,
+        maxR * 0.65,
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.5
@@ -609,7 +630,8 @@ class _CircularAmplitudeRingPainter extends CustomPainter {
     // Amplitude ring — pulses with sound
     final ampRadius = maxR * (0.5 + amplitude * 0.35);
     canvas.drawCircle(
-      center, ampRadius,
+      center,
+      ampRadius,
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2.5
@@ -618,7 +640,8 @@ class _CircularAmplitudeRingPainter extends CustomPainter {
 
     // Outer glow ring
     canvas.drawCircle(
-      center, ampRadius,
+      center,
+      ampRadius,
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 8
@@ -628,7 +651,8 @@ class _CircularAmplitudeRingPainter extends CustomPainter {
 
     // Center dot
     canvas.drawCircle(
-      center, 5,
+      center,
+      5,
       Paint()
         ..color = color.withOpacity(0.8)
         ..style = PaintingStyle.fill,
@@ -673,8 +697,7 @@ class _GradientWaveformPainter extends CustomPainter {
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-        ).createShader(
-            Rect.fromLTWH(x, centerY - h / 2, widthPerSample, h))
+        ).createShader(Rect.fromLTWH(x, centerY - h / 2, widthPerSample, h))
         ..strokeWidth = 2
         ..strokeCap = StrokeCap.round;
 
@@ -713,8 +736,7 @@ class _MainToggleButton extends StatelessWidget {
             width: 62,
             height: 62,
             decoration: BoxDecoration(
-              gradient:
-                  isListening ? AppTheme.biosonicGradient : null,
+              gradient: isListening ? AppTheme.biosonicGradient : null,
               color: isListening ? null : AppTheme.surfaceElevated,
               shape: BoxShape.circle,
               boxShadow: isListening
@@ -771,8 +793,7 @@ class _DockButton extends StatelessWidget {
               color: isActive ? color.withOpacity(0.15) : Colors.transparent,
               shape: BoxShape.circle,
               border: Border.all(
-                color:
-                    isActive ? color.withOpacity(0.3) : Colors.transparent,
+                color: isActive ? color.withOpacity(0.3) : Colors.transparent,
               ),
             ),
             child: Icon(
@@ -786,7 +807,7 @@ class _DockButton extends StatelessWidget {
             label,
             style: GoogleFonts.inter(
               color: isActive ? color : AppTheme.textMuted,
-              fontSize: 11,
+              fontSize: 11 * AppTheme.textScale,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -817,7 +838,8 @@ class _StatusPill extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 6, height: 6,
+            width: 6,
+            height: 6,
             decoration: BoxDecoration(
               color: color,
               shape: BoxShape.circle,
@@ -830,7 +852,7 @@ class _StatusPill extends StatelessWidget {
           Text(
             text,
             style: GoogleFonts.inter(
-              fontSize: 10,
+              fontSize: 10 * AppTheme.textScale,
               fontWeight: FontWeight.w700,
               color: text == 'LIVE' ? Colors.white : color,
               letterSpacing: 0.8,

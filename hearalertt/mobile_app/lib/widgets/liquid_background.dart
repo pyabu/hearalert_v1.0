@@ -4,18 +4,18 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mobile_app/theme/app_theme.dart';
 
 /// Premium Liquid Background with animated organic blobs
-/// 
+///
 /// Optimized for performance with controlled animation complexity
 class LiquidBackground extends StatelessWidget {
   final bool subtle;
-  
+
   const LiquidBackground({super.key, this.subtle = false});
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final blobOpacity = subtle ? 0.25 : 0.4;
-    
+
     return Container(
       color: AppTheme.void_,
       child: Stack(
@@ -37,7 +37,7 @@ class LiquidBackground extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Blob 1: Primary Violet (Top-left)
           Positioned(
             top: -size.height * 0.12,
@@ -46,20 +46,21 @@ class LiquidBackground extends StatelessWidget {
               color: AppTheme.primary,
               size: size.width * 0.8,
               opacity: blobOpacity,
-            ).animate(onPlay: (c) => c.repeat(reverse: true))
-              .move(
-                begin: const Offset(0, 0),
-                end: const Offset(30, 60),
-                duration: 8.seconds,
-                curve: Curves.easeInOutSine,
-              )
-              .scale(
-                begin: const Offset(1.0, 1.0),
-                end: const Offset(1.15, 1.1),
-                duration: 10.seconds,
-              ),
+            )
+                .animate(onPlay: (c) => c.repeat(reverse: true))
+                .move(
+                  begin: const Offset(0, 0),
+                  end: const Offset(30, 60),
+                  duration: 8.seconds,
+                  curve: Curves.easeInOutSine,
+                )
+                .scale(
+                  begin: const Offset(1.0, 1.0),
+                  end: const Offset(1.15, 1.1),
+                  duration: 10.seconds,
+                ),
           ),
-          
+
           // Blob 2: Secondary Cyan (Bottom-right)
           Positioned(
             bottom: -size.height * 0.08,
@@ -68,20 +69,21 @@ class LiquidBackground extends StatelessWidget {
               color: AppTheme.secondary,
               size: size.width * 0.7,
               opacity: blobOpacity * 0.8,
-            ).animate(onPlay: (c) => c.repeat(reverse: true))
-              .move(
-                begin: const Offset(0, 0),
-                end: const Offset(-40, -30),
-                duration: 9.seconds,
-                curve: Curves.easeInOutQuad,
-              )
-              .scale(
-                begin: const Offset(0.95, 0.95),
-                end: const Offset(1.1, 1.15),
-                duration: 11.seconds,
-              ),
+            )
+                .animate(onPlay: (c) => c.repeat(reverse: true))
+                .move(
+                  begin: const Offset(0, 0),
+                  end: const Offset(-40, -30),
+                  duration: 9.seconds,
+                  curve: Curves.easeInOutQuad,
+                )
+                .scale(
+                  begin: const Offset(0.95, 0.95),
+                  end: const Offset(1.1, 1.15),
+                  duration: 11.seconds,
+                ),
           ),
-          
+
           // Blob 3: Accent Pink (Center floating)
           if (!subtle)
             Positioned(
@@ -91,14 +93,15 @@ class LiquidBackground extends StatelessWidget {
                 color: AppTheme.accentPink,
                 size: size.width * 0.5,
                 opacity: blobOpacity * 0.6,
-              ).animate(onPlay: (c) => c.repeat(reverse: true))
-                .move(
-                  begin: const Offset(0, 0),
-                  end: const Offset(50, 40),
-                  duration: 12.seconds,
-                  curve: Curves.easeInOutCubic,
-                )
-                .fadeIn(duration: 3.seconds),
+              )
+                  .animate(onPlay: (c) => c.repeat(reverse: true))
+                  .move(
+                    begin: const Offset(0, 0),
+                    end: const Offset(50, 40),
+                    duration: 12.seconds,
+                    curve: Curves.easeInOutCubic,
+                  )
+                  .fadeIn(duration: 3.seconds),
             ),
         ],
       ),

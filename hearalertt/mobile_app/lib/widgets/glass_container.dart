@@ -23,8 +23,8 @@ class GlassCard extends StatefulWidget {
   const GlassCard({
     super.key,
     required this.child,
-    this.blur = 25.0,  // Increased for stronger glass effect
-    this.opacity = 0.12,  // Increased for more visible frosted glass
+    this.blur = 25.0, // Increased for stronger glass effect
+    this.opacity = 0.12, // Increased for more visible frosted glass
     this.width,
     this.height,
     this.color,
@@ -35,7 +35,7 @@ class GlassCard extends StatefulWidget {
     this.glow = false,
     this.glowColor,
     this.onTap,
-    this.liquidEffect = true,  // ENABLED BY DEFAULT for liquid theme
+    this.liquidEffect = true, // ENABLED BY DEFAULT for liquid theme
     this.rippleOnTap = true,
   });
 
@@ -43,7 +43,8 @@ class GlassCard extends StatefulWidget {
   State<GlassCard> createState() => _GlassCardState();
 }
 
-class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMixin {
+class _GlassCardState extends State<GlassCard>
+    with SingleTickerProviderStateMixin {
   bool _isPressed = false;
   late AnimationController _rippleController;
 
@@ -52,7 +53,8 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
     super.initState();
     _rippleController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),  // Increased for smoother liquid flow
+      duration: const Duration(
+          milliseconds: 800), // Increased for smoother liquid flow
     );
   }
 
@@ -71,10 +73,11 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    final effectiveRadius = widget.borderRadius ?? BorderRadius.circular(AppTheme.radiusLG);
+    final effectiveRadius =
+        widget.borderRadius ?? BorderRadius.circular(AppTheme.radiusLG);
     final effectiveColor = widget.color ?? Colors.white;
     final responsiveBlur = AppTheme.responsiveBlur(context, widget.blur);
-    
+
     Widget content = ClipRRect(
       borderRadius: effectiveRadius,
       child: BackdropFilter(
@@ -92,45 +95,50 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
           decoration: BoxDecoration(
             borderRadius: effectiveRadius,
             color: effectiveColor.withOpacity(widget.opacity),
-            gradient: widget.gradient ?? (widget.liquidEffect 
-              ? AppTheme.liquidFlow(
-                  start: effectiveColor,
-                  end: effectiveColor.withOpacity(0.5),
-                )
-              : LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    effectiveColor.withOpacity(widget.opacity + 0.05),
-                    effectiveColor.withOpacity(widget.opacity),
-                  ],
-                )),
+            gradient: widget.gradient ??
+                (widget.liquidEffect
+                    ? AppTheme.liquidFlow(
+                        start: effectiveColor,
+                        end: effectiveColor.withOpacity(0.5),
+                      )
+                    : LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          effectiveColor.withOpacity(widget.opacity + 0.05),
+                          effectiveColor.withOpacity(widget.opacity),
+                        ],
+                      )),
             border: Border.all(
               color: widget.liquidEffect
-                  ? Colors.white.withOpacity(0.3)  // Increased from 0.2
+                  ? Colors.white.withOpacity(0.3) // Increased from 0.2
                   : Colors.white.withOpacity(0.15), // Increased from 0.1
-              width: widget.liquidEffect ? 2 : 1.5,  // Increased width
+              width: widget.liquidEffect ? 2 : 1.5, // Increased width
             ),
-            boxShadow: widget.glow ? [
-              BoxShadow(
-                color: (widget.glowColor ?? AppTheme.primary).withOpacity(0.4),
-                blurRadius: 28,
-                spreadRadius: -3,
-              ),
-              if (widget.liquidEffect)
-                BoxShadow(
-                  color: (widget.glowColor ?? AppTheme.primary).withOpacity(0.15),
-                  blurRadius: 45,
-                  spreadRadius: -1,
-                ),
-            ] : [
-              // Add subtle shadow even without glow for depth
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: widget.glow
+                ? [
+                    BoxShadow(
+                      color: (widget.glowColor ?? AppTheme.primary)
+                          .withOpacity(0.4),
+                      blurRadius: 28,
+                      spreadRadius: -3,
+                    ),
+                    if (widget.liquidEffect)
+                      BoxShadow(
+                        color: (widget.glowColor ?? AppTheme.primary)
+                            .withOpacity(0.15),
+                        blurRadius: 45,
+                        spreadRadius: -1,
+                      ),
+                  ]
+                : [
+                    // Add subtle shadow even without glow for depth
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
           ),
           child: widget.child,
         ),
@@ -256,10 +264,10 @@ class GradientButton extends StatelessWidget {
             ],
             Text(
               text,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
-                fontSize: 15,
+                fontSize: 15 * AppTheme.textScale,
               ),
             ),
           ],
@@ -292,13 +300,15 @@ class StatusPill extends StatelessWidget {
         color: color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(AppTheme.radiusFull),
         border: Border.all(color: color.withOpacity(0.3)),
-        boxShadow: active ? [
-          BoxShadow(
-            color: color.withOpacity(0.3),
-            blurRadius: 12,
-            spreadRadius: -2,
-          ),
-        ] : null,
+        boxShadow: active
+            ? [
+                BoxShadow(
+                  color: color.withOpacity(0.3),
+                  blurRadius: 12,
+                  spreadRadius: -2,
+                ),
+              ]
+            : null,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -313,12 +323,14 @@ class StatusPill extends StatelessWidget {
               decoration: BoxDecoration(
                 color: active ? color : AppTheme.textMuted,
                 shape: BoxShape.circle,
-                boxShadow: active ? [
-                  BoxShadow(
-                    color: color.withOpacity(0.6),
-                    blurRadius: 6,
-                  ),
-                ] : null,
+                boxShadow: active
+                    ? [
+                        BoxShadow(
+                          color: color.withOpacity(0.6),
+                          blurRadius: 6,
+                        ),
+                      ]
+                    : null,
               ),
             ),
             const SizedBox(width: 6),
@@ -327,7 +339,7 @@ class StatusPill extends StatelessWidget {
             text,
             style: TextStyle(
               color: color,
-              fontSize: 12,
+              fontSize: 12 * AppTheme.textScale,
               fontWeight: FontWeight.w600,
             ),
           ),

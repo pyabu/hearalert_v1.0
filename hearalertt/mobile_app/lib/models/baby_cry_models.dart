@@ -30,7 +30,8 @@ class BabyCryPrediction {
   bool get isLowPriority => priority == 'low';
 
   @override
-  String toString() => '$label ($categoryName) - ${(confidence * 100).toStringAsFixed(1)}%';
+  String toString() =>
+      '$label ($categoryName) - ${(confidence * 100).toStringAsFixed(1)}%';
 }
 
 class BabyCryDetectionState {

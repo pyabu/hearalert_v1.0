@@ -1,12 +1,11 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-
 /// Animated liquid wave background for liquid theme
 class LiquidWaveBackground extends StatefulWidget {
   final List<Color> colors;
   final double height;
-  
+
   const LiquidWaveBackground({
     super.key,
     this.colors = const [Color(0xFF667eea), Color(0xFF764ba2)],
@@ -82,8 +81,12 @@ class _LiquidWavePainter extends CustomPainter {
 
     for (double x = 0; x <= size.width; x++) {
       final y = size.height * 0.5 +
-          math.sin((x / waveLength * 2 * math.pi) + (animationValue * 2 * math.pi)) * waveHeight +
-          math.sin((x / waveLength * 3 * math.pi) - (animationValue * 3 * math.pi)) * (waveHeight * 0.5);
+          math.sin((x / waveLength * 2 * math.pi) +
+                  (animationValue * 2 * math.pi)) *
+              waveHeight +
+          math.sin((x / waveLength * 3 * math.pi) -
+                  (animationValue * 3 * math.pi)) *
+              (waveHeight * 0.5);
       path.lineTo(x, y);
     }
 
@@ -183,7 +186,7 @@ class _RippleOverlayState extends State<RippleOverlay>
   }
 }
 
-class _RipplePainter extends CustomPainter  {
+class _RipplePainter extends CustomPainter {
   final Offset center;
   final double radius;
   final double opacity;

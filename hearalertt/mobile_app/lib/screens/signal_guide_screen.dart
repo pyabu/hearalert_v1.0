@@ -20,7 +20,8 @@ class SignalGuideScreen extends StatelessWidget {
             padding: EdgeInsets.zero,
             borderRadius: 12,
             onTap: () => Navigator.pop(context),
-            child: const Icon(LucideIcons.arrowLeft, color: AppTheme.textPrimary, size: 20),
+            child: const Icon(LucideIcons.arrowLeft,
+                color: AppTheme.textPrimary, size: 20),
           ),
         ),
         backgroundColor: Colors.transparent,
@@ -29,7 +30,7 @@ class SignalGuideScreen extends StatelessWidget {
         title: Text(
           "Signal Guide",
           style: GoogleFonts.spaceGrotesk(
-            fontSize: 18,
+            fontSize: 18 * AppTheme.textScale,
             fontWeight: FontWeight.bold,
             color: AppTheme.textPrimary,
           ),
@@ -161,7 +162,7 @@ class _SignalCard extends StatelessWidget {
                     style: GoogleFonts.spaceGrotesk(
                       color: AppTheme.textPrimary,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 16 * AppTheme.textScale,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -169,7 +170,7 @@ class _SignalCard extends StatelessWidget {
                     signal.description,
                     style: GoogleFonts.inter(
                       color: AppTheme.textSecondary,
-                      fontSize: 13,
+                      fontSize: 13 * AppTheme.textScale,
                       height: 1.4,
                     ),
                   ),
@@ -225,7 +226,7 @@ class _PatternChip extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.inter(
                 color: AppTheme.textSecondary,
-                fontSize: 11,
+                fontSize: 11 * AppTheme.textScale,
                 fontWeight: FontWeight.w500,
               ),
             ),

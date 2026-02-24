@@ -24,10 +24,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _pulseController = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 1800),
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
     )..repeat(reverse: true);
     _ringController = AnimationController(
-      vsync: this, duration: const Duration(seconds: 6),
+      vsync: this,
+      duration: const Duration(seconds: 6),
     )..repeat();
   }
 
@@ -86,24 +88,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   builder: (_, listening, __) => Row(
                     children: [
                       Container(
-                        width: 7, height: 7,
+                        width: 7,
+                        height: 7,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: listening ? AppTheme.secondary : AppTheme.textMuted,
+                          color: listening
+                              ? AppTheme.secondary
+                              : AppTheme.textMuted,
                           boxShadow: listening
-                              ? [BoxShadow(color: AppTheme.secondary, blurRadius: 8)]
+                              ? [
+                                  BoxShadow(
+                                      color: AppTheme.secondary, blurRadius: 8)
+                                ]
                               : null,
                         ),
-                      ).animate(onPlay: (c) => c.repeat())
+                      )
+                          .animate(onPlay: (c) => c.repeat())
                           .fadeIn(duration: 600.ms)
-                          .then().fadeOut(duration: 600.ms),
+                          .then()
+                          .fadeOut(duration: 600.ms),
                       const SizedBox(width: 7),
                       Text(
-                        listening ? 'DETECTION  •  ACTIVE' : 'SYSTEM  •  STANDBY',
+                        listening
+                            ? 'DETECTION  •  ACTIVE'
+                            : 'SYSTEM  •  STANDBY',
                         style: GoogleFonts.inter(
-                          fontSize: 9, fontWeight: FontWeight.w700,
+                          fontSize: 9 * AppTheme.textScale,
+                          fontWeight: FontWeight.w700,
                           letterSpacing: 1.8,
-                          color: listening ? AppTheme.primary : AppTheme.textMuted,
+                          color:
+                              listening ? AppTheme.primary : AppTheme.textMuted,
                         ),
                       ),
                     ],
@@ -113,16 +127,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 Text(
                   '${settings.smartZone.emoji} ${settings.smartZone.label} Mode',
                   style: GoogleFonts.spaceGrotesk(
-                    fontSize: 28, fontWeight: FontWeight.bold,
+                    fontSize: 28 * AppTheme.textScale,
+                    fontWeight: FontWeight.bold,
                     color: AppTheme.textPrimary,
-                    letterSpacing: -0.8, height: 1.1,
+                    letterSpacing: -0.8,
+                    height: 1.1,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   settings.smartZone.description,
                   style: GoogleFonts.inter(
-                    fontSize: 11, color: AppTheme.textMuted,
+                    fontSize: 11 * AppTheme.textScale,
+                    color: AppTheme.textMuted,
                   ),
                 ),
               ],
@@ -133,14 +150,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           AnimatedBuilder(
             animation: _pulseController,
             builder: (_, __) => Container(
-              width: 44, height: 44,
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: AppTheme.biosonicGradient,
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.primary.withOpacity(
-                        0.28 + _pulseController.value * 0.22),
+                    color: AppTheme.primary
+                        .withOpacity(0.28 + _pulseController.value * 0.22),
                     blurRadius: 18,
                   )
                 ],
@@ -156,9 +174,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   IconData _iconForZone(SmartZone zone) {
     switch (zone) {
-      case SmartZone.home:   return LucideIcons.home;
-      case SmartZone.street: return LucideIcons.car;
-      case SmartZone.office: return LucideIcons.briefcase;
+      case SmartZone.home:
+        return LucideIcons.home;
+      case SmartZone.street:
+        return LucideIcons.car;
+      case SmartZone.office:
+        return LucideIcons.briefcase;
     }
   }
 
@@ -167,13 +188,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // ─────────────────────────────────────────────────────────────────────────
   Widget _buildNeuralRing() {
     return Selector<SoundProvider,
-        ({double amplitude, bool isListening, SoundEvent? event})>(
-      selector: (_, p) =>
-          (amplitude: p.amplitude, isListening: p.isListening, event: p.lastEvent),
+            ({double amplitude, bool isListening, SoundEvent? event})>(
+      selector: (_, p) => (
+        amplitude: p.amplitude,
+        isListening: p.isListening,
+        event: p.lastEvent
+      ),
       builder: (ctx, data, _) {
         final activeColor = data.event?.isEmergency == true
             ? AppTheme.danger
-            : data.isListening ? AppTheme.primary : AppTheme.glassHigh;
+            : data.isListening
+                ? AppTheme.primary
+                : AppTheme.glassHigh;
 
         return SizedBox(
           height: 210,
@@ -206,8 +232,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: [
-                        activeColor.withOpacity(
-                            (0.12 + data.amplitude * 0.25 + _pulseController.value * 0.08)),
+                        activeColor.withOpacity((0.12 +
+                            data.amplitude * 0.25 +
+                            _pulseController.value * 0.08)),
                         Colors.transparent,
                       ],
                     ),
@@ -217,10 +244,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
               // Center icon
               Selector<SoundProvider, ({SoundEvent? event, bool isListening})>(
-                selector: (_, p) => (event: p.lastEvent, isListening: p.isListening),
+                selector: (_, p) =>
+                    (event: p.lastEvent, isListening: p.isListening),
                 builder: (_, d, __) {
                   if (d.event != null) {
-                    final ec = d.event!.isEmergency ? AppTheme.danger : AppTheme.success;
+                    final ec = d.event!.isEmergency
+                        ? AppTheme.danger
+                        : AppTheme.success;
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -235,17 +265,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           ),
                           child: Icon(_iconFor(d.event!.label),
                               color: Colors.white, size: 30),
-                        )
-                            .animate(onPlay: (c) => c.repeat(reverse: true))
-                            .scale(begin: const Offset(1, 1),
-                                end: const Offset(1.1, 1.1),
-                                duration: 600.ms),
+                        ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(
+                            begin: const Offset(1, 1),
+                            end: const Offset(1.1, 1.1),
+                            duration: 600.ms),
                         const SizedBox(height: 8),
                         Text(
                           d.event!.label.toUpperCase(),
                           style: GoogleFonts.spaceGrotesk(
-                            fontSize: 11, fontWeight: FontWeight.w800,
-                            color: Colors.white, letterSpacing: 2,
+                            fontSize: 11 * AppTheme.textScale,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            letterSpacing: 2,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -258,15 +289,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     children: [
                       Icon(
                         d.isListening ? LucideIcons.waves : LucideIcons.micOff,
-                        color: d.isListening ? AppTheme.primary : AppTheme.textMuted,
+                        color: d.isListening
+                            ? AppTheme.primary
+                            : AppTheme.textMuted,
                         size: 34,
                       ),
                       const SizedBox(height: 8),
                       Text(
                         d.isListening ? 'SCANNING' : 'PAUSED',
                         style: GoogleFonts.inter(
-                          fontSize: 10, letterSpacing: 3,
-                          color: d.isListening ? AppTheme.primary : AppTheme.textMuted,
+                          fontSize: 10 * AppTheme.textScale,
+                          letterSpacing: 3,
+                          color: d.isListening
+                              ? AppTheme.primary
+                              : AppTheme.textMuted,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -279,7 +315,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               GestureDetector(
                 onTap: () => ctx.read<SoundProvider>().toggleListening(),
                 child: Container(
-                  width: 210, height: 210,
+                  width: 210,
+                  height: 210,
                   color: Colors.transparent,
                 ),
               ),
@@ -287,16 +324,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         );
       },
-    ).animate().fadeIn(delay: 80.ms).scale(
-        begin: const Offset(0.92, 0.92), end: const Offset(1, 1));
+    )
+        .animate()
+        .fadeIn(delay: 80.ms)
+        .scale(begin: const Offset(0.92, 0.92), end: const Offset(1, 1));
   }
 
   // ─────────────────────────────────────────────────────────────────────────
   // SPECTRUM ANALYZER — real waveform data, 30 bars
   // ─────────────────────────────────────────────────────────────────────────
   Widget _buildSpectrumCard() {
-    return Selector<SoundProvider,
-        ({double amplitude, bool isListening, SoundEvent? event, List<double> waveform})>(
+    return Selector<
+        SoundProvider,
+        ({
+          double amplitude,
+          bool isListening,
+          SoundEvent? event,
+          List<double> waveform
+        })>(
       selector: (_, p) => (
         amplitude: p.amplitude,
         isListening: p.isListening,
@@ -331,34 +376,45 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               ),
               Positioned(
-                top: 14, left: 16, right: 16,
+                top: 14,
+                left: 16,
+                right: 16,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       'SPECTRUM ANALYZER',
                       style: GoogleFonts.inter(
-                        fontSize: 9, fontWeight: FontWeight.w700,
-                        color: AppTheme.primary, letterSpacing: 2,
+                        fontSize: 9 * AppTheme.textScale,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.primary,
+                        letterSpacing: 2,
                       ),
                     ),
                     if (data.event != null)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: (isEmergency ? AppTheme.danger : AppTheme.success)
-                              .withOpacity(0.15),
+                          color:
+                              (isEmergency ? AppTheme.danger : AppTheme.success)
+                                  .withOpacity(0.15),
                           borderRadius: BorderRadius.circular(6),
                           border: Border.all(
-                            color: (isEmergency ? AppTheme.danger : AppTheme.success)
+                            color: (isEmergency
+                                    ? AppTheme.danger
+                                    : AppTheme.success)
                                 .withOpacity(0.30),
                           ),
                         ),
                         child: Text(
                           '${(data.event!.confidence * 100).toInt()}% CONF',
                           style: GoogleFonts.inter(
-                            fontSize: 9, fontWeight: FontWeight.w700,
-                            color: isEmergency ? AppTheme.danger : AppTheme.success,
+                            fontSize: 9 * AppTheme.textScale,
+                            fontWeight: FontWeight.w700,
+                            color: isEmergency
+                                ? AppTheme.danger
+                                : AppTheme.success,
                           ),
                         ),
                       ),
@@ -367,13 +423,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
               // Frequency labels bottom
               Positioned(
-                bottom: 6, left: 16, right: 16,
+                bottom: 6,
+                left: 16,
+                right: 16,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: ['20Hz', '250Hz', '1kHz', '4kHz', '20kHz']
                       .map((f) => Text(f,
                           style: GoogleFonts.inter(
-                              fontSize: 7, color: AppTheme.textMuted.withOpacity(0.5))))
+                              fontSize: 7 * AppTheme.textScale,
+                              color: AppTheme.textMuted.withOpacity(0.5))))
                       .toList(),
                 ),
               ),
@@ -409,10 +468,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       borderRadius: BorderRadius.circular(20),
                       gradient: isActive
                           ? LinearGradient(
-                              colors: [color.withOpacity(0.28), color.withOpacity(0.08)],
-                              begin: Alignment.topLeft, end: Alignment.bottomRight)
+                              colors: [
+                                  color.withOpacity(0.28),
+                                  color.withOpacity(0.08)
+                                ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight)
                           : null,
-                      color: isActive ? null : AppTheme.glassLow.withOpacity(0.5),
+                      color:
+                          isActive ? null : AppTheme.glassLow.withOpacity(0.5),
                       border: Border.all(
                         color: isActive
                             ? color.withOpacity(0.55)
@@ -420,7 +484,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         width: isActive ? 1.5 : 1,
                       ),
                       boxShadow: isActive
-                          ? [BoxShadow(color: color.withOpacity(0.25), blurRadius: 18)]
+                          ? [
+                              BoxShadow(
+                                  color: color.withOpacity(0.25),
+                                  blurRadius: 18)
+                            ]
                           : null,
                     ),
                     child: Column(
@@ -445,8 +513,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         Text(
                           zone.label,
                           style: GoogleFonts.inter(
-                            fontSize: 12,
-                            fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
+                            fontSize: 12 * AppTheme.textScale,
+                            fontWeight:
+                                isActive ? FontWeight.w700 : FontWeight.w400,
                             color: isActive ? Colors.white : AppTheme.textMuted,
                             letterSpacing: 0.3,
                           ),
@@ -454,7 +523,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         if (isActive) ...[
                           const SizedBox(height: 3),
                           Container(
-                            width: 20, height: 2,
+                            width: 20,
+                            height: 2,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(1),
                               color: color,
@@ -475,9 +545,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Color _colorForZone(SmartZone zone) {
     switch (zone) {
-      case SmartZone.home:   return AppTheme.primary;
-      case SmartZone.street: return AppTheme.info;
-      case SmartZone.office: return AppTheme.secondary;
+      case SmartZone.home:
+        return AppTheme.primary;
+      case SmartZone.street:
+        return AppTheme.info;
+      case SmartZone.office:
+        return AppTheme.secondary;
     }
   }
 
@@ -505,8 +578,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 : todayEvents
                     .map((e) => e.confidence)
                     .reduce((a, b) => a > b ? a : b);
-            final emergencies =
-                todayEvents.where((e) => e.isEmergency).length;
+            final emergencies = todayEvents.where((e) => e.isEmergency).length;
             final detectionRate = data.amplitude > 0.05
                 ? (data.amplitude * 100).clamp(0, 99)
                 : 0.0;
@@ -574,20 +646,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: Row(
                   children: [
                     Container(
-                      width: 40, height: 40,
+                      width: 40,
+                      height: 40,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: AppTheme.primary.withOpacity(0.08),
-                        border: Border.all(color: AppTheme.primary.withOpacity(0.15)),
+                        border: Border.all(
+                            color: AppTheme.primary.withOpacity(0.15)),
                       ),
                       child: const Icon(LucideIcons.radio,
                           color: AppTheme.primary, size: 18),
-                    ).animate(onPlay: (c) => c.repeat())
-                        .scale(begin: const Offset(0.95, 0.95),
-                            end: const Offset(1.05, 1.05), duration: 1000.ms)
+                    )
+                        .animate(onPlay: (c) => c.repeat())
+                        .scale(
+                            begin: const Offset(0.95, 0.95),
+                            end: const Offset(1.05, 1.05),
+                            duration: 1000.ms)
                         .then()
-                        .scale(begin: const Offset(1.05, 1.05),
-                            end: const Offset(0.95, 0.95), duration: 1000.ms),
+                        .scale(
+                            begin: const Offset(1.05, 1.05),
+                            end: const Offset(0.95, 0.95),
+                            duration: 1000.ms),
                     const SizedBox(width: 14),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -595,10 +674,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         Text('No sounds detected',
                             style: GoogleFonts.inter(
                                 color: AppTheme.textPrimary,
-                                fontWeight: FontWeight.w600, fontSize: 14)),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14 * AppTheme.textScale)),
                         Text('Ear is open, listening silently...',
                             style: GoogleFonts.inter(
-                                color: AppTheme.textMuted, fontSize: 11)),
+                                color: AppTheme.textMuted,
+                                fontSize: 11 * AppTheme.textScale)),
                       ],
                     ),
                   ],
@@ -620,14 +701,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: [ec, ec.withOpacity(0.6)]),
+                          gradient:
+                              LinearGradient(colors: [ec, ec.withOpacity(0.6)]),
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: AppTheme.glow(ec, intensity: 0.6),
                         ),
-                        child: Icon(_iconFor(event.label), color: Colors.white, size: 20),
-                      ).animate(onPlay: (c) => c.repeat(reverse: true))
-                        .scale(begin: const Offset(1, 1),
-                            end: const Offset(1.08, 1.08), duration: 700.ms),
+                        child: Icon(_iconFor(event.label),
+                            color: Colors.white, size: 20),
+                      ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(
+                          begin: const Offset(1, 1),
+                          end: const Offset(1.08, 1.08),
+                          duration: 700.ms),
                       const SizedBox(width: 14),
                       Expanded(
                         child: Column(
@@ -636,13 +720,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             Text(event.label,
                                 style: GoogleFonts.inter(
                                     color: Colors.white,
-                                    fontWeight: FontWeight.w700, fontSize: 15),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 15 * AppTheme.textScale),
                                 overflow: TextOverflow.ellipsis),
                             Text(
-                              event.isEmergency ? '⚠  EMERGENCY ALERT' : 'Sound Detected',
+                              event.isEmergency
+                                  ? '⚠  EMERGENCY ALERT'
+                                  : 'Sound Detected',
                               style: GoogleFonts.inter(
-                                  color: ec, fontSize: 10,
-                                  fontWeight: FontWeight.w600, letterSpacing: 0.8),
+                                  color: ec,
+                                  fontSize: 10 * AppTheme.textScale,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.8),
                             ),
                           ],
                         ),
@@ -652,11 +741,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         children: [
                           Text('${(event.confidence * 100).toInt()}%',
                               style: GoogleFonts.spaceGrotesk(
-                                  color: ec, fontSize: 24,
+                                  color: ec,
+                                  fontSize: 24 * AppTheme.textScale,
                                   fontWeight: FontWeight.bold)),
                           Text('confidence',
                               style: GoogleFonts.inter(
-                                  color: AppTheme.textMuted, fontSize: 9,
+                                  color: AppTheme.textMuted,
+                                  fontSize: 9 * AppTheme.textScale,
                                   letterSpacing: 0.5)),
                         ],
                       ),
@@ -701,7 +792,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: Text(
                 'Clear',
                 style: GoogleFonts.inter(
-                    color: AppTheme.danger.withOpacity(0.7), fontSize: 11),
+                    color: AppTheme.danger.withOpacity(0.7),
+                    fontSize: 11 * AppTheme.textScale),
               ),
             ),
           ],
@@ -716,16 +808,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 padding: const EdgeInsets.all(28),
                 child: Column(
                   children: [
-                    Icon(LucideIcons.waves, color: AppTheme.textMuted, size: 32),
+                    Icon(LucideIcons.waves,
+                        color: AppTheme.textMuted, size: 32),
                     const SizedBox(height: 10),
                     Text('No detections yet',
                         style: GoogleFonts.inter(
-                            color: AppTheme.textMuted, fontSize: 14)),
+                            color: AppTheme.textMuted,
+                            fontSize: 14 * AppTheme.textScale)),
                     const SizedBox(height: 4),
                     Text('Go to Monitor tab to start',
                         style: GoogleFonts.inter(
                             color: AppTheme.textMuted.withOpacity(0.6),
-                            fontSize: 11)),
+                            fontSize: 11 * AppTheme.textScale)),
                   ],
                 ),
               );
@@ -764,15 +858,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.inter(
                                       color: AppTheme.textPrimary,
-                                      fontWeight: FontWeight.w600, fontSize: 13)),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13 * AppTheme.textScale)),
                               const SizedBox(height: 5),
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(3),
                                 child: LinearProgressIndicator(
                                   value: ev.confidence,
-                                  backgroundColor: Colors.white.withOpacity(0.05),
-                                  valueColor:
-                                      AlwaysStoppedAnimation<Color>(cc.withOpacity(0.7)),
+                                  backgroundColor:
+                                      Colors.white.withOpacity(0.05),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      cc.withOpacity(0.7)),
                                   minHeight: 3,
                                 ),
                               ),
@@ -792,19 +888,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               ),
                               child: Text('${(ev.confidence * 100).toInt()}%',
                                   style: GoogleFonts.inter(
-                                      color: cc, fontSize: 10,
+                                      color: cc,
+                                      fontSize: 10 * AppTheme.textScale,
                                       fontWeight: FontWeight.w700)),
                             ),
                             const SizedBox(height: 4),
                             Text('$h:$m:$s',
                                 style: GoogleFonts.inter(
-                                    color: AppTheme.textMuted, fontSize: 9)),
+                                    color: AppTheme.textMuted,
+                                    fontSize: 9 * AppTheme.textScale)),
                           ],
                         ),
                       ],
                     ),
                   ),
-                ).animate().fadeIn(delay: Duration(milliseconds: 40 * i))
+                )
+                    .animate()
+                    .fadeIn(delay: Duration(milliseconds: 40 * i))
                     .slideX(begin: 0.05, end: 0);
               }).toList(),
             );
@@ -818,11 +918,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Row(
       children: [
         Container(
-          width: 3, height: 15,
+          width: 3,
+          height: 15,
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               colors: [AppTheme.primary, AppTheme.secondary],
-              begin: Alignment.topCenter, end: Alignment.bottomCenter,
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
             borderRadius: BorderRadius.circular(2),
           ),
@@ -832,8 +934,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         const SizedBox(width: 6),
         Text(t,
             style: GoogleFonts.inter(
-              fontSize: 9.5, fontWeight: FontWeight.w700,
-              color: AppTheme.primary, letterSpacing: 2.2,
+              fontSize: 9.5 * AppTheme.textScale,
+              fontWeight: FontWeight.w700,
+              color: AppTheme.primary,
+              letterSpacing: 2.2,
             )),
       ],
     );
@@ -844,7 +948,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     if (l.contains('fire') || l.contains('smoke')) return LucideIcons.flame;
     if (l.contains('baby') || l.contains('cry')) return LucideIcons.baby;
     if (l.contains('glass')) return LucideIcons.glassWater;
-    if (l.contains('alarm') || l.contains('smoke alarm')) return LucideIcons.bellRing;
+    if (l.contains('alarm') || l.contains('smoke alarm'))
+      return LucideIcons.bellRing;
     if (l.contains('horn') || l.contains('siren')) return LucideIcons.siren;
     if (l.contains('knock') || l.contains('door')) return LucideIcons.doorOpen;
     if (l.contains('dog')) return LucideIcons.dog;
@@ -906,7 +1011,9 @@ class _StatCard extends StatelessWidget {
               Text(
                 value,
                 style: GoogleFonts.spaceGrotesk(
-                  fontSize: 22, fontWeight: FontWeight.bold, color: color,
+                  fontSize: 22 * AppTheme.textScale,
+                  fontWeight: FontWeight.bold,
+                  color: color,
                 ),
               ),
             ],
@@ -915,15 +1022,18 @@ class _StatCard extends StatelessWidget {
           Text(
             label,
             style: GoogleFonts.inter(
-              fontSize: 11, color: AppTheme.textMuted, fontWeight: FontWeight.w500,
+              fontSize: 11 * AppTheme.textScale,
+              color: AppTheme.textMuted,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],
       ),
-    ).animate()
-        .fadeIn(delay: Duration(milliseconds: delay))
-        .scale(begin: const Offset(0.92, 0.92), end: const Offset(1, 1),
-            delay: Duration(milliseconds: delay), curve: Curves.easeOutBack);
+    ).animate().fadeIn(delay: Duration(milliseconds: delay)).scale(
+        begin: const Offset(0.92, 0.92),
+        end: const Offset(1, 1),
+        delay: Duration(milliseconds: delay),
+        curve: Curves.easeOutBack);
   }
 }
 
@@ -936,8 +1046,10 @@ class _NeuralRingPainter extends CustomPainter {
   final Color color;
 
   const _NeuralRingPainter({
-    required this.progress, required this.amplitude,
-    required this.isListening, required this.color,
+    required this.progress,
+    required this.amplitude,
+    required this.isListening,
+    required this.color,
   });
 
   @override
@@ -946,7 +1058,9 @@ class _NeuralRingPainter extends CustomPainter {
     final r = size.width / 2 - 8;
 
     if (!isListening) {
-      canvas.drawCircle(c, r,
+      canvas.drawCircle(
+          c,
+          r,
           Paint()
             ..style = PaintingStyle.stroke
             ..strokeWidth = 1
@@ -957,12 +1071,16 @@ class _NeuralRingPainter extends CustomPainter {
     const dashes = 36;
     for (int i = 0; i < dashes; i++) {
       final angle = (i / dashes) * math.pi * 2 + progress * math.pi * 2;
-      final nextAngle = ((i + 0.6) / dashes) * math.pi * 2 + progress * math.pi * 2;
-      final bright = amplitude * math.max(0, math.sin(angle - progress * math.pi)).abs();
+      final nextAngle =
+          ((i + 0.6) / dashes) * math.pi * 2 + progress * math.pi * 2;
+      final bright =
+          amplitude * math.max(0, math.sin(angle - progress * math.pi)).abs();
       final c1 = Color.lerp(color, AppTheme.secondary, i / dashes)!;
       canvas.drawArc(
         Rect.fromCircle(center: c, radius: r),
-        angle, nextAngle - angle, false,
+        angle,
+        nextAngle - angle,
+        false,
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2 + amplitude * 2
@@ -972,20 +1090,26 @@ class _NeuralRingPainter extends CustomPainter {
     }
 
     final innerR = r * 0.62 * (0.85 + amplitude * 0.30);
-    canvas.drawCircle(c, innerR,
+    canvas.drawCircle(
+        c,
+        innerR,
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.5
           ..color = color.withOpacity(0.40 + amplitude * 0.50));
 
-    canvas.drawCircle(c, innerR,
+    canvas.drawCircle(
+        c,
+        innerR,
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 8
           ..color = color.withOpacity(0.05 + amplitude * 0.12)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6));
 
-    canvas.drawCircle(c, 4,
+    canvas.drawCircle(
+        c,
+        4,
         Paint()
           ..color = color.withOpacity(0.80)
           ..style = PaintingStyle.fill);
@@ -1032,7 +1156,9 @@ class _SpectrumPainter extends CustomPainter {
       double barHeight;
       if (waveformData.isNotEmpty) {
         // Map waveform index to bar index
-        final wi = (i / _bars * waveformData.length).toInt().clamp(0, waveformData.length - 1);
+        final wi = (i / _bars * waveformData.length)
+            .toInt()
+            .clamp(0, waveformData.length - 1);
         barHeight = (waveformData[wi].abs() * maxH).clamp(4.0, maxH);
       } else {
         // Amplitude-based fallback
@@ -1049,7 +1175,8 @@ class _SpectrumPainter extends CustomPainter {
 
       // Glow blur
       canvas.drawRRect(
-        RRect.fromRectAndRadius(Rect.fromLTWH(x, y, barW, barHeight), const Radius.circular(3)),
+        RRect.fromRectAndRadius(
+            Rect.fromLTWH(x, y, barW, barHeight), const Radius.circular(3)),
         Paint()
           ..color = c1.withOpacity(0.22)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
@@ -1057,11 +1184,13 @@ class _SpectrumPainter extends CustomPainter {
 
       // Bar with gradient
       canvas.drawRRect(
-        RRect.fromRectAndRadius(Rect.fromLTWH(x, y, barW, barHeight), const Radius.circular(3)),
+        RRect.fromRectAndRadius(
+            Rect.fromLTWH(x, y, barW, barHeight), const Radius.circular(3)),
         Paint()
           ..shader = LinearGradient(
             colors: [c1.withOpacity(0.92), c1.withOpacity(0.22)],
-            begin: Alignment.topCenter, end: Alignment.bottomCenter,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ).createShader(Rect.fromLTWH(x, y, barW, barHeight)),
       );
     }

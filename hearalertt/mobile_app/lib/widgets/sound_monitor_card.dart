@@ -4,6 +4,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mobile_app/widgets/glass_container.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import 'package:mobile_app/theme/app_theme.dart';
+
 class SoundMonitorCard extends StatelessWidget {
   final String label;
   final IconData icon;
@@ -25,7 +27,7 @@ class SoundMonitorCard extends StatelessWidget {
     return TectonicGlassContainer(
       padding: const EdgeInsets.all(16),
       borderRadius: BorderRadius.circular(24),
-      border: isDetected 
+      border: isDetected
           ? Border.all(color: color, width: 2)
           : Border.all(color: Colors.white.withOpacity(0.1), width: 1),
       child: Column(
@@ -43,19 +45,26 @@ class SoundMonitorCard extends StatelessWidget {
                     color: color.withOpacity(0.2),
                     shape: BoxShape.circle,
                   ),
-                ).animate(onPlay: (c) => c.repeat()).scale(
-                  begin: const Offset(1, 1), 
-                  end: const Offset(1.5, 1.5), 
-                  duration: 1.seconds,
-                ).fadeOut(duration: 1.seconds),
-              
+                )
+                    .animate(onPlay: (c) => c.repeat())
+                    .scale(
+                      begin: const Offset(1, 1),
+                      end: const Offset(1.5, 1.5),
+                      duration: 1.seconds,
+                    )
+                    .fadeOut(duration: 1.seconds),
               Container(
                 width: 50,
                 height: 50,
                 decoration: BoxDecoration(
                   color: isDetected ? color : color.withOpacity(0.1),
                   shape: BoxShape.circle,
-                  boxShadow: isDetected ? [BoxShadow(color: color.withOpacity(0.5), blurRadius: 20)] : [],
+                  boxShadow: isDetected
+                      ? [
+                          BoxShadow(
+                              color: color.withOpacity(0.5), blurRadius: 20)
+                        ]
+                      : [],
                 ),
                 child: Icon(
                   icon,
@@ -65,38 +74,38 @@ class SoundMonitorCard extends StatelessWidget {
               ),
             ],
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Label
           Text(
             label,
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextStyle(
+              fontSize: 16 * AppTheme.textScale,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
             textAlign: TextAlign.center,
           ),
-          
+
           const SizedBox(height: 8),
-          
+
           // Status / Time
           if (isDetected)
             Text(
               "DETECTED NOW",
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 12 * AppTheme.textScale,
                 fontWeight: FontWeight.w900,
                 color: color,
                 letterSpacing: 1,
               ),
             ).animate().fadeIn(duration: 200.ms)
           else if (lastDetected != null)
-             Text(
+            Text(
               "Last: ${timeago.format(lastDetected!, locale: 'en_short')}",
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 12 * AppTheme.textScale,
                 color: Colors.white.withOpacity(0.5),
               ),
             )
@@ -104,7 +113,7 @@ class SoundMonitorCard extends StatelessWidget {
             Text(
               "Monitoring",
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 12 * AppTheme.textScale,
                 color: Colors.white.withOpacity(0.3),
                 fontStyle: FontStyle.italic,
               ),

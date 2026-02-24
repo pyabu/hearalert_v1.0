@@ -25,7 +25,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _OnboardingSlide(
       title: "Sound\nIntelligence",
       subtitle: "ADVANCED AI RECOGNITION",
-      description: "Experience cutting-edge technology that identifies 50+ environmental sounds in real-time, keeping you connected to your surroundings.",
+      description:
+          "Experience cutting-edge technology that identifies 50+ environmental sounds in real-time, keeping you connected to your surroundings.",
       icon: LucideIcons.brainCircuit,
       color: AppTheme.primary,
       gradientColors: [const Color(0xFF8B5CF6), const Color(0xFFA855F7)],
@@ -33,7 +34,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _OnboardingSlide(
       title: "Instant\nAlerts",
       subtitle: "VISUAL & HAPTIC FEEDBACK",
-      description: "Get immediate multi-sensory notifications for critical events — fire alarms, door knocks, baby cries, and more.",
+      description:
+          "Get immediate multi-sensory notifications for critical events — fire alarms, door knocks, baby cries, and more.",
       icon: LucideIcons.bell,
       color: AppTheme.secondary,
       gradientColors: [const Color(0xFF06D6A0), const Color(0xFF0EA5E9)],
@@ -41,7 +43,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _OnboardingSlide(
       title: "Complete\nHistory",
       subtitle: "DETAILED EVENT LOGGING",
-      description: "Never miss what happened. Review past sound events with timestamps and confidence levels anytime you need.",
+      description:
+          "Never miss what happened. Review past sound events with timestamps and confidence levels anytime you need.",
       icon: LucideIcons.history,
       color: AppTheme.success,
       gradientColors: [const Color(0xFF10B981), const Color(0xFF059669)],
@@ -65,7 +68,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-
   Future<void> _finishOnboarding() async {
     // Request permissions before finishing
     await [
@@ -77,10 +79,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       context.read<SettingsProvider>().completeOnboarding();
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => const AppScaffold(),
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const AppScaffold(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
-              opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+              opacity:
+                  CurvedAnimation(parent: animation, curve: Curves.easeOut),
               child: child,
             );
           },
@@ -98,27 +102,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         children: [
           // Animated background
           const LiquidBackground(subtle: true),
-          
+
           // Floating accent orbs based on current page
           _buildFloatingOrbs(),
-          
+
           // Content
           SafeArea(
             child: Column(
               children: [
                 // Top bar with skip
                 _buildTopBar(),
-                
+
                 // Page Content
                 Expanded(
                   child: PageView.builder(
                     controller: _pageController,
                     itemCount: _slides.length,
-                    onPageChanged: (index) => setState(() => _currentPage = index),
-                    itemBuilder: (context, index) => _buildSlide(_slides[index], index),
+                    onPageChanged: (index) =>
+                        setState(() => _currentPage = index),
+                    itemBuilder: (context, index) =>
+                        _buildSlide(_slides[index], index),
                   ),
                 ),
-                
+
                 // Bottom Controls
                 _buildBottomControls(),
               ],
@@ -144,20 +150,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   gradient: AppTheme.primaryGradient,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(LucideIcons.ear, color: Colors.white, size: 18),
+                child:
+                    const Icon(LucideIcons.ear, color: Colors.white, size: 18),
               ),
               const SizedBox(width: 10),
               Text(
                 "HearAlert",
                 style: GoogleFonts.spaceGrotesk(
                   color: AppTheme.textPrimary,
-                  fontSize: 18,
+                  fontSize: 18 * AppTheme.textScale,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          
+
           // Skip button
           GestureDetector(
             onTap: _finishOnboarding,
@@ -172,7 +179,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 "Skip",
                 style: GoogleFonts.inter(
                   color: AppTheme.textMuted,
-                  fontSize: 14,
+                  fontSize: 14 * AppTheme.textScale,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -186,7 +193,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _buildFloatingOrbs() {
     final slide = _slides[_currentPage];
     final size = MediaQuery.of(context).size;
-    
+
     return Stack(
       children: [
         // Primary accent orb
@@ -216,14 +223,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Widget _buildSlide(_OnboardingSlide slide, int index) {
     final isActive = index == _currentPage;
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Spacer(flex: 1),
-          
+
           // Icon with gradient background
           Container(
             width: 72,
@@ -238,28 +245,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               boxShadow: AppTheme.glow(slide.color, intensity: 0.7),
             ),
             child: Icon(slide.icon, color: Colors.white, size: 32),
-          ).animate(target: isActive ? 1 : 0)
-           .fadeIn(duration: 400.ms)
-           .scale(begin: const Offset(0.85, 0.85), end: const Offset(1, 1), curve: Curves.easeOutBack),
-          
+          ).animate(target: isActive ? 1 : 0).fadeIn(duration: 400.ms).scale(
+              begin: const Offset(0.85, 0.85),
+              end: const Offset(1, 1),
+              curve: Curves.easeOutBack),
+
           const SizedBox(height: 36),
-          
+
           // Title
           Text(
             slide.title,
             style: GoogleFonts.spaceGrotesk(
-              fontSize: 44,
+              fontSize: 44 * AppTheme.textScale,
               fontWeight: FontWeight.w700,
               color: AppTheme.textPrimary,
               height: 1.05,
               letterSpacing: -1.5,
             ),
-          ).animate(target: isActive ? 1 : 0)
-           .fadeIn(duration: 350.ms, delay: 50.ms)
-           .slideX(begin: -0.08, end: 0),
-          
+          )
+              .animate(target: isActive ? 1 : 0)
+              .fadeIn(duration: 350.ms, delay: 50.ms)
+              .slideX(begin: -0.08, end: 0),
+
           const SizedBox(height: 16),
-          
+
           // Subtitle badge
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
@@ -275,25 +284,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               slide.subtitle,
               style: GoogleFonts.inter(
                 color: Colors.white,
-                fontSize: 10,
+                fontSize: 10 * AppTheme.textScale,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1.5,
               ),
             ),
-          ).animate(target: isActive ? 1 : 0).fadeIn(duration: 300.ms, delay: 100.ms),
-          
+          )
+              .animate(target: isActive ? 1 : 0)
+              .fadeIn(duration: 300.ms, delay: 100.ms),
+
           const SizedBox(height: 24),
-          
+
           // Description
           Text(
             slide.description,
             style: GoogleFonts.inter(
-              fontSize: 16,
+              fontSize: 16 * AppTheme.textScale,
               color: AppTheme.textSecondary,
               height: 1.6,
             ),
-          ).animate(target: isActive ? 1 : 0).fadeIn(duration: 350.ms, delay: 150.ms),
-          
+          )
+              .animate(target: isActive ? 1 : 0)
+              .fadeIn(duration: 350.ms, delay: 150.ms),
+
           const Spacer(flex: 2),
         ],
       ),
@@ -303,7 +316,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _buildBottomControls() {
     final slide = _slides[_currentPage];
     final isLastPage = _currentPage == _slides.length - 1;
-    
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(32, 16, 32, 32),
       child: Row(
@@ -319,7 +332,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 width: isActive ? 28 : 8,
                 height: 8,
                 decoration: BoxDecoration(
-                  gradient: isActive 
+                  gradient: isActive
                       ? LinearGradient(colors: slide.gradientColors)
                       : null,
                   color: isActive ? null : AppTheme.glassHigh,
@@ -328,14 +341,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               );
             }),
           ),
-          
+
           // Next/Start Button
           GestureDetector(
             onTap: _nextPage,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               padding: EdgeInsets.symmetric(
-                horizontal: isLastPage ? 28 : 20, 
+                horizontal: isLastPage ? 28 : 20,
                 vertical: 14,
               ),
               decoration: BoxDecoration(
@@ -351,7 +364,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     style: GoogleFonts.inter(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
-                      fontSize: 15,
+                      fontSize: 15 * AppTheme.textScale,
                     ),
                   ),
                   const SizedBox(width: 8),

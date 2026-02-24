@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app/theme/app_theme.dart';
 
 /// Premium Liquid Glass Container with refined frosted glass effect
-/// 
+///
 /// Features:
 /// - Multi-layer backdrop blur
 /// - Subtle inner glow
@@ -48,7 +48,7 @@ class LiquidGlassContainer extends StatefulWidget {
   State<LiquidGlassContainer> createState() => _LiquidGlassContainerState();
 }
 
-class _LiquidGlassContainerState extends State<LiquidGlassContainer> 
+class _LiquidGlassContainerState extends State<LiquidGlassContainer>
     with SingleTickerProviderStateMixin {
   bool _isPressed = false;
   late AnimationController _pressController;
@@ -94,7 +94,7 @@ class _LiquidGlassContainerState extends State<LiquidGlassContainer>
   Widget build(BuildContext context) {
     final effectiveBlur = AppTheme.responsiveBlur(context, widget.blurStrength);
     final effectiveTint = widget.tint ?? AppTheme.glassLow;
-    
+
     Widget content = Container(
       width: widget.width,
       height: widget.height,
@@ -120,23 +120,25 @@ class _LiquidGlassContainerState extends State<LiquidGlassContainer>
       margin: widget.margin,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(widget.borderRadius),
-        boxShadow: widget.glow 
-            ? AppTheme.glow(widget.glowColor ?? AppTheme.primary, intensity: 0.5) 
+        boxShadow: widget.glow
+            ? AppTheme.glow(widget.glowColor ?? AppTheme.primary,
+                intensity: 0.5)
             : AppTheme.elevation(level: 0.5),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(widget.borderRadius),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: effectiveBlur, sigmaY: effectiveBlur),
+          filter:
+              ImageFilter.blur(sigmaX: effectiveBlur, sigmaY: effectiveBlur),
           child: Container(
             decoration: BoxDecoration(
               color: effectiveTint.withOpacity(widget.opacity),
               borderRadius: BorderRadius.circular(widget.borderRadius),
-              border: widget.border 
+              border: widget.border
                   ? Border.all(
-                      color: Colors.white.withOpacity(_isPressed ? 0.18 : 0.12), 
+                      color: Colors.white.withOpacity(_isPressed ? 0.18 : 0.12),
                       width: 1.0,
-                    ) 
+                    )
                   : null,
             ),
             child: Stack(
@@ -165,7 +167,7 @@ class _LiquidGlassContainerState extends State<LiquidGlassContainer>
                       ),
                     ),
                   ),
-                
+
                 // Content
                 content,
               ],

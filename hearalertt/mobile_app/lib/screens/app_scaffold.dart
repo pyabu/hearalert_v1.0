@@ -29,9 +29,9 @@ class _AppScaffoldState extends State<AppScaffold>
   late AnimationController _navController;
 
   static const _navItems = [
-    _NavItem(LucideIcons.home,     LucideIcons.home,      'Home'),
-    _NavItem(LucideIcons.radar,    LucideIcons.radar,     'Monitor'),
-    _NavItem(LucideIcons.clock,    LucideIcons.clock,     'History'),
+    _NavItem(LucideIcons.home, LucideIcons.home, 'Home'),
+    _NavItem(LucideIcons.radar, LucideIcons.radar, 'Monitor'),
+    _NavItem(LucideIcons.clock, LucideIcons.clock, 'History'),
     _NavItem(LucideIcons.settings2, LucideIcons.settings2, 'Settings'),
   ];
 
@@ -46,11 +46,13 @@ class _AppScaffoldState extends State<AppScaffold>
   void initState() {
     super.initState();
     _badgeController = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 900),
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
     )..repeat(reverse: true);
 
     _navController = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 250),
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
     )..forward();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -119,7 +121,8 @@ class _LiquidGlassNavBarState extends State<_LiquidGlassNavBar>
     with TickerProviderStateMixin {
   final List<_RippleData> _ripples = [];
 
-  void _handleTapDown(TapDownDetails details, BoxConstraints constraints, double animSpeed) {
+  void _handleTapDown(
+      TapDownDetails details, BoxConstraints constraints, double animSpeed) {
     final ctrl = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: (700 / animSpeed).round()),
@@ -150,7 +153,8 @@ class _LiquidGlassNavBarState extends State<_LiquidGlassNavBar>
     return Consumer<SettingsProvider>(
       builder: (_, settings, __) {
         final double blurAmount = 20.0; // Reduced from 40.0 for performance
-        final double opacityMult = settings.glassIntensity * 2; // Default settings.glassIntensity is around 0.1-0.3
+        final double opacityMult = settings.glassIntensity *
+            2; // Default settings.glassIntensity is around 0.1-0.3
         final double animSpeed = settings.animationSpeed;
 
         return Container(
@@ -165,7 +169,8 @@ class _LiquidGlassNavBarState extends State<_LiquidGlassNavBar>
                     behavior: HitTestBehavior.opaque,
                     onTapDown: (d) => _handleTapDown(d, constraints, animSpeed),
                     child: AnimatedContainer(
-                      duration: Duration(milliseconds: (300 / animSpeed).round()),
+                      duration:
+                          Duration(milliseconds: (300 / animSpeed).round()),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(28),
                         gradient: LinearGradient(
@@ -173,8 +178,10 @@ class _LiquidGlassNavBarState extends State<_LiquidGlassNavBar>
                           end: Alignment.bottomRight,
                           colors: [
                             Colors.white.withOpacity(0.12 * opacityMult),
-                            settings.accentColor.withOpacity(0.06 * opacityMult),
-                            AppTheme.void_.withOpacity(0.65 + (0.2 * opacityMult)),
+                            settings.accentColor
+                                .withOpacity(0.06 * opacityMult),
+                            AppTheme.void_
+                                .withOpacity(0.65 + (0.2 * opacityMult)),
                           ],
                         ),
                         border: Border.all(
@@ -183,7 +190,8 @@ class _LiquidGlassNavBarState extends State<_LiquidGlassNavBar>
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: settings.accentColor.withOpacity(0.15 * opacityMult),
+                            color: settings.accentColor
+                                .withOpacity(0.15 * opacityMult),
                             blurRadius: 36,
                             offset: const Offset(0, -4),
                           ),
@@ -201,7 +209,8 @@ class _LiquidGlassNavBarState extends State<_LiquidGlassNavBar>
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(28),
                               child: CustomPaint(
-                                painter: _RipplePainter(_ripples, settings.accentColor),
+                                painter: _RipplePainter(
+                                    _ripples, settings.accentColor),
                               ),
                             ),
                           ),
@@ -210,12 +219,15 @@ class _LiquidGlassNavBarState extends State<_LiquidGlassNavBar>
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               // Micro status strip
-                              _StatusStrip(badgeController: widget.badgeController),
+                              _StatusStrip(
+                                  badgeController: widget.badgeController),
                               // Nav items row
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 2, 10, 10),
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 2, 10, 10),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
                                   children: List.generate(
                                     widget.items.length,
                                     (i) => _NavCell(
@@ -256,9 +268,11 @@ class _RippleData {
 class _RipplePainter extends CustomPainter {
   final List<_RippleData> ripples;
   final Color accentColor;
-  _RipplePainter(this.ripples, this.accentColor) : super(repaint: Listenable.merge(
-    ripples.map((r) => r.controller).toList(),
-  ));
+  _RipplePainter(this.ripples, this.accentColor)
+      : super(
+            repaint: Listenable.merge(
+          ripples.map((r) => r.controller).toList(),
+        ));
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -296,7 +310,8 @@ class _StatusStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<SoundProvider, ({bool isListening, int count, SmartZone? zone})>(
+    return Selector<SoundProvider,
+        ({bool isListening, int count, SmartZone? zone})>(
       selector: (_, p) => (
         isListening: p.isListening,
         count: p.history.length,
@@ -324,16 +339,21 @@ class _StatusStrip extends StatelessWidget {
               AnimatedBuilder(
                 animation: badgeController,
                 builder: (_, __) => Container(
-                  width: 5, height: 5,
+                  width: 5,
+                  height: 5,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: data.isListening
-                        ? AppTheme.secondary.withOpacity(0.4 + badgeController.value * 0.6)
+                        ? AppTheme.secondary
+                            .withOpacity(0.4 + badgeController.value * 0.6)
                         : AppTheme.textMuted,
                     boxShadow: data.isListening
-                        ? [BoxShadow(
-                            color: AppTheme.secondary.withOpacity(badgeController.value * 0.6),
-                            blurRadius: 7)]
+                        ? [
+                            BoxShadow(
+                                color: AppTheme.secondary
+                                    .withOpacity(badgeController.value * 0.6),
+                                blurRadius: 7)
+                          ]
                         : null,
                   ),
                 ),
@@ -342,9 +362,10 @@ class _StatusStrip extends StatelessWidget {
               Text(
                 data.isListening ? 'LIVE  ·  DETECTION' : 'STANDBY',
                 style: GoogleFonts.inter(
-                  fontSize: 8,
+                  fontSize: 8 * AppTheme.textScale,
                   fontWeight: FontWeight.w700,
-                  color: data.isListening ? AppTheme.primary : AppTheme.textMuted,
+                  color:
+                      data.isListening ? AppTheme.primary : AppTheme.textMuted,
                   letterSpacing: 1.6,
                 ),
               ),
@@ -353,7 +374,7 @@ class _StatusStrip extends StatelessWidget {
               Text(
                 '${data.zone!.emoji} ${data.zone!.label}',
                 style: GoogleFonts.inter(
-                  fontSize: 8,
+                  fontSize: 8 * AppTheme.textScale,
                   fontWeight: FontWeight.w600,
                   color: AppTheme.textMuted,
                   letterSpacing: 0.4,
@@ -363,7 +384,9 @@ class _StatusStrip extends StatelessWidget {
               Text(
                 data.count == 0 ? 'No events' : '${data.count} events',
                 style: GoogleFonts.inter(
-                    fontSize: 8, color: AppTheme.textMuted, letterSpacing: 0.4),
+                    fontSize: 8 * AppTheme.textScale,
+                    color: AppTheme.textMuted,
+                    letterSpacing: 0.4),
               ),
           ],
         ),
@@ -413,11 +436,12 @@ class _NavCellState extends State<_NavCell>
 
   void _onTapDown(_) => _pressCtrl.animateTo(0.88);
   void _onTapUp(_) {
-    _pressCtrl.animateTo(1.0, curve: Curves.elasticOut,
-        duration: const Duration(milliseconds: 400));
+    _pressCtrl.animateTo(1.0,
+        curve: Curves.elasticOut, duration: const Duration(milliseconds: 400));
     widget.onTap();
     HapticFeedback.lightImpact();
   }
+
   void _onTapCancel() => _pressCtrl.animateTo(1.0);
 
   @override
@@ -449,14 +473,17 @@ class _NavCellState extends State<_NavCell>
                   )
                 : null,
             border: widget.isSelected
-                ? Border.all(color: AppTheme.primary.withOpacity(0.38), width: 1)
+                ? Border.all(
+                    color: AppTheme.primary.withOpacity(0.38), width: 1)
                 : null,
             boxShadow: widget.isSelected
-                ? [BoxShadow(
-                    color: AppTheme.primary.withOpacity(0.20),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  )]
+                ? [
+                    BoxShadow(
+                      color: AppTheme.primary.withOpacity(0.20),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    )
+                  ]
                 : null,
           ),
           child: Column(
@@ -468,9 +495,13 @@ class _NavCellState extends State<_NavCell>
                   AnimatedSwitcher(
                     duration: AppTheme.liquidFast,
                     child: Icon(
-                      widget.isSelected ? widget.item.activeIcon : widget.item.icon,
+                      widget.isSelected
+                          ? widget.item.activeIcon
+                          : widget.item.icon,
                       key: ValueKey(widget.isSelected),
-                      color: widget.isSelected ? AppTheme.primary : AppTheme.textMuted,
+                      color: widget.isSelected
+                          ? AppTheme.primary
+                          : AppTheme.textMuted,
                       size: 22,
                     ),
                   ),
@@ -480,23 +511,28 @@ class _NavCellState extends State<_NavCell>
                       builder: (_, event, __) {
                         if (event == null) return const SizedBox.shrink();
                         return Positioned(
-                          right: -4, top: -4,
+                          right: -4,
+                          top: -4,
                           child: AnimatedBuilder(
                             animation: widget.badgeController,
                             builder: (_, __) => Container(
-                              width: 8, height: 8,
+                              width: 8,
+                              height: 8,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: event.isEmergency
                                     ? AppTheme.danger
                                     : AppTheme.secondary,
-                                boxShadow: [BoxShadow(
-                                  color: (event.isEmergency
-                                      ? AppTheme.danger
-                                      : AppTheme.secondary)
-                                      .withOpacity(0.5 + widget.badgeController.value * 0.4),
-                                  blurRadius: 8,
-                                )],
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: (event.isEmergency
+                                            ? AppTheme.danger
+                                            : AppTheme.secondary)
+                                        .withOpacity(0.5 +
+                                            widget.badgeController.value * 0.4),
+                                    blurRadius: 8,
+                                  )
+                                ],
                               ),
                             ),
                           ),
@@ -509,9 +545,11 @@ class _NavCellState extends State<_NavCell>
               AnimatedDefaultTextStyle(
                 duration: AppTheme.liquidFast,
                 style: GoogleFonts.inter(
-                  fontSize: 9.5,
-                  fontWeight: widget.isSelected ? FontWeight.w700 : FontWeight.w400,
-                  color: widget.isSelected ? AppTheme.primary : AppTheme.textMuted,
+                  fontSize: 9.5 * AppTheme.textScale,
+                  fontWeight:
+                      widget.isSelected ? FontWeight.w700 : FontWeight.w400,
+                  color:
+                      widget.isSelected ? AppTheme.primary : AppTheme.textMuted,
                   letterSpacing: widget.isSelected ? 0.5 : 0,
                 ),
                 child: Text(widget.item.label),

@@ -124,9 +124,8 @@ class ResponsiveContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: padding ?? Responsive.padding(context, all: 16),
-      constraints: maxWidth != null
-          ? BoxConstraints(maxWidth: maxWidth!)
-          : null,
+      constraints:
+          maxWidth != null ? BoxConstraints(maxWidth: maxWidth!) : null,
       child: child,
     );
   }

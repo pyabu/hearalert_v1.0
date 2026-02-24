@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/services/baby_cry_dataset_service.dart';
 
+import 'package:mobile_app/theme/app_theme.dart';
+
 /// Example of how to integrate the Baby Cry Dataset Service
 /// into your existing app for responsive real-time detection
 class BabyCryIntegrationExample extends StatefulWidget {
@@ -11,10 +13,8 @@ class BabyCryIntegrationExample extends StatefulWidget {
       _BabyCryIntegrationExampleState();
 }
 
-class _BabyCryIntegrationExampleState
-    extends State<BabyCryIntegrationExample> {
-  final BabyCryDatasetService _datasetService =
-      BabyCryDatasetService.instance;
+class _BabyCryIntegrationExampleState extends State<BabyCryIntegrationExample> {
+  final BabyCryDatasetService _datasetService = BabyCryDatasetService.instance;
   bool _isLoaded = false;
   String _status = 'Initializing...';
 
@@ -66,7 +66,7 @@ class _BabyCryIntegrationExampleState
           children: [
             Text(
               icon,
-              style: const TextStyle(fontSize: 32),
+              style: TextStyle(fontSize: 32 * AppTheme.textScale),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -86,9 +86,9 @@ class _BabyCryIntegrationExampleState
           children: [
             Text(
               message,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: 16,
+                fontSize: 16 * AppTheme.textScale,
               ),
             ),
             const SizedBox(height: 16),
@@ -96,7 +96,7 @@ class _BabyCryIntegrationExampleState
               'Priority: ${category.priority.toUpperCase()}',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.7),
-                fontSize: 12,
+                fontSize: 12 * AppTheme.textScale,
               ),
             ),
             const SizedBox(height: 8),
@@ -104,14 +104,14 @@ class _BabyCryIntegrationExampleState
               'Vibration: ${vibrationPattern.join(", ")}',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.7),
-                fontSize: 12,
+                fontSize: 12 * AppTheme.textScale,
               ),
             ),
             Text(
               'Flashlight: $flashlightPattern',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.7),
-                fontSize: 12,
+                fontSize: 12 * AppTheme.textScale,
               ),
             ),
           ],
@@ -141,7 +141,7 @@ class _BabyCryIntegrationExampleState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Baby Cry Detection'),
+        title: Text('Baby Cry Detection'),
         backgroundColor: Colors.black,
       ),
       backgroundColor: Colors.grey.shade900,
@@ -154,7 +154,7 @@ class _BabyCryIntegrationExampleState
                   const SizedBox(height: 24),
                   Text(
                     _status,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.white),
                   ),
                 ],
               ),
@@ -170,30 +170,30 @@ class _BabyCryIntegrationExampleState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           '✅ Dataset Ready',
                           style: TextStyle(
                             color: Colors.greenAccent,
-                            fontSize: 18,
+                            fontSize: 18 * AppTheme.textScale,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Version: ${_datasetService.manifest?.version}',
-                          style: const TextStyle(color: Colors.white70),
+                          style: TextStyle(color: Colors.white70),
                         ),
                         Text(
                           'Categories: ${_datasetService.manifest?.categories.length}',
-                          style: const TextStyle(color: Colors.white70),
+                          style: TextStyle(color: Colors.white70),
                         ),
                         Text(
                           'Model: ${_datasetService.manifest?.modelInfo.format}',
-                          style: const TextStyle(color: Colors.white70),
+                          style: TextStyle(color: Colors.white70),
                         ),
                         Text(
                           'Threshold: ${_datasetService.inferenceThreshold}',
-                          style: const TextStyle(color: Colors.white70),
+                          style: TextStyle(color: Colors.white70),
                         ),
                       ],
                     ),
@@ -202,11 +202,11 @@ class _BabyCryIntegrationExampleState
                 const SizedBox(height: 24),
 
                 // Categories
-                const Text(
+                Text(
                   'Test Detection Categories',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20,
+                    fontSize: 20 * AppTheme.textScale,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -230,7 +230,7 @@ class _BabyCryIntegrationExampleState
                         children: [
                           Text(
                             category.icon,
-                            style: const TextStyle(fontSize: 24),
+                            style: TextStyle(fontSize: 24 * AppTheme.textScale),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -239,8 +239,8 @@ class _BabyCryIntegrationExampleState
                               children: [
                                 Text(
                                   category.label,
-                                  style: const TextStyle(
-                                    fontSize: 16,
+                                  style: TextStyle(
+                                    fontSize: 16 * AppTheme.textScale,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
@@ -248,7 +248,7 @@ class _BabyCryIntegrationExampleState
                                 Text(
                                   category.priority.toUpperCase(),
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 12 * AppTheme.textScale,
                                     color: Colors.white.withOpacity(0.7),
                                   ),
                                 ),

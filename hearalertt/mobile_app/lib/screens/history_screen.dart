@@ -76,16 +76,20 @@ class _HistoryScreenState extends State<HistoryScreen>
                 Text(
                   'DETECTION LOG',
                   style: GoogleFonts.inter(
-                    fontSize: 9, fontWeight: FontWeight.w700,
-                    color: AppTheme.primary, letterSpacing: 2.5,
+                    fontSize: 9 * AppTheme.textScale,
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.primary,
+                    letterSpacing: 2.5,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'History',
                   style: GoogleFonts.spaceGrotesk(
-                    fontSize: 28, fontWeight: FontWeight.bold,
-                    color: AppTheme.textPrimary, letterSpacing: -0.5,
+                    fontSize: 28 * AppTheme.textScale,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textPrimary,
+                    letterSpacing: -0.5,
                   ),
                 ),
               ],
@@ -95,16 +99,19 @@ class _HistoryScreenState extends State<HistoryScreen>
             builder: (_, p, __) => GestureDetector(
               onTap: () => _confirmClear(context, p),
               child: LiquidGlassContainer(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 blurStrength: 16,
                 borderRadius: 12,
                 child: Row(
                   children: [
-                    const Icon(LucideIcons.trash2, color: AppTheme.danger, size: 14),
+                    const Icon(LucideIcons.trash2,
+                        color: AppTheme.danger, size: 14),
                     const SizedBox(width: 6),
                     Text('Clear',
                         style: GoogleFonts.inter(
-                            color: AppTheme.danger, fontSize: 12,
+                            color: AppTheme.danger,
+                            fontSize: 12 * AppTheme.textScale,
                             fontWeight: FontWeight.w600)),
                   ],
                 ),
@@ -122,13 +129,18 @@ class _HistoryScreenState extends State<HistoryScreen>
       stream: FirebaseDatabaseService().alertsStream,
       builder: (_, snapshot) {
         if (!snapshot.hasData) return const SizedBox(height: 100);
-        final hist = snapshot.data!.map((e) => SoundEvent(
-          id: e['id'] ?? '',
-          label: e['label'] ?? '',
-          confidence: (e['confidence'] as num?)?.toDouble() ?? 0.0,
-          timestamp: e['timestamp'] != null ? DateTime.fromMillisecondsSinceEpoch(e['timestamp'] as int) : DateTime.now(),
-          type: e['type'] ?? 'info',
-        )).toList();
+        final hist = snapshot.data!
+            .map((e) => SoundEvent(
+                  id: e['id'] ?? '',
+                  label: e['label'] ?? '',
+                  confidence: (e['confidence'] as num?)?.toDouble() ?? 0.0,
+                  timestamp: e['timestamp'] != null
+                      ? DateTime.fromMillisecondsSinceEpoch(
+                          e['timestamp'] as int)
+                      : DateTime.now(),
+                  type: e['type'] ?? 'info',
+                ))
+            .toList();
 
         final emergency = hist.where((e) => e.type == 'emergency').length;
         final warning = hist.where((e) => e.type == 'warning').length;
@@ -174,9 +186,10 @@ class _HistoryScreenState extends State<HistoryScreen>
           ),
           labelColor: Colors.white,
           unselectedLabelColor: AppTheme.textMuted,
-          labelStyle: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w700),
-          unselectedLabelStyle:
-              GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w400),
+          labelStyle: GoogleFonts.inter(
+              fontSize: 11 * AppTheme.textScale, fontWeight: FontWeight.w700),
+          unselectedLabelStyle: GoogleFonts.inter(
+              fontSize: 11 * AppTheme.textScale, fontWeight: FontWeight.w400),
           tabs: _filters.map((f) => Tab(text: f)).toList(),
           padding: const EdgeInsets.all(4),
           tabAlignment: TabAlignment.start,
@@ -190,14 +203,21 @@ class _HistoryScreenState extends State<HistoryScreen>
     return StreamBuilder<List<Map<String, dynamic>>>(
       stream: FirebaseDatabaseService().alertsStream,
       builder: (_, snapshot) {
-        if (!snapshot.hasData) return const Center(child: CircularProgressIndicator(color: AppTheme.primary));
-        final hist = snapshot.data!.map((e) => SoundEvent(
-          id: e['id'] ?? '',
-          label: e['label'] ?? '',
-          confidence: (e['confidence'] as num?)?.toDouble() ?? 0.0,
-          timestamp: e['timestamp'] != null ? DateTime.fromMillisecondsSinceEpoch(e['timestamp'] as int) : DateTime.now(),
-          type: e['type'] ?? 'info',
-        )).toList();
+        if (!snapshot.hasData)
+          return const Center(
+              child: CircularProgressIndicator(color: AppTheme.primary));
+        final hist = snapshot.data!
+            .map((e) => SoundEvent(
+                  id: e['id'] ?? '',
+                  label: e['label'] ?? '',
+                  confidence: (e['confidence'] as num?)?.toDouble() ?? 0.0,
+                  timestamp: e['timestamp'] != null
+                      ? DateTime.fromMillisecondsSinceEpoch(
+                          e['timestamp'] as int)
+                      : DateTime.now(),
+                  type: e['type'] ?? 'info',
+                ))
+            .toList();
 
         // Filter by selected tab
         final filtered = hist.where((e) {
@@ -234,23 +254,30 @@ class _HistoryScreenState extends State<HistoryScreen>
                   child: Row(
                     children: [
                       Container(
-                        width: 24, height: 1,
+                        width: 24,
+                        height: 1,
                         color: AppTheme.primary.withOpacity(0.3),
                       ),
                       const SizedBox(width: 8),
                       Text(key,
                           style: GoogleFonts.inter(
-                            fontSize: 10, color: AppTheme.primary,
-                            fontWeight: FontWeight.w600, letterSpacing: 1.5,
+                            fontSize: 10 * AppTheme.textScale,
+                            color: AppTheme.primary,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 1.5,
                           )),
                       const SizedBox(width: 8),
-                      Expanded(child: Container(height: 1,
-                          color: AppTheme.primary.withOpacity(0.3))),
+                      Expanded(
+                          child: Container(
+                              height: 1,
+                              color: AppTheme.primary.withOpacity(0.3))),
                     ],
                   ),
                 ),
-                ...events.asMap().entries.map((entry) =>
-                    _buildEventTile(entry.value, entry.key)),
+                ...events
+                    .asMap()
+                    .entries
+                    .map((entry) => _buildEventTile(entry.value, entry.key)),
               ],
             );
           },
@@ -269,7 +296,9 @@ class _HistoryScreenState extends State<HistoryScreen>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: RadialGradient(colors: [
-                AppTheme.primary.withOpacity(0.10), Colors.transparent]),
+                AppTheme.primary.withOpacity(0.10),
+                Colors.transparent
+              ]),
             ),
             child: const Icon(LucideIcons.waves,
                 color: AppTheme.primary, size: 48),
@@ -277,15 +306,19 @@ class _HistoryScreenState extends State<HistoryScreen>
           const SizedBox(height: 16),
           Text('No${_filter == 'All' ? '' : ' $_filter'} events yet',
               style: GoogleFonts.spaceGrotesk(
-                  color: AppTheme.textPrimary, fontSize: 18,
+                  color: AppTheme.textPrimary,
+                  fontSize: 18 * AppTheme.textScale,
                   fontWeight: FontWeight.w600)),
           const SizedBox(height: 6),
           Text('Detected sounds will appear here',
               style: GoogleFonts.inter(
-                  color: AppTheme.textMuted, fontSize: 13)),
+                  color: AppTheme.textMuted,
+                  fontSize: 13 * AppTheme.textScale)),
         ],
-      ).animate().fadeIn(duration: 300.ms).scale(
-          begin: const Offset(0.9, 0.9), end: const Offset(1, 1)),
+      )
+          .animate()
+          .fadeIn(duration: 300.ms)
+          .scale(begin: const Offset(0.9, 0.9), end: const Offset(1, 1)),
     );
   }
 
@@ -293,7 +326,11 @@ class _HistoryScreenState extends State<HistoryScreen>
     final cc = _catColor(ev.label);
     final isEmergency = ev.type == 'emergency';
     final isWarning = ev.type == 'warning';
-    final typeLabel = isEmergency ? 'EMERGENCY' : isWarning ? 'WARNING' : 'DETECTED';
+    final typeLabel = isEmergency
+        ? 'EMERGENCY'
+        : isWarning
+            ? 'WARNING'
+            : 'DETECTED';
     final h = ev.timestamp.hour.toString().padLeft(2, '0');
     final m = ev.timestamp.minute.toString().padLeft(2, '0');
     final s = ev.timestamp.second.toString().padLeft(2, '0');
@@ -308,11 +345,13 @@ class _HistoryScreenState extends State<HistoryScreen>
           children: [
             // Left color accent bar
             Container(
-              width: 3, height: 44,
+              width: 3,
+              height: 44,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [cc, cc.withOpacity(0.3)],
-                  begin: Alignment.topCenter, end: Alignment.bottomCenter,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
                 borderRadius: BorderRadius.circular(2),
               ),
@@ -339,12 +378,15 @@ class _HistoryScreenState extends State<HistoryScreen>
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.inter(
                           color: AppTheme.textPrimary,
-                          fontWeight: FontWeight.w600, fontSize: 13)),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13 * AppTheme.textScale)),
                   const SizedBox(height: 3),
                   Text(typeLabel,
                       style: GoogleFonts.inter(
-                          color: cc, fontSize: 9,
-                          fontWeight: FontWeight.w700, letterSpacing: 1.2)),
+                          color: cc,
+                          fontSize: 9 * AppTheme.textScale,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.2)),
                 ],
               ),
             ),
@@ -354,25 +396,29 @@ class _HistoryScreenState extends State<HistoryScreen>
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: cc.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text('${(ev.confidence * 100).toInt()}%',
                       style: GoogleFonts.inter(
-                          color: cc, fontSize: 11,
+                          color: cc,
+                          fontSize: 11 * AppTheme.textScale,
                           fontWeight: FontWeight.w700)),
                 ),
                 const SizedBox(height: 5),
                 Text('$h:$m:$s',
                     style: GoogleFonts.inter(
-                        color: AppTheme.textMuted, fontSize: 9.5)),
+                        color: AppTheme.textMuted,
+                        fontSize: 9.5 * AppTheme.textScale)),
               ],
             ),
           ],
         ),
-      ).animate()
+      )
+          .animate()
           .fadeIn(delay: Duration(milliseconds: 30 * i))
           .slideX(begin: 0.04, end: 0),
     );
@@ -400,10 +446,12 @@ class _HistoryScreenState extends State<HistoryScreen>
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text('Clear History',
             style: GoogleFonts.spaceGrotesk(
-                color: AppTheme.textPrimary, fontSize: 18)),
+                color: AppTheme.textPrimary,
+                fontSize: 18 * AppTheme.textScale)),
         content: Text(
           'All ${p.history.length} detection events will be removed.',
-          style: GoogleFonts.inter(color: AppTheme.textMuted, fontSize: 13),
+          style: GoogleFonts.inter(
+              color: AppTheme.textMuted, fontSize: 13 * AppTheme.textScale),
         ),
         actions: [
           TextButton(
@@ -474,12 +522,16 @@ class _StatBox extends StatelessWidget {
           children: [
             Text(value,
                 style: GoogleFonts.spaceGrotesk(
-                    color: color, fontSize: 20, fontWeight: FontWeight.bold)),
+                    color: color,
+                    fontSize: 20 * AppTheme.textScale,
+                    fontWeight: FontWeight.bold)),
             const SizedBox(height: 2),
             Text(label,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
-                    color: AppTheme.textMuted, fontSize: 9, letterSpacing: 0.3)),
+                    color: AppTheme.textMuted,
+                    fontSize: 9 * AppTheme.textScale,
+                    letterSpacing: 0.3)),
           ],
         ),
       ),

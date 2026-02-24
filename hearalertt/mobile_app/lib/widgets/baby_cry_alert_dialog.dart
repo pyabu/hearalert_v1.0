@@ -10,7 +10,7 @@ import 'package:mobile_app/theme/app_theme.dart';
 /// Full-screen baby cry alert dialog with liquid glass theme
 class BabyCryAlertDialog extends StatelessWidget {
   final BabyCryPrediction prediction;
-  
+
   const BabyCryAlertDialog({
     super.key,
     required this.prediction,
@@ -45,48 +45,50 @@ class BabyCryAlertDialog extends StatelessWidget {
                       ],
                     ),
                     shape: BoxShape.circle,
-                    boxShadow: AppTheme.glow(_getPriorityColor(), intensity: 1.5),
+                    boxShadow:
+                        AppTheme.glow(_getPriorityColor(), intensity: 1.5),
                   ),
                   child: Center(
                     child: Text(
                       prediction.icon,
-                      style: const TextStyle(fontSize: 48),
+                      style: TextStyle(fontSize: 48 * AppTheme.textScale),
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Category Label
                 Text(
                   prediction.label,
                   style: GoogleFonts.spaceGrotesk(
-                    fontSize: 32,
+                    fontSize: 32 * AppTheme.textScale,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.textPrimary,
                     shadows: AppTheme.glow(_getPriorityColor()),
                   ),
                   textAlign: TextAlign.center,
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Message
                 Text(
                   prediction.message,
                   style: GoogleFonts.inter(
-                    fontSize: 16,
+                    fontSize: 16 * AppTheme.textScale,
                     color: AppTheme.textSecondary,
                     height: 1.5,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                
+
                 const SizedBox(height: 8),
-                
+
                 // Confidence
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppTheme.glassLow,
                     borderRadius: BorderRadius.circular(20),
@@ -94,15 +96,15 @@ class BabyCryAlertDialog extends StatelessWidget {
                   child: Text(
                     '${(prediction.confidence * 100).toStringAsFixed(0)}% Match',
                     style: GoogleFonts.spaceGrotesk(
-                      fontSize: 12,
+                      fontSize: 12 * AppTheme.textScale,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.textMuted,
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 40),
-                
+
                 // Action Buttons
                 Row(
                   children: [
@@ -138,7 +140,8 @@ class BabyCryAlertDialog extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(LucideIcons.check, color: Colors.white, size: 18),
+                            const Icon(LucideIcons.check,
+                                color: Colors.white, size: 18),
                             const SizedBox(width: 8),
                             Text(
                               "ACKNOWLEDGE",

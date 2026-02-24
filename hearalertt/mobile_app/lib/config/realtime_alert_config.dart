@@ -31,7 +31,7 @@ class SoundAlertConfig {
     required this.colorHex,
     this.minConfidence = 0.5,
   });
-  
+
   /// Trigger vibration with this pattern
   Future<void> triggerVibration() async {
     try {
@@ -71,7 +71,7 @@ class RealtimeAlertDatabase {
     // ═══════════════════════════════════════════════════════════════════
     // CRITICAL PRIORITY (10) - Emergency Alerts
     // ═══════════════════════════════════════════════════════════════════
-    
+
     'baby_cry': SoundAlertConfig(
       soundId: 'baby_cry',
       displayName: 'Baby Crying',
@@ -84,7 +84,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFFFF6B9D,
       minConfidence: 0.4,
     ),
-    
+
     'car_horn': SoundAlertConfig(
       soundId: 'car_horn',
       displayName: 'Car Horn',
@@ -97,7 +97,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFFFFD700,
       minConfidence: 0.45,
     ),
-    
+
     'siren': SoundAlertConfig(
       soundId: 'siren',
       displayName: 'Emergency Siren',
@@ -110,7 +110,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFFFF4444,
       minConfidence: 0.4,
     ),
-    
+
     'fire_alarm': SoundAlertConfig(
       soundId: 'fire_alarm',
       displayName: 'Fire Alarm',
@@ -123,7 +123,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFFFF0000,
       minConfidence: 0.35,
     ),
-    
+
     'gunshot_firework': SoundAlertConfig(
       soundId: 'gunshot_firework',
       displayName: 'Gunshot/Fireworks',
@@ -140,7 +140,7 @@ class RealtimeAlertDatabase {
     // ═══════════════════════════════════════════════════════════════════
     // HIGH PRIORITY (8-9) - Safety & Important Alerts
     // ═══════════════════════════════════════════════════════════════════
-    
+
     'train': SoundAlertConfig(
       soundId: 'train',
       displayName: 'Train',
@@ -153,7 +153,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFF8B4513,
       minConfidence: 0.45,
     ),
-    
+
     'glass_breaking': SoundAlertConfig(
       soundId: 'glass_breaking',
       displayName: 'Glass Breaking',
@@ -166,7 +166,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFF00CED1,
       minConfidence: 0.4,
     ),
-    
+
     'traffic': SoundAlertConfig(
       soundId: 'traffic',
       displayName: 'Traffic',
@@ -179,7 +179,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFF808080,
       minConfidence: 0.5,
     ),
-    
+
     'door_knock': SoundAlertConfig(
       soundId: 'door_knock',
       displayName: 'Door Knock',
@@ -192,7 +192,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFF8B4513,
       minConfidence: 0.4,
     ),
-    
+
     'doorbell': SoundAlertConfig(
       soundId: 'doorbell',
       displayName: 'Doorbell',
@@ -205,7 +205,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFF32CD32,
       minConfidence: 0.45,
     ),
-    
+
     'speech': SoundAlertConfig(
       soundId: 'speech',
       displayName: 'Human Voice',
@@ -218,7 +218,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFF6B5B95,
       minConfidence: 0.5,
     ),
-    
+
     'door_creaking': SoundAlertConfig(
       soundId: 'door_creaking',
       displayName: 'Door Opening',
@@ -231,7 +231,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFFA0522D,
       minConfidence: 0.45,
     ),
-    
+
     'chainsaw': SoundAlertConfig(
       soundId: 'chainsaw',
       displayName: 'Power Tools',
@@ -248,7 +248,7 @@ class RealtimeAlertDatabase {
     // ═══════════════════════════════════════════════════════════════════
     // MEDIUM PRIORITY (6-7) - Informational Alerts
     // ═══════════════════════════════════════════════════════════════════
-    
+
     'phone_ring': SoundAlertConfig(
       soundId: 'phone_ring',
       displayName: 'Phone Ring',
@@ -261,7 +261,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFF1E90FF,
       minConfidence: 0.5,
     ),
-    
+
     'dog_bark': SoundAlertConfig(
       soundId: 'dog_bark',
       displayName: 'Dog Barking',
@@ -274,7 +274,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFFA0522D,
       minConfidence: 0.45,
     ),
-    
+
     'thunderstorm': SoundAlertConfig(
       soundId: 'thunderstorm',
       displayName: 'Thunderstorm',
@@ -287,7 +287,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFF4169E1,
       minConfidence: 0.5,
     ),
-    
+
     'coughing': SoundAlertConfig(
       soundId: 'coughing',
       displayName: 'Coughing',
@@ -300,7 +300,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFFFF7F50,
       minConfidence: 0.5,
     ),
-    
+
     'breathing': SoundAlertConfig(
       soundId: 'breathing',
       displayName: 'Heavy Breathing',
@@ -313,7 +313,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFF87CEEB,
       minConfidence: 0.5,
     ),
-    
+
     'helicopter': SoundAlertConfig(
       soundId: 'helicopter',
       displayName: 'Helicopter',
@@ -326,7 +326,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFF708090,
       minConfidence: 0.5,
     ),
-    
+
     'footsteps': SoundAlertConfig(
       soundId: 'footsteps',
       displayName: 'Footsteps',
@@ -339,7 +339,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFF8B4513,
       minConfidence: 0.5,
     ),
-    
+
     'washing_machine': SoundAlertConfig(
       soundId: 'washing_machine',
       displayName: 'Washing Machine',
@@ -356,7 +356,7 @@ class RealtimeAlertDatabase {
     // ═══════════════════════════════════════════════════════════════════
     // LOW PRIORITY (4-5) - Ambient Alerts
     // ═══════════════════════════════════════════════════════════════════
-    
+
     'cat_meow': SoundAlertConfig(
       soundId: 'cat_meow',
       displayName: 'Cat Meowing',
@@ -369,7 +369,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFFDDA0DD,
       minConfidence: 0.5,
     ),
-    
+
     'vacuum_cleaner': SoundAlertConfig(
       soundId: 'vacuum_cleaner',
       displayName: 'Vacuum Cleaner',
@@ -382,7 +382,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFF708090,
       minConfidence: 0.55,
     ),
-    
+
     'airplane': SoundAlertConfig(
       soundId: 'airplane',
       displayName: 'Airplane',
@@ -395,7 +395,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFF4169E1,
       minConfidence: 0.55,
     ),
-    
+
     'keyboard_typing': SoundAlertConfig(
       soundId: 'keyboard_typing',
       displayName: 'Keyboard Typing',
@@ -408,7 +408,7 @@ class RealtimeAlertDatabase {
       colorHex: 0xFF2F4F4F,
       minConfidence: 0.55,
     ),
-    
+
     'clock_tick': SoundAlertConfig(
       soundId: 'clock_tick',
       displayName: 'Clock Ticking',
@@ -431,19 +431,19 @@ class RealtimeAlertDatabase {
   /// Get alert by matching label keywords
   static SoundAlertConfig? getAlertByLabel(String label) {
     final lower = label.toLowerCase();
-    
+
     // Direct match first
     if (alerts.containsKey(lower)) {
       return alerts[lower];
     }
-    
+
     // Keyword matching
     for (final entry in alerts.entries) {
       // Check if label contains the sound ID
       if (lower.contains(entry.key.replaceAll('_', ' '))) {
         return entry.value;
       }
-      
+
       // Check specific keyword patterns
       final keywords = _getKeywords(entry.key);
       for (final keyword in keywords) {
@@ -452,10 +452,10 @@ class RealtimeAlertDatabase {
         }
       }
     }
-    
+
     return null;
   }
-  
+
   /// Get keywords for a sound ID
   static List<String> _getKeywords(String soundId) {
     switch (soundId) {
@@ -515,14 +515,14 @@ class RealtimeAlertDatabase {
         return [];
     }
   }
-  
+
   /// Get all critical alerts
   static List<SoundAlertConfig> getCriticalAlerts() {
     return alerts.values
         .where((a) => a.priority == AlertPriority.critical)
         .toList();
   }
-  
+
   /// Get all high priority alerts
   static List<SoundAlertConfig> getHighPriorityAlerts() {
     return alerts.values

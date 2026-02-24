@@ -24,7 +24,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +48,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       const SizedBox(height: 12),
                       LiquidGlassContainer(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 4),
                         child: const Column(
                           children: [
                             _ThemeSelector(),
@@ -57,7 +57,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             _AccentColorPicker(),
                           ],
                         ),
-                      ).animate().fadeIn(delay: 50.ms).slideY(begin: 0.06, end: 0),
+                      )
+                          .animate()
+                          .fadeIn(delay: 50.ms)
+                          .slideY(begin: 0.06, end: 0),
 
                       const SizedBox(height: 24),
 
@@ -77,7 +80,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             onScreenFlashChanged: s.setScreenFlash,
                           ),
                         ),
-                      ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.06, end: 0),
+                      )
+                          .animate()
+                          .fadeIn(delay: 100.ms)
+                          .slideY(begin: 0.06, end: 0),
 
                       const SizedBox(height: 24),
 
@@ -86,7 +92,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       const SizedBox(height: 12),
                       LiquidGlassContainer(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
                         child: Column(
                           children: [
                             _SensitivitySlider(),
@@ -94,7 +101,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             const _NotificationToggle(),
                           ],
                         ),
-                      ).animate().fadeIn(delay: 150.ms).slideY(begin: 0.06, end: 0),
+                      )
+                          .animate()
+                          .fadeIn(delay: 150.ms)
+                          .slideY(begin: 0.06, end: 0),
 
                       const SizedBox(height: 24),
 
@@ -105,7 +115,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(16),
                         child: const _SmartZoneSelector(),
-                      ).animate().fadeIn(delay: 175.ms).slideY(begin: 0.06, end: 0),
+                      )
+                          .animate()
+                          .fadeIn(delay: 175.ms)
+                          .slideY(begin: 0.06, end: 0),
 
                       const SizedBox(height: 24),
 
@@ -114,7 +127,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       const SizedBox(height: 12),
                       LiquidGlassContainer(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
                         child: const Column(
                           children: [
                             _VibrationSelector(),
@@ -122,7 +136,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             _FlashlightToggle(),
                           ],
                         ),
-                      ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.06, end: 0),
+                      )
+                          .animate()
+                          .fadeIn(delay: 200.ms)
+                          .slideY(begin: 0.06, end: 0),
 
                       const SizedBox(height: 24),
 
@@ -131,9 +148,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       const SizedBox(height: 12),
                       LiquidGlassContainer(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
                         child: const _VisualSliders(),
-                      ).animate().fadeIn(delay: 225.ms).slideY(begin: 0.06, end: 0),
+                      )
+                          .animate()
+                          .fadeIn(delay: 225.ms)
+                          .slideY(begin: 0.06, end: 0),
 
                       const SizedBox(height: 24),
 
@@ -142,7 +163,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       const SizedBox(height: 12),
                       LiquidGlassContainer(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
                         child: Column(
                           children: [
                             _ActionTile(
@@ -163,12 +185,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     style: GoogleFonts.inter(
                                       fontWeight: FontWeight.bold,
                                       color: AppTheme.primary,
-                                      fontSize: 12,
+                                      fontSize: 12 * AppTheme.textScale,
                                     ),
                                   ),
                                 ),
                               ),
-                              onTap: () => Navigator.push(context,
+                              onTap: () => Navigator.push(
+                                  context,
                                   MaterialPageRoute(
                                       builder: (_) => const ContactsScreen())),
                             ),
@@ -182,7 +205,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ],
                         ),
-                      ).animate().fadeIn(delay: 250.ms).slideY(begin: 0.06, end: 0),
+                      )
+                          .animate()
+                          .fadeIn(delay: 250.ms)
+                          .slideY(begin: 0.06, end: 0),
 
                       const SizedBox(height: 24),
 
@@ -191,18 +217,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       const SizedBox(height: 12),
                       LiquidGlassContainer(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
                         child: Column(
                           children: [
                             _ActionTile(
                               icon: LucideIcons.bookOpen,
                               iconColor: AppTheme.info,
                               title: 'ASL & Signal Guide',
-                              subtitle: 'Reference for alerts and American Sign Language',
+                              subtitle:
+                                  'Reference for alerts and American Sign Language',
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (_) => const ASLGuideScreen()),
+                                  MaterialPageRoute(
+                                      builder: (_) => const ASLGuideScreen()),
                                 );
                               },
                             ),
@@ -224,7 +253,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ],
                         ),
-                      ).animate().fadeIn(delay: 275.ms).slideY(begin: 0.06, end: 0),
+                      )
+                          .animate()
+                          .fadeIn(delay: 275.ms)
+                          .slideY(begin: 0.06, end: 0),
 
                       const SizedBox(height: 130),
                     ]),
@@ -249,16 +281,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Text(
                 'CONFIGURATION',
                 style: GoogleFonts.inter(
-                  fontSize: 10, fontWeight: FontWeight.w600,
-                  letterSpacing: 2.4, color: AppTheme.primary,
+                  fontSize: 10 * AppTheme.textScale,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 2.4,
+                  color: AppTheme.primary,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 'Settings',
                 style: GoogleFonts.spaceGrotesk(
-                  fontSize: 28, fontWeight: FontWeight.bold,
-                  color: AppTheme.textPrimary, letterSpacing: -0.5,
+                  fontSize: 28 * AppTheme.textScale,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
+                  letterSpacing: -0.5,
                 ),
               ),
             ],
@@ -270,19 +306,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
           decoration: BoxDecoration(
             color: AppTheme.glassHigh,
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.white.withOpacity(0.12), width: 1.5),
+            border:
+                Border.all(color: Colors.white.withOpacity(0.12), width: 1.5),
           ),
           child: Container(
-            width: 56, height: 56,
+            width: 56,
+            height: 56,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: const LinearGradient(
                 colors: [AppTheme.primary, AppTheme.secondary],
-                begin: Alignment.topLeft, end: Alignment.bottomRight,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
               boxShadow: AppTheme.glow(AppTheme.primary),
             ),
-            child: const Icon(LucideIcons.settings2, color: Colors.white, size: 28),
+            child: const Icon(LucideIcons.settings2,
+                color: Colors.white, size: 28),
           ),
         ),
       ],
@@ -294,11 +334,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Row(
       children: [
         Container(
-          width: 3, height: 16,
+          width: 3,
+          height: 16,
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               colors: [AppTheme.primary, AppTheme.secondary],
-              begin: Alignment.topCenter, end: Alignment.bottomCenter,
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
             borderRadius: BorderRadius.circular(2),
           ),
@@ -309,8 +351,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         Text(
           title.toUpperCase(),
           style: GoogleFonts.inter(
-            fontSize: 10, fontWeight: FontWeight.w700,
-            color: AppTheme.primary, letterSpacing: 2,
+            fontSize: 10 * AppTheme.textScale,
+            fontWeight: FontWeight.w700,
+            color: AppTheme.primary,
+            letterSpacing: 2,
           ),
         ),
       ],
@@ -341,7 +385,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               // Drag handle
               Center(
                 child: Container(
-                  width: 40, height: 4,
+                  width: 40,
+                  height: 4,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.20),
                     borderRadius: BorderRadius.circular(2),
@@ -351,24 +396,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const SizedBox(height: 20),
               Text('Test Sound Detections',
                   style: GoogleFonts.spaceGrotesk(
-                      fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                      fontSize: 18 * AppTheme.textScale,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
               const SizedBox(height: 4),
               Text(
                 'Simulate alerts — bypasses Smart Zone filter',
-                style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textMuted),
+                style: GoogleFonts.inter(
+                    fontSize: 12 * AppTheme.textScale,
+                    color: AppTheme.textMuted),
               ),
               const SizedBox(height: 20),
               Wrap(
-                spacing: 10, runSpacing: 10,
+                spacing: 10,
+                runSpacing: 10,
                 children: [
-                  _TestChip('Baby Cry',   LucideIcons.baby,        AppTheme.warning,    soundProvider),
-                  _TestChip('Fire Alarm', LucideIcons.flame,       AppTheme.danger,     soundProvider),
-                  _TestChip('Doorbell',   LucideIcons.bell,        AppTheme.info,       soundProvider),
-                  _TestChip('Glass Break',LucideIcons.shieldAlert, AppTheme.danger,     soundProvider),
-                  _TestChip('Dog Bark',   LucideIcons.dog,         AppTheme.accentYellow,soundProvider),
-                  _TestChip('Car Horn',   LucideIcons.car,         AppTheme.warning,    soundProvider),
-                  _TestChip('Siren',      LucideIcons.siren,       AppTheme.danger,     soundProvider),
-                  _TestChip('Knock',      LucideIcons.doorOpen,    AppTheme.primary,    soundProvider),
+                  _TestChip('Baby Cry', LucideIcons.baby, AppTheme.warning,
+                      soundProvider),
+                  _TestChip('Fire Alarm', LucideIcons.flame, AppTheme.danger,
+                      soundProvider),
+                  _TestChip('Doorbell', LucideIcons.bell, AppTheme.info,
+                      soundProvider),
+                  _TestChip('Glass Break', LucideIcons.shieldAlert,
+                      AppTheme.danger, soundProvider),
+                  _TestChip('Dog Bark', LucideIcons.dog, AppTheme.accentYellow,
+                      soundProvider),
+                  _TestChip('Car Horn', LucideIcons.car, AppTheme.warning,
+                      soundProvider),
+                  _TestChip('Siren', LucideIcons.siren, AppTheme.danger,
+                      soundProvider),
+                  _TestChip('Knock', LucideIcons.doorOpen, AppTheme.primary,
+                      soundProvider),
                 ],
               ),
               const SizedBox(height: 8),
@@ -389,14 +447,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
         backgroundColor: AppTheme.surfaceElevated,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text('Edit SOS Message',
-            style: GoogleFonts.spaceGrotesk(color: AppTheme.textPrimary, fontSize: 18)),
+            style: GoogleFonts.spaceGrotesk(
+                color: AppTheme.textPrimary,
+                fontSize: 18 * AppTheme.textScale)),
         content: TextField(
           controller: controller,
           maxLines: 5,
-          style: GoogleFonts.inter(color: AppTheme.textPrimary, fontSize: 14),
+          style: GoogleFonts.inter(
+              color: AppTheme.textPrimary, fontSize: 14 * AppTheme.textScale),
           decoration: InputDecoration(
             hintText: 'Enter your emergency message...',
-            hintStyle: GoogleFonts.inter(color: AppTheme.textMuted, fontSize: 13),
+            hintStyle: GoogleFonts.inter(
+                color: AppTheme.textMuted, fontSize: 13 * AppTheme.textScale),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -406,18 +468,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: AppTheme.primary, width: 1.5),
             ),
-            filled: true, fillColor: AppTheme.glassLow,
+            filled: true,
+            fillColor: AppTheme.glassLow,
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: GoogleFonts.inter(color: AppTheme.textMuted)),
+            child: Text('Cancel',
+                style: GoogleFonts.inter(color: AppTheme.textMuted)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ),
             onPressed: () {
               settings.setSosMessage(controller.text.trim());
@@ -428,11 +493,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       style: GoogleFonts.inter(color: Colors.white)),
                   backgroundColor: AppTheme.primary,
                   behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
                 ),
               );
             },
-            child: Text('Save', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
+            child: Text('Save',
+                style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -448,25 +515,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
-            const Icon(LucideIcons.alertTriangle, color: AppTheme.danger, size: 20),
+            const Icon(LucideIcons.alertTriangle,
+                color: AppTheme.danger, size: 20),
             const SizedBox(width: 8),
             Text('Reset Settings',
-                style: GoogleFonts.spaceGrotesk(color: AppTheme.textPrimary, fontSize: 18)),
+                style: GoogleFonts.spaceGrotesk(
+                    color: AppTheme.textPrimary,
+                    fontSize: 18 * AppTheme.textScale)),
           ],
         ),
         content: Text(
           'This will restore all settings to their default values. Your contacts and history will not be affected.',
-          style: GoogleFonts.inter(color: AppTheme.textSecondary, fontSize: 14),
+          style: GoogleFonts.inter(
+              color: AppTheme.textSecondary, fontSize: 14 * AppTheme.textScale),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Cancel', style: GoogleFonts.inter(color: AppTheme.textMuted)),
+            child: Text('Cancel',
+                style: GoogleFonts.inter(color: AppTheme.textMuted)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.danger,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ),
             onPressed: () {
               final s = context.read<SettingsProvider>();
@@ -487,11 +560,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       style: GoogleFonts.inter(color: Colors.white)),
                   backgroundColor: AppTheme.danger,
                   behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
                 ),
               );
             },
-            child: Text('Reset', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
+            child: Text('Reset',
+                style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -530,18 +605,22 @@ class _ThemeSelector extends StatelessWidget {
                     color: AppTheme.primary.withOpacity(0.10),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(LucideIcons.moon, color: AppTheme.primary, size: 18),
+                  child: const Icon(LucideIcons.moon,
+                      color: AppTheme.primary, size: 18),
                 ),
                 const SizedBox(width: 12),
                 Text('Theme Mode',
                     style: GoogleFonts.inter(
-                        color: AppTheme.textPrimary, fontSize: 14,
+                        color: AppTheme.textPrimary,
+                        fontSize: 14 * AppTheme.textScale,
                         fontWeight: FontWeight.w500)),
                 const Spacer(),
                 _StatusBadge(
                   text: s.themeMode == ThemeMode.system
                       ? 'Auto'
-                      : s.themeMode == ThemeMode.dark ? 'Dark' : 'Light',
+                      : s.themeMode == ThemeMode.dark
+                          ? 'Dark'
+                          : 'Light',
                 ),
               ],
             ),
@@ -619,17 +698,20 @@ class _AccentColorPicker extends StatelessWidget {
                     color: s.accentColor.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(LucideIcons.palette, color: s.accentColor, size: 16),
+                  child:
+                      Icon(LucideIcons.palette, color: s.accentColor, size: 16),
                 ),
                 const SizedBox(width: 12),
                 Text('Accent Color',
                     style: GoogleFonts.inter(
-                        color: AppTheme.textPrimary, fontSize: 14,
+                        color: AppTheme.textPrimary,
+                        fontSize: 14 * AppTheme.textScale,
                         fontWeight: FontWeight.w500)),
                 const Spacer(),
                 // Preview dot
                 Container(
-                  width: 20, height: 20,
+                  width: 20,
+                  height: 20,
                   decoration: BoxDecoration(
                     color: s.accentColor,
                     shape: BoxShape.circle,
@@ -650,7 +732,8 @@ class _AccentColorPicker extends StatelessWidget {
                   },
                   child: AnimatedContainer(
                     duration: AppTheme.liquidFast,
-                    width: 40, height: 40,
+                    width: 40,
+                    height: 40,
                     decoration: BoxDecoration(
                       color: c,
                       shape: BoxShape.circle,
@@ -659,11 +742,17 @@ class _AccentColorPicker extends StatelessWidget {
                         width: 2.5,
                       ),
                       boxShadow: selected
-                          ? [BoxShadow(color: c.withOpacity(0.5), blurRadius: 14, spreadRadius: 1)]
+                          ? [
+                              BoxShadow(
+                                  color: c.withOpacity(0.5),
+                                  blurRadius: 14,
+                                  spreadRadius: 1)
+                            ]
                           : null,
                     ),
                     child: selected
-                        ? const Icon(LucideIcons.check, color: Colors.white, size: 16)
+                        ? const Icon(LucideIcons.check,
+                            color: Colors.white, size: 16)
                         : null,
                   ),
                 );
@@ -696,18 +785,23 @@ class _SmartZoneSelector extends StatelessWidget {
                   color: AppTheme.primary.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(LucideIcons.mapPin, color: AppTheme.primary, size: 16),
+                child: const Icon(LucideIcons.mapPin,
+                    color: AppTheme.primary, size: 16),
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Active Zone',
-                        style: TextStyle(color: AppTheme.textPrimary,
-                            fontSize: 14, fontWeight: FontWeight.w500)),
+                        style: TextStyle(
+                            color: AppTheme.textPrimary,
+                            fontSize: 14 * AppTheme.textScale,
+                            fontWeight: FontWeight.w500)),
                     Text('Only sounds relevant to this zone will alert you',
-                        style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
+                        style: TextStyle(
+                            color: AppTheme.textMuted,
+                            fontSize: 11 * AppTheme.textScale)),
                   ],
                 ),
               ),
@@ -715,9 +809,21 @@ class _SmartZoneSelector extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           ...[
-            (zone: SmartZone.home,   color: AppTheme.primary,   desc: 'Baby, doorbell, fire & domestic sounds'),
-            (zone: SmartZone.street, color: AppTheme.info,      desc: 'Car horns, sirens & traffic sounds'),
-            (zone: SmartZone.office, color: AppTheme.secondary, desc: 'Phone rings, alarms & office sounds'),
+            (
+              zone: SmartZone.home,
+              color: AppTheme.primary,
+              desc: 'Baby, doorbell, fire & domestic sounds'
+            ),
+            (
+              zone: SmartZone.street,
+              color: AppTheme.info,
+              desc: 'Car horns, sirens & traffic sounds'
+            ),
+            (
+              zone: SmartZone.office,
+              color: AppTheme.secondary,
+              desc: 'Phone rings, alarms & office sounds'
+            ),
           ].map((cfg) {
             final isActive = s.smartZone == cfg.zone;
             return GestureDetector(
@@ -728,10 +834,13 @@ class _SmartZoneSelector extends StatelessWidget {
               child: AnimatedContainer(
                 duration: AppTheme.liquidFast,
                 margin: const EdgeInsets.only(bottom: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),
-                  color: isActive ? cfg.color.withOpacity(0.10) : Colors.transparent,
+                  color: isActive
+                      ? cfg.color.withOpacity(0.10)
+                      : Colors.transparent,
                   border: Border.all(
                     color: isActive
                         ? cfg.color.withOpacity(0.45)
@@ -749,7 +858,7 @@ class _SmartZoneSelector extends StatelessWidget {
                         color: cfg.color.withOpacity(isActive ? 0.20 : 0.08),
                       ),
                       child: Text(cfg.zone.emoji,
-                          style: const TextStyle(fontSize: 15)),
+                          style: TextStyle(fontSize: 15 * AppTheme.textScale)),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -758,28 +867,37 @@ class _SmartZoneSelector extends StatelessWidget {
                         children: [
                           Text(cfg.zone.label,
                               style: GoogleFonts.inter(
-                                  color: isActive ? cfg.color : AppTheme.textPrimary,
-                                  fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-                                  fontSize: 14)),
+                                  color: isActive
+                                      ? cfg.color
+                                      : AppTheme.textPrimary,
+                                  fontWeight: isActive
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                  fontSize: 14 * AppTheme.textScale)),
                           Text(cfg.desc,
                               style: GoogleFonts.inter(
-                                  color: AppTheme.textMuted, fontSize: 11)),
+                                  color: AppTheme.textMuted,
+                                  fontSize: 11 * AppTheme.textScale)),
                         ],
                       ),
                     ),
                     AnimatedContainer(
                       duration: AppTheme.liquidFast,
-                      width: 20, height: 20,
+                      width: 20,
+                      height: 20,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: isActive ? cfg.color : Colors.transparent,
                         border: Border.all(
-                          color: isActive ? cfg.color : AppTheme.textMuted.withOpacity(0.35),
+                          color: isActive
+                              ? cfg.color
+                              : AppTheme.textMuted.withOpacity(0.35),
                           width: 1.5,
                         ),
                       ),
                       child: isActive
-                          ? const Icon(Icons.check, color: Colors.white, size: 12)
+                          ? const Icon(Icons.check,
+                              color: Colors.white, size: 12)
                           : null,
                     ),
                   ],
@@ -810,7 +928,8 @@ class _VisualSliders extends StatelessWidget {
             label: 'Glass Intensity',
             subtitle: 'Opacity of glass card surfaces',
             value: s.glassIntensity,
-            min: 0.02, max: 0.5,
+            min: 0.02,
+            max: 0.5,
             displayValue: '${(s.glassIntensity / 0.5 * 100).toInt()}%',
             onChanged: s.setGlassIntensity,
           ),
@@ -821,7 +940,8 @@ class _VisualSliders extends StatelessWidget {
             label: 'Glow Brightness',
             subtitle: 'Intensity of neon glow effects',
             value: s.glowBrightness,
-            min: 0.5, max: 2.0,
+            min: 0.5,
+            max: 2.0,
             displayValue: '${((s.glowBrightness - 0.5) / 1.5 * 100).toInt()}%',
             onChanged: s.setGlowBrightness,
           ),
@@ -832,7 +952,8 @@ class _VisualSliders extends StatelessWidget {
             label: 'Animation Speed',
             subtitle: 'Speed of UI transitions & effects',
             value: s.animationSpeed,
-            min: 0.5, max: 2.0,
+            min: 0.5,
+            max: 2.0,
             displayValue: '${((s.animationSpeed - 0.5) / 1.5 * 100).toInt()}%',
             onChanged: s.setAnimationSpeed,
           ),
@@ -855,9 +976,15 @@ class _SliderTile extends StatelessWidget {
   final ValueChanged<double> onChanged;
 
   const _SliderTile({
-    required this.icon, required this.iconColor, required this.label,
-    required this.subtitle, required this.value, required this.min,
-    required this.max, required this.displayValue, required this.onChanged,
+    required this.icon,
+    required this.iconColor,
+    required this.label,
+    required this.subtitle,
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.displayValue,
+    required this.onChanged,
   });
 
   @override
@@ -884,10 +1011,12 @@ class _SliderTile extends StatelessWidget {
                     Text(label,
                         style: GoogleFonts.inter(
                             color: AppTheme.textPrimary,
-                            fontSize: 14, fontWeight: FontWeight.w500)),
+                            fontSize: 14 * AppTheme.textScale,
+                            fontWeight: FontWeight.w500)),
                     Text(subtitle,
                         style: GoogleFonts.inter(
-                            color: AppTheme.textMuted, fontSize: 11)),
+                            color: AppTheme.textMuted,
+                            fontSize: 11 * AppTheme.textScale)),
                   ],
                 ),
               ),
@@ -896,8 +1025,11 @@ class _SliderTile extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           _GradientTrackSlider(
-            value: value, min: min, max: max,
-            onChanged: onChanged, activeColor: iconColor,
+            value: value,
+            min: min,
+            max: max,
+            onChanged: onChanged,
+            activeColor: iconColor,
           ),
         ],
       ),
@@ -921,14 +1053,17 @@ class _NotificationToggle extends StatelessWidget {
             color: AppTheme.primary.withOpacity(0.10),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: const Icon(LucideIcons.bell, color: AppTheme.primary, size: 18),
+          child:
+              const Icon(LucideIcons.bell, color: AppTheme.primary, size: 18),
         ),
         title: Text('Push Notifications',
             style: GoogleFonts.inter(
-                color: AppTheme.textPrimary, fontSize: 14,
+                color: AppTheme.textPrimary,
+                fontSize: 14 * AppTheme.textScale,
                 fontWeight: FontWeight.w500)),
         subtitle: Text('Notify on sound detection events',
-            style: GoogleFonts.inter(color: AppTheme.textMuted, fontSize: 11)),
+            style: GoogleFonts.inter(
+                color: AppTheme.textMuted, fontSize: 11 * AppTheme.textScale)),
         value: s.notificationsEnabled,
         onChanged: s.toggleNotifications,
         activeColor: AppTheme.primary,
@@ -950,7 +1085,8 @@ class _SensitivitySlider extends StatelessWidget {
         label: 'Detection Sensitivity',
         subtitle: 'Higher = more sounds detected',
         value: s.sensitivity,
-        min: 0.0, max: 1.0,
+        min: 0.0,
+        max: 1.0,
         displayValue: '${(s.sensitivity * 100).toInt()}%',
         onChanged: s.setSensitivity,
       ),
@@ -989,11 +1125,13 @@ class _VibrationSelector extends StatelessWidget {
                     children: [
                       Text('Vibration Intensity',
                           style: GoogleFonts.inter(
-                              color: AppTheme.textPrimary, fontSize: 14,
+                              color: AppTheme.textPrimary,
+                              fontSize: 14 * AppTheme.textScale,
                               fontWeight: FontWeight.w500)),
                       Text('Tactile feedback strength on alert',
                           style: GoogleFonts.inter(
-                              color: AppTheme.textMuted, fontSize: 11)),
+                              color: AppTheme.textMuted,
+                              fontSize: 11 * AppTheme.textScale)),
                     ],
                   ),
                 ),
@@ -1059,25 +1197,33 @@ class _FlashlightToggle extends StatelessWidget {
           duration: AppTheme.liquidFast,
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: (s.flashlightEnabled ? AppTheme.accentYellow : AppTheme.textMuted)
+            color: (s.flashlightEnabled
+                    ? AppTheme.accentYellow
+                    : AppTheme.textMuted)
                 .withOpacity(0.12),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(
-            s.flashlightEnabled ? LucideIcons.flashlight : LucideIcons.flashlightOff,
-            color: s.flashlightEnabled ? AppTheme.accentYellow : AppTheme.textMuted,
+            s.flashlightEnabled
+                ? LucideIcons.flashlight
+                : LucideIcons.flashlightOff,
+            color: s.flashlightEnabled
+                ? AppTheme.accentYellow
+                : AppTheme.textMuted,
             size: 18,
           ),
         ),
         title: Text('Flashlight Alerts',
             style: GoogleFonts.inter(
-                color: AppTheme.textPrimary, fontSize: 14,
+                color: AppTheme.textPrimary,
+                fontSize: 14 * AppTheme.textScale,
                 fontWeight: FontWeight.w500)),
         subtitle: Text(
           s.flashlightEnabled
               ? 'Torch will flash on detection'
               : 'Torch disabled for alerts',
-          style: GoogleFonts.inter(color: AppTheme.textMuted, fontSize: 11),
+          style: GoogleFonts.inter(
+              color: AppTheme.textMuted, fontSize: 11 * AppTheme.textScale),
         ),
         value: s.flashlightEnabled,
         onChanged: (_) {
@@ -1130,7 +1276,9 @@ class _ActionTileState extends State<_ActionTile> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 100),
         decoration: BoxDecoration(
-          color: _pressed ? AppTheme.primary.withOpacity(0.06) : Colors.transparent,
+          color: _pressed
+              ? AppTheme.primary.withOpacity(0.06)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
         child: ListTile(
@@ -1147,13 +1295,19 @@ class _ActionTileState extends State<_ActionTile> {
           title: Text(widget.title,
               style: GoogleFonts.inter(
                   color: AppTheme.textPrimary,
-                  fontWeight: FontWeight.w600, fontSize: 14)),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14 * AppTheme.textScale)),
           subtitle: Text(widget.subtitle,
-              style: GoogleFonts.inter(color: AppTheme.textMuted, fontSize: 11)),
+              style: GoogleFonts.inter(
+                  color: AppTheme.textMuted,
+                  fontSize: 11 * AppTheme.textScale)),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (widget.badge != null) ...[widget.badge!, const SizedBox(width: 8)],
+              if (widget.badge != null) ...[
+                widget.badge!,
+                const SizedBox(width: 8)
+              ],
               Icon(LucideIcons.chevronRight,
                   color: _pressed ? AppTheme.primary : AppTheme.textMuted,
                   size: 16),
@@ -1174,8 +1328,11 @@ class _GradientTrackSlider extends StatelessWidget {
   final Color activeColor;
 
   const _GradientTrackSlider({
-    required this.value, required this.min, required this.max,
-    required this.onChanged, required this.activeColor,
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.onChanged,
+    required this.activeColor,
   });
 
   @override
@@ -1190,7 +1347,11 @@ class _GradientTrackSlider extends StatelessWidget {
         overlayColor: activeColor.withOpacity(0.18),
         overlayShape: const RoundSliderOverlayShape(overlayRadius: 18),
       ),
-      child: Slider(value: value.clamp(min, max), min: min, max: max, onChanged: onChanged),
+      child: Slider(
+          value: value.clamp(min, max),
+          min: min,
+          max: max,
+          onChanged: onChanged),
     );
   }
 }
@@ -1212,7 +1373,9 @@ class _ValueBadge extends StatelessWidget {
       ),
       child: Text(text,
           style: GoogleFonts.inter(
-              color: color, fontWeight: FontWeight.w700, fontSize: 12)),
+              color: color,
+              fontWeight: FontWeight.w700,
+              fontSize: 12 * AppTheme.textScale)),
     );
   }
 }
@@ -1235,7 +1398,8 @@ class _StatusBadge extends StatelessWidget {
       child: Text(text,
           style: GoogleFonts.inter(
               color: AppTheme.primary,
-              fontWeight: FontWeight.w600, fontSize: 10,
+              fontWeight: FontWeight.w600,
+              fontSize: 10 * AppTheme.textScale,
               letterSpacing: 0.5)),
     );
   }
@@ -1287,7 +1451,8 @@ class _TestChipState extends State<_TestChip> {
             Text(widget.label,
                 style: GoogleFonts.inter(
                     color: widget.color,
-                    fontWeight: FontWeight.w600, fontSize: 13)),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13 * AppTheme.textScale)),
           ],
         ),
       ),

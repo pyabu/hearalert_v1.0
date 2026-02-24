@@ -16,7 +16,8 @@ class ParticleOverlay extends StatefulWidget {
   State<ParticleOverlay> createState() => _ParticleOverlayState();
 }
 
-class _ParticleOverlayState extends State<ParticleOverlay> with SingleTickerProviderStateMixin {
+class _ParticleOverlayState extends State<ParticleOverlay>
+    with SingleTickerProviderStateMixin {
   late List<_Particle> _particles;
   late Ticker _ticker;
   final Random _random = Random();
@@ -24,7 +25,8 @@ class _ParticleOverlayState extends State<ParticleOverlay> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _particles = List.generate(widget.numberOfParticles, (index) => _createParticle());
+    _particles =
+        List.generate(widget.numberOfParticles, (index) => _createParticle());
     _ticker = createTicker(_onTick)..start();
   }
 
@@ -101,7 +103,7 @@ class _ParticlePainter extends CustomPainter {
 
     for (var particle in particles) {
       paint.color = color.withOpacity(particle.opacity);
-       // Responsive positioning
+      // Responsive positioning
       canvas.drawCircle(
         Offset(particle.x * size.width, particle.y * size.height),
         particle.radius,

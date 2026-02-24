@@ -6,7 +6,8 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   bool _isInitialized = false;
 
   Future<void> initialize() async {
@@ -23,7 +24,8 @@ class NotificationService {
         requestAlertPermission: false,
       );
 
-      const InitializationSettings initializationSettings = InitializationSettings(
+      const InitializationSettings initializationSettings =
+          InitializationSettings(
         android: initializationSettingsAndroid,
         iOS: initializationSettingsDarwin,
       );

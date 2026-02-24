@@ -24,10 +24,11 @@ class FirebaseDatabaseService {
   // If the database is outside us-central1 or the JSON is missing the URL,
   // we must provide it explicitly.
   final FirebaseDatabase _db = FirebaseDatabase.instanceFor(
-      app: Firebase.app(),
-      databaseURL: 'https://hear-alert-default-rtdb.asia-southeast1.firebasedatabase.app',
+    app: Firebase.app(),
+    databaseURL:
+        'https://hear-alert-default-rtdb.asia-southeast1.firebasedatabase.app',
   );
-  
+
   final AuthService _auth = AuthService();
 
   // ── Scoped references (require UID) ────────────────────────────────────────
@@ -38,8 +39,8 @@ class FirebaseDatabaseService {
     return uid!;
   }
 
-  DatabaseReference get _userRef     => _db.ref('users/$_uid');
-  DatabaseReference get _alertsRef   => _db.ref('users/$_uid/alerts');
+  DatabaseReference get _userRef => _db.ref('users/$_uid');
+  DatabaseReference get _alertsRef => _db.ref('users/$_uid/alerts');
   DatabaseReference get _contactsRef => _db.ref('users/$_uid/contacts');
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -54,8 +55,8 @@ class FirebaseDatabaseService {
     final data = <String, dynamic>{
       'lastSeen': ServerValue.timestamp,
     };
-    if (platform != null)    data['deviceInfo/platform']   = platform;
-    if (appVersion != null)  data['deviceInfo/appVersion'] = appVersion;
+    if (platform != null) data['deviceInfo/platform'] = platform;
+    if (appVersion != null) data['deviceInfo/appVersion'] = appVersion;
     await _userRef.update(data);
   }
 
@@ -71,20 +72,20 @@ class FirebaseDatabaseService {
     String? localId,
   }) async {
     await _alertsRef.push().set({
-      'label':      label,
+      'label': label,
       'confidence': confidence,
-      'type':       type,
-      'localId':    localId,
-      'timestamp':  ServerValue.timestamp,
+      'type': type,
+      'localId': localId,
+      'timestamp': ServerValue.timestamp,
     });
   }
 
   /// Convenience method: log a [SoundEvent] directly.
   Future<void> logSoundEvent(SoundEvent event) => logAlert(
-        label:      event.label,
+        label: event.label,
         confidence: event.confidence,
-        type:       event.type,
-        localId:    event.id,
+        type: event.type,
+        localId: event.id,
       );
 
   /// Real-time stream of this user's alerts, newest first.

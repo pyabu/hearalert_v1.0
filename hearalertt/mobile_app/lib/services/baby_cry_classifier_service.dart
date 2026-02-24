@@ -10,18 +10,21 @@ import 'package:mobile_app/services/audio_classifier_service.dart'; // To get ra
 import 'package:tflite_flutter/tflite_flutter.dart';
 
 /// Baby Cry Classifier Service
-/// 
+///
 /// Uses a custom TFLite model trained on the baby-cry dataset.
 /// Falls back to mock detection if model is missing or on Desktop.
 class BabyCryClassifierService {
-  static final BabyCryClassifierService _instance = BabyCryClassifierService._internal();
+  static final BabyCryClassifierService _instance =
+      BabyCryClassifierService._internal();
   factory BabyCryClassifierService() => _instance;
   BabyCryClassifierService._internal();
 
   final BabyCryDatasetService _datasetService = BabyCryDatasetService.instance;
-  
-  final StreamController<BabyCryPrediction> _predictionController = StreamController.broadcast();
-  Stream<BabyCryPrediction> get predictionStream => _predictionController.stream;
+
+  final StreamController<BabyCryPrediction> _predictionController =
+      StreamController.broadcast();
+  Stream<BabyCryPrediction> get predictionStream =>
+      _predictionController.stream;
 
   bool _isInitialized = false;
   bool _isListening = false;
@@ -49,7 +52,7 @@ class BabyCryClassifierService {
 
     try {
       log('Initializing BabyCryClassifierService...');
-      
+
       // Load dataset manifest for metadata
       if (!_datasetService.isLoaded) {
         await _datasetService.loadManifest();
@@ -62,17 +65,22 @@ class BabyCryClassifierService {
         // Try loading TFLite model with CPU optimization
         try {
           final options = InterpreterOptions()..threads = 4;
-          _interpreter = await Interpreter.fromAsset('assets/models/baby_cry_model.tflite', options: options);
+          _interpreter = await Interpreter.fromAsset(
+              'assets/models/baby_cry_model.tflite',
+              options: options);
           _interpreter!.allocateTensors();
           final inputShape = _interpreter!.getInputTensor(0).shape;
-          _inputLength = inputShape.isNotEmpty ? inputShape.reduce((a, b) => a * b) : 15600;
+          _inputLength = inputShape.isNotEmpty
+              ? inputShape.reduce((a, b) => a * b)
+              : 15600;
           log('✅ Baby Cry Model loaded. Input length: $_inputLength');
 
           // Load labels
-          final labelData = await rootBundle.loadString('assets/models/baby_cry_labels.txt');
-          _labels = labelData.split('\n').where((l) => l.trim().isNotEmpty).toList();
+          final labelData =
+              await rootBundle.loadString('assets/models/baby_cry_labels.txt');
+          _labels =
+              labelData.split('\n').where((l) => l.trim().isNotEmpty).toList();
           log('Labels loaded: ${_labels.length}');
-
         } catch (e) {
           log('⚠️ Baby Cry Model not found or invalid ($e). Falling back to MOCK.');
           _useMock = true;
@@ -124,7 +132,7 @@ class BabyCryClassifierService {
     final mainService = AudioClassifierService();
     // Ensure main service is running (it handles mic permission)
     if (!mainService.isRecording) {
-      mainService.start(); 
+      mainService.start();
     }
 
     _audioSubscription = mainService.rawAudioStream.listen((samples) {
@@ -151,7 +159,7 @@ class BabyCryClassifierService {
       // Overlap: keep last 50%
       final overlap = (_inputLength * 0.5).toInt();
       _audioBuffer = _audioBuffer.sublist(overlap);
-      
+
       _runInference(chunk);
     }
   }
@@ -160,19 +168,19 @@ class BabyCryClassifierService {
     try {
       // Input: [1, inputLength]
       var input = Float32List.fromList(inputChunk).reshape([1, _inputLength]);
-      
+
       // Output: [1, numClasses]
       int outputClasses = _labels.length;
-      if (outputClasses == 0) outputClasses = _interpreter!.getOutputTensor(0).shape.last;
-      
+      if (outputClasses == 0)
+        outputClasses = _interpreter!.getOutputTensor(0).shape.last;
+
       var output = List.filled(outputClasses, 0.0).reshape([1, outputClasses]);
-      
+
       _interpreter!.run(input, output);
-      
+
       // Process results
       final scores = output[0] as List<double>;
       _handleResults(scores);
-
     } catch (e) {
       log('Baby Cry Inference Error: $e');
     }
@@ -182,12 +190,12 @@ class BabyCryClassifierService {
     // Find top score
     int topIndex = -1;
     double topScore = 0.0;
-    
+
     for (int i = 0; i < scores.length; i++) {
-        if (scores[i] > topScore) {
-            topScore = scores[i];
-            topIndex = i;
-        }
+      if (scores[i] > topScore) {
+        topScore = scores[i];
+        topIndex = i;
+      }
     }
 
     if (topIndex == -1 || topIndex >= _labels.length) return;
@@ -205,7 +213,7 @@ class BabyCryClassifierService {
       );
 
       if (category == null) return;
-      
+
       _emitPrediction(category, topScore);
     }
   }
@@ -224,8 +232,9 @@ class BabyCryClassifierService {
   }
 
   void _simulateMockDetection() {
-    if (_lastDetection != null && 
-        DateTime.now().difference(_lastDetection!) < _minDetectionInterval) return;
+    if (_lastDetection != null &&
+        DateTime.now().difference(_lastDetection!) < _minDetectionInterval)
+      return;
 
     final categories = _datasetService.manifest?.categories ?? [];
     if (categories.isEmpty) return;
@@ -241,8 +250,9 @@ class BabyCryClassifierService {
 
   void _emitPrediction(BabyCryCategory category, double confidence) {
     // Throttle
-     if (_lastDetection != null && 
-        DateTime.now().difference(_lastDetection!) < _minDetectionInterval) return;
+    if (_lastDetection != null &&
+        DateTime.now().difference(_lastDetection!) < _minDetectionInterval)
+      return;
 
     _lastDetection = DateTime.now();
 
@@ -265,9 +275,9 @@ class BabyCryClassifierService {
 
   /// Manually trigger detection (for testing UI)
   void triggerMockDetection(int categoryId) {
-     if (!_isInitialized) return;
-     final category = _datasetService.manifest?.getCategoryById(categoryId);
-     if (category != null) _emitPrediction(category, 0.95);
+    if (!_isInitialized) return;
+    final category = _datasetService.manifest?.getCategoryById(categoryId);
+    if (category != null) _emitPrediction(category, 0.95);
   }
 
   void dispose() {
@@ -276,4 +286,3 @@ class BabyCryClassifierService {
     _interpreter?.close();
   }
 }
-

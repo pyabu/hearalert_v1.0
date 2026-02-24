@@ -47,19 +47,26 @@ class ContactsScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                      colors: [AppTheme.success, AppTheme.success.withOpacity(0.6)]),
+                  gradient: LinearGradient(colors: [
+                    AppTheme.success,
+                    AppTheme.success.withOpacity(0.6)
+                  ]),
                   boxShadow: AppTheme.glow(AppTheme.success),
                 ),
-                child: const Icon(LucideIcons.phone, color: Colors.white, size: 26),
+                child: const Icon(LucideIcons.phone,
+                    color: Colors.white, size: 26),
               ),
               const SizedBox(height: 16),
               Text(contact.name,
                   style: GoogleFonts.spaceGrotesk(
-                      color: AppTheme.textPrimary, fontSize: 18, fontWeight: FontWeight.bold)),
+                      color: AppTheme.textPrimary,
+                      fontSize: 18 * AppTheme.textScale,
+                      fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
               Text(contact.phone,
-                  style: GoogleFonts.inter(color: AppTheme.textMuted, fontSize: 14)),
+                  style: GoogleFonts.inter(
+                      color: AppTheme.textMuted,
+                      fontSize: 14 * AppTheme.textScale)),
               const SizedBox(height: 20),
               Row(children: [
                 Expanded(
@@ -68,10 +75,12 @@ class ContactsScreen extends StatelessWidget {
                       Clipboard.setData(ClipboardData(text: contact.phone));
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('Number copied', style: GoogleFonts.inter()),
+                        content:
+                            Text('Number copied', style: GoogleFonts.inter()),
                         backgroundColor: AppTheme.primary,
                         behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
                       ));
                     },
                     child: Container(
@@ -79,13 +88,18 @@ class ContactsScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: AppTheme.primary.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppTheme.primary.withOpacity(0.25)),
+                        border: Border.all(
+                            color: AppTheme.primary.withOpacity(0.25)),
                       ),
                       child: Column(children: [
-                        const Icon(LucideIcons.copy, color: AppTheme.primary, size: 20),
+                        const Icon(LucideIcons.copy,
+                            color: AppTheme.primary, size: 20),
                         const SizedBox(height: 4),
-                        Text('Copy', style: GoogleFonts.inter(
-                            color: AppTheme.primary, fontWeight: FontWeight.w600, fontSize: 12)),
+                        Text('Copy',
+                            style: GoogleFonts.inter(
+                                color: AppTheme.primary,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12 * AppTheme.textScale)),
                       ]),
                     ),
                   ),
@@ -94,7 +108,8 @@ class ContactsScreen extends StatelessWidget {
                 Expanded(
                   child: GestureDetector(
                     onTap: () async {
-                      final phone = contact.phone.replaceAll(RegExp(r'[\s\-()]'), '');
+                      final phone =
+                          contact.phone.replaceAll(RegExp(r'[\s\-()]'), '');
                       await launchUrl(Uri(scheme: 'tel', path: phone),
                           mode: LaunchMode.externalApplication);
                       Navigator.pop(context);
@@ -102,16 +117,23 @@ class ContactsScreen extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [AppTheme.success, AppTheme.success.withOpacity(0.7)]),
+                        gradient: LinearGradient(colors: [
+                          AppTheme.success,
+                          AppTheme.success.withOpacity(0.7)
+                        ]),
                         borderRadius: BorderRadius.circular(16),
-                        boxShadow: AppTheme.glow(AppTheme.success, intensity: 0.4),
+                        boxShadow:
+                            AppTheme.glow(AppTheme.success, intensity: 0.4),
                       ),
                       child: Column(children: [
-                        const Icon(LucideIcons.phone, color: Colors.white, size: 20),
+                        const Icon(LucideIcons.phone,
+                            color: Colors.white, size: 20),
                         const SizedBox(height: 4),
-                        Text('Call', style: GoogleFonts.inter(
-                            color: Colors.white, fontWeight: FontWeight.w700, fontSize: 12)),
+                        Text('Call',
+                            style: GoogleFonts.inter(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 12 * AppTheme.textScale)),
                       ]),
                     ),
                   ),
@@ -124,6 +146,7 @@ class ContactsScreen extends StatelessWidget {
       ),
     );
   }
+
   // ── Add Contact Dialog ─────────────────────────────────────────────────────
   void _showAddContactDialog(BuildContext context) {
     final nameCtrl = TextEditingController();
@@ -135,7 +158,8 @@ class ContactsScreen extends StatelessWidget {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
           backgroundColor: AppTheme.surface,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: Text(
             'Add Emergency Contact',
             style: GoogleFonts.spaceGrotesk(
@@ -154,14 +178,16 @@ class ContactsScreen extends StatelessWidget {
                   decoration: InputDecoration(
                     labelText: 'Name',
                     labelStyle: GoogleFonts.inter(color: AppTheme.textMuted),
-                    prefixIcon: const Icon(LucideIcons.user, size: 18, color: AppTheme.primary),
+                    prefixIcon: const Icon(LucideIcons.user,
+                        size: 18, color: AppTheme.primary),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: AppTheme.glassHigh),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppTheme.primary, width: 2),
+                      borderSide:
+                          const BorderSide(color: AppTheme.primary, width: 2),
                     ),
                   ),
                 ),
@@ -174,14 +200,16 @@ class ContactsScreen extends StatelessWidget {
                   decoration: InputDecoration(
                     labelText: 'Phone Number',
                     labelStyle: GoogleFonts.inter(color: AppTheme.textMuted),
-                    prefixIcon: const Icon(LucideIcons.phone, size: 18, color: AppTheme.success),
+                    prefixIcon: const Icon(LucideIcons.phone,
+                        size: 18, color: AppTheme.success),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: AppTheme.glassHigh),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppTheme.primary, width: 2),
+                      borderSide:
+                          const BorderSide(color: AppTheme.primary, width: 2),
                     ),
                   ),
                 ),
@@ -194,20 +222,29 @@ class ContactsScreen extends StatelessWidget {
                   decoration: InputDecoration(
                     labelText: 'Relation',
                     labelStyle: GoogleFonts.inter(color: AppTheme.textMuted),
-                    prefixIcon: const Icon(LucideIcons.heart, size: 18, color: AppTheme.danger),
+                    prefixIcon: const Icon(LucideIcons.heart,
+                        size: 18, color: AppTheme.danger),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: AppTheme.glassHigh),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppTheme.primary, width: 2),
+                      borderSide:
+                          const BorderSide(color: AppTheme.primary, width: 2),
                     ),
                   ),
-                  items: ['Family', 'Friend', 'Neighbor', 'Caregiver', 'Service']
+                  items: [
+                    'Family',
+                    'Friend',
+                    'Neighbor',
+                    'Caregiver',
+                    'Service'
+                  ]
                       .map((r) => DropdownMenuItem(value: r, child: Text(r)))
                       .toList(),
-                  onChanged: (v) => setDialogState(() => relation = v ?? 'Family'),
+                  onChanged: (v) =>
+                      setDialogState(() => relation = v ?? 'Family'),
                 ),
               ],
             ),
@@ -215,7 +252,8 @@ class ContactsScreen extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: Text('Cancel', style: GoogleFonts.inter(color: AppTheme.textMuted)),
+              child: Text('Cancel',
+                  style: GoogleFonts.inter(color: AppTheme.textMuted)),
             ),
             FilledButton.icon(
               onPressed: () {
@@ -244,10 +282,12 @@ class ContactsScreen extends StatelessWidget {
                 );
               },
               icon: const Icon(LucideIcons.userPlus, size: 16),
-              label: Text('Add', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+              label: Text('Add',
+                  style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
               style: FilledButton.styleFrom(
                 backgroundColor: AppTheme.primary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
             ),
           ],
@@ -277,7 +317,8 @@ class ContactsScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Cancel', style: GoogleFonts.inter(color: AppTheme.textMuted)),
+            child: Text('Cancel',
+                style: GoogleFonts.inter(color: AppTheme.textMuted)),
           ),
           FilledButton.icon(
             onPressed: () {
@@ -292,10 +333,12 @@ class ContactsScreen extends StatelessWidget {
               );
             },
             icon: const Icon(LucideIcons.trash2, size: 16),
-            label: Text('Remove', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+            label: Text('Remove',
+                style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
             style: FilledButton.styleFrom(
               backgroundColor: AppTheme.danger,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
             ),
           ),
         ],
@@ -314,7 +357,8 @@ class ContactsScreen extends StatelessWidget {
             padding: EdgeInsets.zero,
             borderRadius: 12,
             onTap: () => Navigator.pop(context),
-            child: const Icon(LucideIcons.arrowLeft, color: AppTheme.textPrimary, size: 20),
+            child: Icon(LucideIcons.arrowLeft,
+                color: AppTheme.textPrimary, size: 20),
           ),
         ),
         backgroundColor: Colors.transparent,
@@ -324,7 +368,7 @@ class ContactsScreen extends StatelessWidget {
           style: GoogleFonts.spaceGrotesk(
             color: AppTheme.textPrimary,
             fontWeight: FontWeight.bold,
-            fontSize: 18,
+            fontSize: 18 * AppTheme.textScale,
           ),
         ),
       ),
@@ -352,15 +396,17 @@ class ContactsScreen extends StatelessWidget {
                               decoration: BoxDecoration(
                                 gradient: AppTheme.primaryGradient,
                                 shape: BoxShape.circle,
-                                boxShadow: AppTheme.glow(AppTheme.primary, intensity: 0.6),
+                                boxShadow: AppTheme.glow(AppTheme.primary,
+                                    intensity: 0.6),
                               ),
-                              child: const Icon(LucideIcons.userPlus, color: Colors.white, size: 28),
+                              child: const Icon(LucideIcons.userPlus,
+                                  color: Colors.white, size: 28),
                             ),
                             const SizedBox(height: 20),
                             Text(
                               "Trusted Contacts",
                               style: GoogleFonts.spaceGrotesk(
-                                fontSize: 20,
+                                fontSize: 20 * AppTheme.textScale,
                                 fontWeight: FontWeight.bold,
                                 color: AppTheme.textPrimary,
                               ),
@@ -372,30 +418,33 @@ class ContactsScreen extends StatelessWidget {
                               style: GoogleFonts.inter(
                                 color: AppTheme.textSecondary,
                                 height: 1.5,
-                                fontSize: 14,
+                                fontSize: 14 * AppTheme.textScale,
                               ),
                             ),
                             const SizedBox(height: 24),
                             GestureDetector(
                               onTap: () => _showAddContactDialog(context),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 28, vertical: 14),
                                 decoration: BoxDecoration(
                                   gradient: AppTheme.primaryGradient,
                                   borderRadius: BorderRadius.circular(24),
-                                  boxShadow: AppTheme.glow(AppTheme.primary, intensity: 0.4),
+                                  boxShadow: AppTheme.glow(AppTheme.primary,
+                                      intensity: 0.4),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(LucideIcons.plus, color: Colors.white, size: 18),
+                                    const Icon(LucideIcons.plus,
+                                        color: Colors.white, size: 18),
                                     const SizedBox(width: 8),
                                     Text(
                                       "Add Contact",
                                       style: GoogleFonts.inter(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 14,
+                                        fontSize: 14 * AppTheme.textScale,
                                       ),
                                     ),
                                   ],
@@ -404,7 +453,10 @@ class ContactsScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                      ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.05, end: 0),
+                      )
+                          .animate()
+                          .fadeIn(duration: 400.ms)
+                          .slideY(begin: 0.05, end: 0),
 
                       const SizedBox(height: 28),
 
@@ -418,7 +470,7 @@ class ContactsScreen extends StatelessWidget {
                                 ? "NO CONTACTS YET"
                                 : "YOUR CONTACTS (${contacts.length})",
                             style: GoogleFonts.inter(
-                              fontSize: 11,
+                              fontSize: 11 * AppTheme.textScale,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 1.5,
                               color: AppTheme.textMuted,
@@ -431,17 +483,19 @@ class ContactsScreen extends StatelessWidget {
                       if (contacts.isEmpty)
                         LiquidGlassContainer(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 48, horizontal: 24),
                           child: Column(
                             children: [
                               Icon(LucideIcons.userPlus,
-                                  size: 48, color: AppTheme.textMuted.withOpacity(0.4)),
+                                  size: 48,
+                                  color: AppTheme.textMuted.withOpacity(0.4)),
                               const SizedBox(height: 16),
                               Text(
                                 "No emergency contacts added yet",
                                 style: GoogleFonts.inter(
                                   color: AppTheme.textMuted,
-                                  fontSize: 15,
+                                  fontSize: 15 * AppTheme.textScale,
                                 ),
                               ),
                               const SizedBox(height: 6),
@@ -449,7 +503,7 @@ class ContactsScreen extends StatelessWidget {
                                 "Tap 'Add Contact' above to get started",
                                 style: GoogleFonts.inter(
                                   color: AppTheme.textMuted.withOpacity(0.6),
-                                  fontSize: 12,
+                                  fontSize: 12 * AppTheme.textScale,
                                 ),
                               ),
                             ],
@@ -503,7 +557,7 @@ class ContactsScreen extends StatelessWidget {
               style: GoogleFonts.spaceGrotesk(
                 fontWeight: FontWeight.bold,
                 color: AppTheme.textPrimary,
-                fontSize: 16,
+                fontSize: 16 * AppTheme.textScale,
               ),
             ),
           ),
@@ -519,7 +573,7 @@ class ContactsScreen extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textPrimary,
-                    fontSize: 15,
+                    fontSize: 15 * AppTheme.textScale,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -528,7 +582,7 @@ class ContactsScreen extends StatelessWidget {
                     Text(
                       contact.phone,
                       style: GoogleFonts.inter(
-                        fontSize: 12,
+                        fontSize: 12 * AppTheme.textScale,
                         color: AppTheme.textMuted,
                       ),
                     ),
@@ -542,7 +596,8 @@ class ContactsScreen extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
                         color: AppTheme.secondary.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(6),
@@ -550,7 +605,7 @@ class ContactsScreen extends StatelessWidget {
                       child: Text(
                         contact.relation,
                         style: GoogleFonts.inter(
-                          fontSize: 10,
+                          fontSize: 10 * AppTheme.textScale,
                           fontWeight: FontWeight.w600,
                           color: AppTheme.secondary,
                         ),

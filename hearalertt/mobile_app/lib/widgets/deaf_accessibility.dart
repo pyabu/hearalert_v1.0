@@ -11,7 +11,7 @@ import 'package:mobile_app/services/alert_service.dart';
 /// "I'm Deaf" Communication Card - Shows a clear message to others
 class DeafCommunicationCard extends StatelessWidget {
   final VoidCallback? onClose;
-  
+
   const DeafCommunicationCard({super.key, this.onClose});
 
   @override
@@ -43,11 +43,12 @@ class DeafCommunicationCard extends StatelessWidget {
                     color: Colors.white.withOpacity(0.2),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(LucideIcons.x, color: Colors.white, size: 20),
+                  child:
+                      const Icon(LucideIcons.x, color: Colors.white, size: 20),
                 ),
               ),
             ),
-          
+
           // Deaf Symbol
           Container(
             padding: const EdgeInsets.all(24),
@@ -68,33 +69,33 @@ class DeafCommunicationCard extends StatelessWidget {
               size: 48,
             ),
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Main Text - Large and Clear
           Text(
             "I'm Deaf",
             style: GoogleFonts.spaceGrotesk(
-              fontSize: 48,
+              fontSize: 48 * AppTheme.textScale,
               fontWeight: FontWeight.w700,
               color: Colors.white,
               height: 1,
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           Text(
             "Please communicate by:",
             style: GoogleFonts.inter(
-              fontSize: 18,
+              fontSize: 18 * AppTheme.textScale,
               color: Colors.white.withOpacity(0.9),
               fontWeight: FontWeight.w500,
             ),
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Communication Methods
           const Wrap(
             spacing: 12,
@@ -106,9 +107,9 @@ class DeafCommunicationCard extends StatelessWidget {
               _CommunicationChip(icon: LucideIcons.hand, label: "Gestures"),
             ],
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           // Thank You
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -119,15 +120,15 @@ class DeafCommunicationCard extends StatelessWidget {
             child: Text(
               "Thank you for your patience 💙",
               style: GoogleFonts.inter(
-                fontSize: 16,
+                fontSize: 16 * AppTheme.textScale,
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
               ),
             ),
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           // SOS Button
           Consumer<SettingsProvider>(
             builder: (context, settings, _) => EmergencySOSButton(
@@ -139,7 +140,10 @@ class DeafCommunicationCard extends StatelessWidget {
           ),
         ],
       ),
-    ).animate().fadeIn().scale(begin: const Offset(0.9, 0.9), end: const Offset(1, 1));
+    )
+        .animate()
+        .fadeIn()
+        .scale(begin: const Offset(0.9, 0.9), end: const Offset(1, 1));
   }
 }
 
@@ -167,7 +171,7 @@ class _CommunicationChip extends StatelessWidget {
             style: GoogleFonts.inter(
               color: const Color(0xFF1E40AF),
               fontWeight: FontWeight.w600,
-              fontSize: 14,
+              fontSize: 14 * AppTheme.textScale,
             ),
           ),
         ],
@@ -179,7 +183,7 @@ class _CommunicationChip extends StatelessWidget {
 /// Emergency SOS Button with countdown
 class EmergencySOSButton extends StatefulWidget {
   final VoidCallback onActivate;
-  
+
   const EmergencySOSButton({super.key, required this.onActivate});
 
   @override
@@ -189,7 +193,7 @@ class EmergencySOSButton extends StatefulWidget {
 class _EmergencySOSButtonState extends State<EmergencySOSButton> {
   bool _isPressed = false;
   int _countdown = 3;
-  
+
   void _startCountdown() {
     setState(() {
       _isPressed = true;
@@ -197,7 +201,7 @@ class _EmergencySOSButtonState extends State<EmergencySOSButton> {
     });
     _countDown();
   }
-  
+
   void _countDown() async {
     while (_isPressed && _countdown > 0) {
       await Future.delayed(const Duration(seconds: 1));
@@ -210,7 +214,7 @@ class _EmergencySOSButtonState extends State<EmergencySOSButton> {
       setState(() => _isPressed = false);
     }
   }
-  
+
   void _cancelCountdown() {
     setState(() => _isPressed = false);
   }
@@ -227,7 +231,7 @@ class _EmergencySOSButtonState extends State<EmergencySOSButton> {
         padding: EdgeInsets.symmetric(vertical: _isPressed ? 24 : 20),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: _isPressed 
+            colors: _isPressed
                 ? [const Color(0xFFDC2626), const Color(0xFFB91C1C)]
                 : [AppTheme.error, AppTheme.error.withOpacity(0.8)],
             begin: Alignment.topLeft,
@@ -257,7 +261,7 @@ class _EmergencySOSButtonState extends State<EmergencySOSButton> {
                   _isPressed ? "Release to cancel" : "HOLD FOR SOS",
                   style: GoogleFonts.spaceGrotesk(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 18 * AppTheme.textScale,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1,
                   ),
@@ -270,7 +274,7 @@ class _EmergencySOSButtonState extends State<EmergencySOSButton> {
                 "Sending in $_countdown...",
                 style: GoogleFonts.inter(
                   color: Colors.white.withOpacity(0.9),
-                  fontSize: 14,
+                  fontSize: 14 * AppTheme.textScale,
                 ),
               ),
             ],
@@ -301,7 +305,7 @@ class VisualSoundIndicator extends StatelessWidget {
     Color indicatorColor = AppTheme.primary;
     if (soundType == 'emergency') indicatorColor = AppTheme.error;
     if (soundType == 'warning') indicatorColor = AppTheme.warning;
-    
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -327,7 +331,8 @@ class VisualSoundIndicator extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: List.generate(7, (index) {
-              final barHeight = 20.0 + (amplitude * 60 * (1 - (index - 3).abs() / 4));
+              final barHeight =
+                  20.0 + (amplitude * 60 * (1 - (index - 3).abs() / 4));
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 3),
                 width: 8,
@@ -336,21 +341,24 @@ class VisualSoundIndicator extends StatelessWidget {
                   color: indicatorColor,
                   borderRadius: BorderRadius.circular(4),
                 ),
-              ).animate(
-                target: isListening ? 1 : 0,
-              ).scale(
-                begin: const Offset(1, 0.3),
-                end: const Offset(1, 1),
-                duration: 200.ms,
-              );
+              )
+                  .animate(
+                    target: isListening ? 1 : 0,
+                  )
+                  .scale(
+                    begin: const Offset(1, 0.3),
+                    end: const Offset(1, 1),
+                    duration: 200.ms,
+                  );
             }),
           ),
-          
+
           const SizedBox(height: 20),
-          
+
           // Status Text
           Text(
-            detectedSound?.toUpperCase() ?? (isListening ? "LISTENING..." : "PAUSED"),
+            detectedSound?.toUpperCase() ??
+                (isListening ? "LISTENING..." : "PAUSED"),
             style: GoogleFonts.spaceGrotesk(
               fontSize: detectedSound != null ? 24 : 16,
               fontWeight: FontWeight.w700,
@@ -358,7 +366,7 @@ class VisualSoundIndicator extends StatelessWidget {
               letterSpacing: 2,
             ),
           ),
-          
+
           if (detectedSound != null) ...[
             const SizedBox(height: 8),
             Container(
@@ -368,9 +376,11 @@ class VisualSoundIndicator extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                soundType == 'emergency' ? "⚠️ URGENT - TAKE ACTION" : "DETECTED",
+                soundType == 'emergency'
+                    ? "⚠️ URGENT - TAKE ACTION"
+                    : "DETECTED",
                 style: GoogleFonts.inter(
-                  fontSize: 12,
+                  fontSize: 12 * AppTheme.textScale,
                   fontWeight: FontWeight.w600,
                   color: indicatorColor,
                 ),
@@ -397,8 +407,8 @@ class PriorityModeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final modes = [
-      const _PriorityMode('home', LucideIcons.home, 'Home',
-          'Baby cries, Door knocks, Alarms'),
+      const _PriorityMode(
+          'home', LucideIcons.home, 'Home', 'Baby cries, Door knocks, Alarms'),
       const _PriorityMode('street', LucideIcons.car, 'Street',
           'Vehicle horns, Sirens, Traffic'),
       const _PriorityMode('work', LucideIcons.briefcase, 'Work',
@@ -410,12 +420,12 @@ class PriorityModeSelector extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Icon(LucideIcons.filter, color: AppTheme.textMuted, size: 16),
+            Icon(LucideIcons.filter, color: AppTheme.textMuted, size: 16),
             const SizedBox(width: 8),
             Text(
               "PRIORITY MODE",
               style: GoogleFonts.inter(
-                fontSize: 12,
+                fontSize: 12 * AppTheme.textScale,
                 fontWeight: FontWeight.w600,
                 color: AppTheme.textMuted,
                 letterSpacing: 1.5,
@@ -434,7 +444,7 @@ class PriorityModeSelector extends StatelessWidget {
                   margin: EdgeInsets.only(right: mode.id != 'work' ? 8 : 0),
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: isSelected 
+                    color: isSelected
                         ? AppTheme.primary.withOpacity(0.15)
                         : AppTheme.elevated,
                     borderRadius: BorderRadius.circular(16),
@@ -447,16 +457,19 @@ class PriorityModeSelector extends StatelessWidget {
                     children: [
                       Icon(
                         mode.icon,
-                        color: isSelected ? AppTheme.primary : AppTheme.textMuted,
+                        color:
+                            isSelected ? AppTheme.primary : AppTheme.textMuted,
                         size: 24,
                       ),
                       const SizedBox(height: 8),
                       Text(
                         mode.label,
                         style: GoogleFonts.inter(
-                          color: isSelected ? AppTheme.primary : AppTheme.textPrimary,
+                          color: isSelected
+                              ? AppTheme.primary
+                              : AppTheme.textPrimary,
                           fontWeight: FontWeight.w600,
-                          fontSize: 13,
+                          fontSize: 13 * AppTheme.textScale,
                         ),
                       ),
                     ],
@@ -471,7 +484,7 @@ class PriorityModeSelector extends StatelessWidget {
           Text(
             modes.firstWhere((m) => m.id == selectedMode).description,
             style: GoogleFonts.inter(
-              fontSize: 11,
+              fontSize: 11 * AppTheme.textScale,
               color: AppTheme.textMuted,
             ),
           ),
@@ -593,45 +606,52 @@ class _AccessibilityTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: AppTheme.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Icon(icon, color: AppTheme.primary, size: 20),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: GoogleFonts.inter(
-                  color: AppTheme.textPrimary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
-                ),
+    return InkWell(
+      onTap: () => onChanged(!value),
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppTheme.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(10),
               ),
-              Text(
-                subtitle,
-                style: GoogleFonts.inter(
-                  color: AppTheme.textMuted,
-                  fontSize: 12,
-                ),
+              child: Icon(icon, color: AppTheme.primary, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.inter(
+                      color: AppTheme.textPrimary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15 * AppTheme.textScale,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: GoogleFonts.inter(
+                      color: AppTheme.textMuted,
+                      fontSize: 12 * AppTheme.textScale,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Switch(
+              value: value,
+              onChanged: onChanged,
+              activeColor: AppTheme.primary,
+            ),
+          ],
         ),
-        Switch(
-          value: value,
-          onChanged: onChanged,
-          activeColor: AppTheme.primary,
-        ),
-      ],
+      ),
     );
   }
 }

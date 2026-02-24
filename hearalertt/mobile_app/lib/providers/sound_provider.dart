@@ -23,14 +23,16 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
   String _transcription = "";
   SoundEvent? _lastEvent;
   final List<SoundEvent> _history = [];
-  
+
   // Services
   final AudioClassifierService _classifier = AudioClassifierService();
   final TranscriptionService _transcriptionService = TranscriptionService();
-  final BabyCryClassifierService _babyCryClassifier = BabyCryClassifierService();
+  final BabyCryClassifierService _babyCryClassifier =
+      BabyCryClassifierService();
   final BabyCryDatasetService _babyCryDataset = BabyCryDatasetService.instance;
-  final HearAlertClassifierService _hearAlertClassifier = HearAlertClassifierService();
-  
+  final HearAlertClassifierService _hearAlertClassifier =
+      HearAlertClassifierService();
+
   StreamSubscription? _detectionSubscription;
   StreamSubscription? _amplitudeSubscription;
   StreamSubscription? _visualizerSubscription;
@@ -63,14 +65,14 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
     // Auto-init and auto-start listening
     _initializeAndAutoStart();
   }
-  
+
   Future<void> _initializeAndAutoStart() async {
     await _classifier.initialize();
     await AlertService().initialize();
     await _babyCryDataset.loadManifest();
     await _babyCryClassifier.initialize();
     await _hearAlertClassifier.initialize();
-    
+
     // Auto-start listening when everything is ready
     debugPrint('🎤 AUTO-STARTING microphone detection...');
     _shouldBeListening = true;
@@ -126,10 +128,11 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
       if (results.isNotEmpty) {
         // Take the top result
         final top = results.first;
-        
+
         // Log what we're getting
-        debugPrint('📢 SOUND PROVIDER RECEIVED: ${top.label} (${(top.boostedConfidence * 100).toStringAsFixed(1)}%)');
-        
+        debugPrint(
+            '📢 SOUND PROVIDER RECEIVED: ${top.label} (${(top.boostedConfidence * 100).toStringAsFixed(1)}%)');
+
         // ALWAYS trigger alert for ALL detected sounds (no threshold filtering)
         // This ensures immediate feedback for deaf users
         _handlePriorityDetection(top);
@@ -140,25 +143,28 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
       _currentAmplitude = amp;
       // notifyListeners(); - Handled by visualizer stream more frequently
     });
-    
+
     _visualizerSubscription = _classifier.visualizerStream.listen((data) {
-        _waveformData = data;
-        notifyListeners();
+      _waveformData = data;
+      notifyListeners();
     });
 
-    _transcriptionSubscription = _transcriptionService.textStream.listen((text) {
-        _transcription = text;
-        notifyListeners();
+    _transcriptionSubscription =
+        _transcriptionService.textStream.listen((text) {
+      _transcription = text;
+      notifyListeners();
     });
-    
+
     // Baby cry detection is always enabled automatically
     await _babyCryClassifier.start();
-    _babyCrySubscription = _babyCryClassifier.predictionStream.listen((prediction) {
+    _babyCrySubscription =
+        _babyCryClassifier.predictionStream.listen((prediction) {
       _handleBabyCryDetection(prediction);
     });
-    
+
     // Subscribe to HearAlert detections (Custom Model)
-    _hearAlertSubscription = _hearAlertClassifier.detectionStream.listen((results) {
+    _hearAlertSubscription =
+        _hearAlertClassifier.detectionStream.listen((results) {
       if (results.isNotEmpty) {
         _handleHearAlertDetection(results.first);
       }
@@ -196,25 +202,26 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
   void clearHistory() {
     _history.clear();
     notifyListeners();
-    FirebaseDatabaseService().clearAllAlerts().catchError(
-        (e) => debugPrint('Firebase clearAllAlerts error: $e'));
+    FirebaseDatabaseService()
+        .clearAllAlerts()
+        .catchError((e) => debugPrint('Firebase clearAllAlerts error: $e'));
   }
 
   void clearAlert() {
     _lastEvent = null;
     notifyListeners();
   }
-  
+
   void clearBabyCryAlert() {
     _lastBabyCryDetection = null;
     notifyListeners();
   }
-  
+
   void clearBabyCryHistory() {
     _babyCryHistory.clear();
     notifyListeners();
   }
-  
+
   /// Baby cry detection is now always enabled automatically
   /// This method is kept for backward compatibility but does nothing
   @Deprecated('Baby cry detection is always active')
@@ -222,18 +229,17 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
     // Baby cry detection is always on - no action needed
     debugPrint('ℹ️ Baby cry detection is always active');
   }
-  
+
   /// Simulate baby cry detection for testing
   void simulateBabyCry(int categoryId) {
     _babyCryClassifier.triggerMockDetection(categoryId);
   }
 
-
-
   void simulateEvent(String label) {
     // Respect Smart Zone filtering even for simulated events
     if (_settings != null && !_settings!.smartZone.allowsSound(label)) {
-      debugPrint('🔇 Simulated event "$label" filtered by Smart Zone (${_settings!.smartZone.label})');
+      debugPrint(
+          '🔇 Simulated event "$label" filtered by Smart Zone (${_settings!.smartZone.label})');
       return;
     }
     _doSimulate(label);
@@ -261,23 +267,26 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
     _handlePriorityDetection(result);
   }
 
-
   /// Handle Custom Model (HearAlert) Detection
   void _handleHearAlertDetection(HearAlertResult result) {
     // Smart Zone filter — skip sounds not relevant to active zone
-    if (_settings != null && !_settings!.smartZone.allowsSound(result.displayName)) {
-      debugPrint('🔇 HearAlert "${result.displayName}" filtered by Smart Zone (${_settings!.smartZone.label})');
+    if (_settings != null &&
+        !_settings!.smartZone.allowsSound(result.displayName)) {
+      debugPrint(
+          '🔇 HearAlert "${result.displayName}" filtered by Smart Zone (${_settings!.smartZone.label})');
       return;
     }
 
     // Throttle duplicate alerts - further reduced for extreme sensitivity (500ms)
     if (_lastEvent != null &&
         _lastEvent!.label == result.displayName &&
-        DateTime.now().difference(_lastEvent!.timestamp) < const Duration(milliseconds: 500)) {
+        DateTime.now().difference(_lastEvent!.timestamp) <
+            const Duration(milliseconds: 500)) {
       return;
     }
 
-    debugPrint('🚨 HEARALERT DETECTED: ${result.displayName} (${(result.confidence * 100).toStringAsFixed(1)}%)');
+    debugPrint(
+        '🚨 HEARALERT DETECTED: ${result.displayName} (${(result.confidence * 100).toStringAsFixed(1)}%)');
 
     // Create event for history
     final event = SoundEvent(
@@ -285,7 +294,9 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
       label: result.displayName,
       confidence: result.confidence,
       timestamp: DateTime.now(),
-      type: result.isCritical ? 'emergency' : (result.isHigh ? 'warning' : 'info'),
+      type: result.isCritical
+          ? 'emergency'
+          : (result.isHigh ? 'warning' : 'info'),
     );
 
     _lastEvent = event;
@@ -293,8 +304,9 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
     notifyListeners();
 
     // Sync to Firebase
-    FirebaseDatabaseService().logSoundEvent(event).catchError(
-        (e) => debugPrint('Firebase logSoundEvent error: $e'));
+    FirebaseDatabaseService()
+        .logSoundEvent(event)
+        .catchError((e) => debugPrint('Firebase logSoundEvent error: $e'));
 
     // Trigger Alert
     // Map HearAlert alert types to AlertService standard actions if possible, or use custom
@@ -306,7 +318,8 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
     // logic duplicated from _triggerAlertForSound but using detection ID
     switch (result.categoryId) {
       case 'fire_alarm':
-        alertService.triggerFireAlarm(withFlash: withFlash, intensity: intensity);
+        alertService.triggerFireAlarm(
+            withFlash: withFlash, intensity: intensity);
         break;
       case 'baby_cry':
         alertService.triggerBabyCry(withFlash: withFlash, intensity: intensity);
@@ -319,19 +332,24 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
         break;
       case 'door_knock':
       case 'knock_knock':
-        alertService.triggerDoorKnock(withFlash: withFlash, intensity: intensity);
+        alertService.triggerDoorKnock(
+            withFlash: withFlash, intensity: intensity);
         break;
       case 'doorbell':
-        alertService.triggerDoorbell(withFlash: withFlash, intensity: intensity);
+        alertService.triggerDoorbell(
+            withFlash: withFlash, intensity: intensity);
         break;
       case 'glass_breaking':
-        alertService.triggerGlassBreaking(withFlash: withFlash, intensity: intensity);
+        alertService.triggerGlassBreaking(
+            withFlash: withFlash, intensity: intensity);
         break;
       default:
         // Generic tactile feedback for any custom sound
         alertService.triggerCustomAlert(
           message: "${result.displayName} Detected",
-          vibrationPattern: result.vibrationPattern.isNotEmpty ? result.vibrationPattern : [0, 200, 100, 200],
+          vibrationPattern: result.vibrationPattern.isNotEmpty
+              ? result.vibrationPattern
+              : [0, 200, 100, 200],
           withFlash: withFlash,
           intensity: intensity,
         );
@@ -342,13 +360,18 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
   void _handlePriorityDetection(ClassificationResult result) {
     // Smart Zone filter — skip sounds not relevant to active zone
     if (_settings != null && !_settings!.smartZone.allowsSound(result.label)) {
-      debugPrint('🔇 YAMNet "${result.label}" filtered by Smart Zone (${_settings!.smartZone.label})');
+      debugPrint(
+          '🔇 YAMNet "${result.label}" filtered by Smart Zone (${_settings!.smartZone.label})');
       return;
     }
 
     // Reduced throttle for faster consecutive alerts (deaf accessibility)
     final throttleDuration = result.priority != null
-        ? Duration(milliseconds: PrioritySoundsDatabase.getThrottleDuration(result.priority!).inMilliseconds ~/ 4)
+        ? Duration(
+            milliseconds:
+                PrioritySoundsDatabase.getThrottleDuration(result.priority!)
+                        .inMilliseconds ~/
+                    4)
         : const Duration(milliseconds: 800);
 
     // Throttle: don't trigger if same event happened recently
@@ -359,20 +382,24 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
     }
 
     // Log the alert trigger
-    debugPrint('⚡ ALERT TRIGGERED: ${result.label} (${(result.boostedConfidence * 100).toStringAsFixed(1)}%)');
+    debugPrint(
+        '⚡ ALERT TRIGGERED: ${result.label} (${(result.boostedConfidence * 100).toStringAsFixed(1)}%)');
 
     // Determine event type from priority severity
     String type = 'info';
     if (result.severity == AlertSeverity.emergency) {
       type = 'emergency';
-    } else if (result.severity == AlertSeverity.warning || result.severity == AlertSeverity.attention) {
+    } else if (result.severity == AlertSeverity.warning ||
+        result.severity == AlertSeverity.attention) {
       type = 'warning';
     }
 
     final event = SoundEvent(
       id: DateTime.now().toIso8601String(),
       label: result.label,
-      confidence: result.boostedConfidence > 0 ? result.boostedConfidence : result.confidence,
+      confidence: result.boostedConfidence > 0
+          ? result.boostedConfidence
+          : result.confidence,
       timestamp: DateTime.now(),
       type: type,
     );
@@ -382,17 +409,18 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
     notifyListeners();
 
     // Sync to Firebase
-    FirebaseDatabaseService().logSoundEvent(event).catchError(
-        (e) => debugPrint('Firebase logSoundEvent error: $e'));
+    FirebaseDatabaseService()
+        .logSoundEvent(event)
+        .catchError((e) => debugPrint('Firebase logSoundEvent error: $e'));
 
     // Trigger Alerts based on priority severity
     _triggerAlertForSound(result);
 
     // Auto dismiss - faster for critical sounds
-    final dismissDelay = result.priority == SoundPriority.critical 
-        ? const Duration(seconds: 8)  // Critical stays longer
+    final dismissDelay = result.priority == SoundPriority.critical
+        ? const Duration(seconds: 8) // Critical stays longer
         : const Duration(seconds: 5);
-        
+
     Future.delayed(dismissDelay, () {
       if (_lastEvent == event) {
         _lastEvent = null;
@@ -406,102 +434,166 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
     final alertService = AlertService();
     final lower = result.label.toLowerCase();
     final intensity = _settings?.vibrationIntensity ?? VibrationIntensity.high;
-    
+
     // EMERGENCY SOUNDS
-    if (lower.contains('fire') || lower.contains('smoke') || lower.contains('siren') || 
-        lower.contains('alarm') || lower.contains('police') || lower.contains('ambulance')) {
-        alertService.triggerFireAlarm(withFlash: flashlightEnabled, intensity: intensity);
-    } 
+    if (lower.contains('fire') ||
+        lower.contains('smoke') ||
+        lower.contains('siren') ||
+        lower.contains('alarm') ||
+        lower.contains('police') ||
+        lower.contains('ambulance')) {
+      alertService.triggerFireAlarm(
+          withFlash: flashlightEnabled, intensity: intensity);
+    }
     // SECURITY SOUNDS
-    else if (lower.contains('glass') || lower.contains('break') || lower.contains('shatter') || 
-             lower.contains('smash') || lower.contains('crash')) {
-        alertService.triggerGlassBreaking(withFlash: flashlightEnabled, intensity: intensity);
-    } 
-    else if (lower.contains('gunshot') || lower.contains('explosion') || lower.contains('blast')) {
-        alertService.triggerExplosion(withFlash: flashlightEnabled, intensity: intensity);
+    else if (lower.contains('glass') ||
+        lower.contains('break') ||
+        lower.contains('shatter') ||
+        lower.contains('smash') ||
+        lower.contains('crash')) {
+      alertService.triggerGlassBreaking(
+          withFlash: flashlightEnabled, intensity: intensity);
+    } else if (lower.contains('gunshot') ||
+        lower.contains('explosion') ||
+        lower.contains('blast')) {
+      alertService.triggerExplosion(
+          withFlash: flashlightEnabled, intensity: intensity);
     }
     // VEHICLE SOUNDS
-    else if (lower.contains('horn') || lower.contains('vehicle') || lower.contains('honk') || 
-             lower.contains('car') || lower.contains('truck') || lower.contains('train')) {
-        alertService.triggerVehicleHorn(withFlash: flashlightEnabled, intensity: intensity);
-    } 
+    else if (lower.contains('horn') ||
+        lower.contains('vehicle') ||
+        lower.contains('honk') ||
+        lower.contains('car') ||
+        lower.contains('truck') ||
+        lower.contains('train')) {
+      alertService.triggerVehicleHorn(
+          withFlash: flashlightEnabled, intensity: intensity);
+    }
     // DOOR/BELL SOUNDS
     else if (lower.contains('knock') || lower.contains('door')) {
-        alertService.triggerDoorKnock(withFlash: flashlightEnabled, intensity: intensity);
-    } 
-    else if (lower.contains('doorbell') || lower.contains('ding') || lower.contains('bell')) {
-        alertService.triggerDoorbell(withFlash: flashlightEnabled, intensity: intensity);
+      alertService.triggerDoorKnock(
+          withFlash: flashlightEnabled, intensity: intensity);
+    } else if (lower.contains('doorbell') ||
+        lower.contains('ding') ||
+        lower.contains('bell')) {
+      alertService.triggerDoorbell(
+          withFlash: flashlightEnabled, intensity: intensity);
     }
     // BABY/HUMAN SOUNDS
-    else if (lower.contains('baby') || lower.contains('cry') || lower.contains('infant')) {
-        alertService.triggerBabyCry(withFlash: flashlightEnabled, intensity: intensity);
-    } 
-    else if (lower.contains('scream') || lower.contains('shout') || lower.contains('yell')) {
-        alertService.triggerHumanDistress(withFlash: flashlightEnabled, intensity: intensity);
+    else if (lower.contains('baby') ||
+        lower.contains('cry') ||
+        lower.contains('infant')) {
+      alertService.triggerBabyCry(
+          withFlash: flashlightEnabled, intensity: intensity);
+    } else if (lower.contains('scream') ||
+        lower.contains('shout') ||
+        lower.contains('yell')) {
+      alertService.triggerHumanDistress(
+          withFlash: flashlightEnabled, intensity: intensity);
     }
     // PHONE
-    else if (lower.contains('phone') || lower.contains('telephone') || lower.contains('ringtone') || lower.contains('ring')) {
-        alertService.triggerPhoneRing(withFlash: flashlightEnabled, intensity: intensity);
+    else if (lower.contains('phone') ||
+        lower.contains('telephone') ||
+        lower.contains('ringtone') ||
+        lower.contains('ring')) {
+      alertService.triggerPhoneRing(
+          withFlash: flashlightEnabled, intensity: intensity);
     }
     // DANGEROUS ANIMALS
     else if (lower.contains('snake') || lower.contains('rattle')) {
-        alertService.triggerDangerousAnimal(withFlash: flashlightEnabled, animalName: 'Snake', intensity: intensity);
-    }
-    else if (lower.contains('wolf') || lower.contains('lion') || lower.contains('tiger') || lower.contains('roar')) {
-        alertService.triggerDangerousAnimal(withFlash: flashlightEnabled, animalName: 'Wild Animal', intensity: intensity);
+      alertService.triggerDangerousAnimal(
+          withFlash: flashlightEnabled,
+          animalName: 'Snake',
+          intensity: intensity);
+    } else if (lower.contains('wolf') ||
+        lower.contains('lion') ||
+        lower.contains('tiger') ||
+        lower.contains('roar')) {
+      alertService.triggerDangerousAnimal(
+          withFlash: flashlightEnabled,
+          animalName: 'Wild Animal',
+          intensity: intensity);
     }
     // DOG SOUNDS
-    else if (lower.contains('bark') || lower.contains('dog') || lower.contains('growl') || lower.contains('howl')) {
-        alertService.triggerDogBark(withFlash: flashlightEnabled, intensity: intensity);
+    else if (lower.contains('bark') ||
+        lower.contains('dog') ||
+        lower.contains('growl') ||
+        lower.contains('howl')) {
+      alertService.triggerDogBark(
+          withFlash: flashlightEnabled, intensity: intensity);
     }
     // OTHER ANIMALS
-    else if (lower.contains('cat') || lower.contains('meow') || lower.contains('hiss')) {
-        alertService.triggerAnimalAlert(withFlash: flashlightEnabled, animalName: 'Cat', intensity: intensity);
-    }
-    else if (lower.contains('horse') || lower.contains('neigh')) {
-        alertService.triggerAnimalAlert(withFlash: flashlightEnabled, animalName: 'Horse', intensity: intensity);
-    }
-    else if (lower.contains('cow') || lower.contains('moo') || lower.contains('cattle')) {
-        alertService.triggerAnimalAlert(withFlash: flashlightEnabled, animalName: 'Cow', intensity: intensity);
-    }
-    else if (lower.contains('bird') || lower.contains('chirp') || lower.contains('crow') || lower.contains('owl')) {
-        alertService.triggerAnimalAlert(withFlash: flashlightEnabled, animalName: 'Bird', intensity: intensity);
-    }
-    else if (lower.contains('chicken') || lower.contains('rooster')) {
-        alertService.triggerAnimalAlert(withFlash: flashlightEnabled, animalName: 'Rooster', intensity: intensity);
-    }
-    else if (lower.contains('bee') || lower.contains('wasp') || lower.contains('buzz')) {
-        alertService.triggerAnimalAlert(withFlash: flashlightEnabled, animalName: 'Bee/Wasp', intensity: intensity);
-    }
-    else if (lower.contains('frog') || lower.contains('croak')) {
-        alertService.triggerAnimalAlert(withFlash: flashlightEnabled, animalName: 'Frog', intensity: intensity);
+    else if (lower.contains('cat') ||
+        lower.contains('meow') ||
+        lower.contains('hiss')) {
+      alertService.triggerAnimalAlert(
+          withFlash: flashlightEnabled,
+          animalName: 'Cat',
+          intensity: intensity);
+    } else if (lower.contains('horse') || lower.contains('neigh')) {
+      alertService.triggerAnimalAlert(
+          withFlash: flashlightEnabled,
+          animalName: 'Horse',
+          intensity: intensity);
+    } else if (lower.contains('cow') ||
+        lower.contains('moo') ||
+        lower.contains('cattle')) {
+      alertService.triggerAnimalAlert(
+          withFlash: flashlightEnabled,
+          animalName: 'Cow',
+          intensity: intensity);
+    } else if (lower.contains('bird') ||
+        lower.contains('chirp') ||
+        lower.contains('crow') ||
+        lower.contains('owl')) {
+      alertService.triggerAnimalAlert(
+          withFlash: flashlightEnabled,
+          animalName: 'Bird',
+          intensity: intensity);
+    } else if (lower.contains('chicken') || lower.contains('rooster')) {
+      alertService.triggerAnimalAlert(
+          withFlash: flashlightEnabled,
+          animalName: 'Rooster',
+          intensity: intensity);
+    } else if (lower.contains('bee') ||
+        lower.contains('wasp') ||
+        lower.contains('buzz')) {
+      alertService.triggerAnimalAlert(
+          withFlash: flashlightEnabled,
+          animalName: 'Bee/Wasp',
+          intensity: intensity);
+    } else if (lower.contains('frog') || lower.contains('croak')) {
+      alertService.triggerAnimalAlert(
+          withFlash: flashlightEnabled,
+          animalName: 'Frog',
+          intensity: intensity);
     }
     // GENERIC - always vibrate for deaf users
     else {
-        alertService.triggerGenericInfo(withFlash: flashlightEnabled, intensity: intensity);
+      alertService.triggerGenericInfo(
+          withFlash: flashlightEnabled, intensity: intensity);
     }
   }
 
-
-  
   /// Handle baby cry detection with specialized alerts
   void _handleBabyCryDetection(BabyCryPrediction prediction) {
-    debugPrint('👶 Baby Cry Detected: ${prediction.label} (${(prediction.confidence * 100).toStringAsFixed(1)}%)');
-    
+    debugPrint(
+        '👶 Baby Cry Detected: ${prediction.label} (${(prediction.confidence * 100).toStringAsFixed(1)}%)');
+
     // Update detection state
     _lastBabyCryDetection = prediction;
     _babyCryHistory.insert(0, prediction);
-    
+
     // Keep history limited to last 10 detections
     if (_babyCryHistory.length > 10) {
       _babyCryHistory = _babyCryHistory.take(10).toList();
     }
-    
+
     notifyListeners();
-    
+
     // Trigger specialized alert based on priority
     final alertService = AlertService();
-    
+
     if (prediction.isHighPriority) {
       // High priority: hungry, belly pain, temperature
       alertService.triggerCustomAlert(
@@ -527,12 +619,12 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
         intensity: _settings?.vibrationIntensity ?? VibrationIntensity.high,
       );
     }
-    
+
     // Auto-dismiss after delay based on priority
     final dismissDelay = prediction.isHighPriority
         ? const Duration(seconds: 10)
         : const Duration(seconds: 5);
-    
+
     Future.delayed(dismissDelay, () {
       if (_lastBabyCryDetection == prediction) {
         _lastBabyCryDetection = null;

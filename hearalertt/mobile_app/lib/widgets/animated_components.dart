@@ -8,9 +8,9 @@ import 'package:mobile_app/theme/app_theme.dart';
 class AuroraBackground extends StatelessWidget {
   final bool animate;
   final double intensity;
-  
+
   const AuroraBackground({
-    super.key, 
+    super.key,
     this.animate = true,
     this.intensity = 1.0,
   });
@@ -18,7 +18,7 @@ class AuroraBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    
+
     return SizedBox.expand(
       child: Stack(
         children: [
@@ -28,7 +28,7 @@ class AuroraBackground extends StatelessWidget {
               gradient: AppTheme.surfaceGradient,
             ),
           ),
-          
+
           // Aurora Orbs
           _AuroraOrb(
             size: size.width * 0.8,
@@ -54,7 +54,7 @@ class AuroraBackground extends StatelessWidget {
             animate: animate,
             delay: 2000,
           ),
-          
+
           // Noise Overlay
           Container(
             decoration: BoxDecoration(
@@ -115,14 +115,14 @@ class _AuroraOrb extends StatelessWidget {
 
     if (animate) {
       orb = orb
-        .animate(onPlay: (c) => c.repeat(reverse: true), delay: delay.ms)
-        .scale(
-          begin: const Offset(1, 1),
-          end: const Offset(1.15, 1.15),
-          duration: 4.seconds,
-          curve: Curves.easeInOut,
-        )
-        .fade(begin: 0.6, end: 1.0, duration: 3.seconds);
+          .animate(onPlay: (c) => c.repeat(reverse: true), delay: delay.ms)
+          .scale(
+            begin: const Offset(1, 1),
+            end: const Offset(1.15, 1.15),
+            duration: 4.seconds,
+            curve: Curves.easeInOut,
+          )
+          .fade(begin: 0.6, end: 1.0, duration: 3.seconds);
     }
 
     return Positioned(
@@ -153,8 +153,8 @@ class NeonGlassCard extends StatelessWidget {
   const NeonGlassCard({
     super.key,
     required this.child,
-    this.blur = 25.0,  // Matched to GlassCard
-    this.opacity = 0.12,  // Matched to GlassCard
+    this.blur = 25.0, // Matched to GlassCard
+    this.opacity = 0.12, // Matched to GlassCard
     this.width,
     this.height,
     this.glowColor,
@@ -168,9 +168,10 @@ class NeonGlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveRadius = borderRadius ?? BorderRadius.circular(AppTheme.radiusLG);
+    final effectiveRadius =
+        borderRadius ?? BorderRadius.circular(AppTheme.radiusLG);
     final effectiveGlow = glowColor ?? AppTheme.primary;
-    
+
     Widget content = ClipRRect(
       borderRadius: effectiveRadius,
       child: BackdropFilter(
@@ -190,20 +191,24 @@ class NeonGlassCard extends StatelessWidget {
                 Colors.white.withOpacity(opacity * 0.5),
               ],
             ),
-            border: showBorder ? Border.all(
-              color: isActive 
-                  ? effectiveGlow.withOpacity(0.6) 
-                  : Colors.white.withOpacity(0.15),  // Increased from 0.12
-              width: isActive ? 2 : 1.5,  // Increased from 1
-            ) : null,
-            boxShadow: isActive ? AppTheme.glowShadow(effectiveGlow, intensity: 0.7) : [
-              // Add depth shadow even when not active
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            border: showBorder
+                ? Border.all(
+                    color: isActive
+                        ? effectiveGlow.withOpacity(0.6)
+                        : Colors.white.withOpacity(0.15), // Increased from 0.12
+                    width: isActive ? 2 : 1.5, // Increased from 1
+                  )
+                : null,
+            boxShadow: isActive
+                ? AppTheme.glowShadow(effectiveGlow, intensity: 0.7)
+                : [
+                    // Add depth shadow even when not active
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
           ),
           child: child,
         ),
@@ -259,7 +264,7 @@ class _GlowButtonState extends State<GlowButton> {
   Widget build(BuildContext context) {
     final effectiveGradient = widget.gradient ?? AppTheme.primaryGradient;
     final effectiveGlow = widget.glowColor ?? AppTheme.primary;
-    
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _isPressed = true),
       onTapUp: (_) {
@@ -271,7 +276,7 @@ class _GlowButtonState extends State<GlowButton> {
         duration: const Duration(milliseconds: 150),
         width: widget.width,
         padding: EdgeInsets.symmetric(
-          horizontal: widget.compact ? 20 : 28, 
+          horizontal: widget.compact ? 20 : 28,
           vertical: widget.compact ? 12 : 16,
         ),
         decoration: BoxDecoration(
@@ -306,10 +311,10 @@ class _GlowButtonState extends State<GlowButton> {
             ],
             Text(
               widget.text,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
-                fontSize: 15,
+                fontSize: 15 * AppTheme.textScale,
               ),
             ),
           ],
@@ -351,8 +356,10 @@ class PulsingDot extends StatelessWidget {
     );
 
     if (animate) {
-      dot = dot.animate(onPlay: (c) => c.repeat(reverse: true))
-        .scale(begin: const Offset(0.9, 0.9), end: const Offset(1.2, 1.2), duration: 800.ms);
+      dot = dot.animate(onPlay: (c) => c.repeat(reverse: true)).scale(
+          begin: const Offset(0.9, 0.9),
+          end: const Offset(1.2, 1.2),
+          duration: 800.ms);
     }
 
     return dot;
@@ -373,12 +380,11 @@ class ShimmerContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!shimmer) return child;
-    
-    return child.animate(onPlay: (c) => c.repeat())
-      .shimmer(
-        duration: 2.seconds,
-        color: Colors.white.withOpacity(0.1),
-      );
+
+    return child.animate(onPlay: (c) => c.repeat()).shimmer(
+          duration: 2.seconds,
+          color: Colors.white.withOpacity(0.1),
+        );
   }
 }
 
@@ -419,7 +425,8 @@ class GlowChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              Icon(icon, color: isSelected ? color : AppTheme.textMuted, size: 16),
+              Icon(icon,
+                  color: isSelected ? color : AppTheme.textMuted, size: 16),
               const SizedBox(width: 6),
             ],
             Text(
@@ -427,7 +434,7 @@ class GlowChip extends StatelessWidget {
               style: TextStyle(
                 color: isSelected ? color : AppTheme.textSecondary,
                 fontWeight: FontWeight.w600,
-                fontSize: 13,
+                fontSize: 13 * AppTheme.textScale,
               ),
             ),
           ],
@@ -503,7 +510,7 @@ class _RingPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = (size.width - strokeWidth) / 2;
-    
+
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke

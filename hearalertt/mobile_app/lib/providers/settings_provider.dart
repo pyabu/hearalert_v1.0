@@ -12,33 +12,45 @@ enum SmartZone { home, street, office }
 extension SmartZoneX on SmartZone {
   String get label {
     switch (this) {
-      case SmartZone.home:   return 'Home';
-      case SmartZone.street: return 'Street';
-      case SmartZone.office: return 'Office';
+      case SmartZone.home:
+        return 'Home';
+      case SmartZone.street:
+        return 'Street';
+      case SmartZone.office:
+        return 'Office';
     }
   }
 
   String get emoji {
     switch (this) {
-      case SmartZone.home:   return '🏠';
-      case SmartZone.street: return '🚗';
-      case SmartZone.office: return '💼';
+      case SmartZone.home:
+        return '🏠';
+      case SmartZone.street:
+        return '🚗';
+      case SmartZone.office:
+        return '💼';
     }
   }
 
   IconData get icon {
     switch (this) {
-      case SmartZone.home:   return Icons.home_outlined;
-      case SmartZone.street: return Icons.directions_car_outlined;
-      case SmartZone.office: return Icons.business_center_outlined;
+      case SmartZone.home:
+        return Icons.home_outlined;
+      case SmartZone.street:
+        return Icons.directions_car_outlined;
+      case SmartZone.office:
+        return Icons.business_center_outlined;
     }
   }
 
   String get description {
     switch (this) {
-      case SmartZone.home:   return 'Baby, doorbell, fire & home alerts';
-      case SmartZone.street: return 'Horns, sirens & traffic alerts';
-      case SmartZone.office: return 'Phone, alarms & office sounds';
+      case SmartZone.home:
+        return 'Baby, doorbell, fire & home alerts';
+      case SmartZone.street:
+        return 'Horns, sirens & traffic alerts';
+      case SmartZone.office:
+        return 'Phone, alarms & office sounds';
     }
   }
 
@@ -47,19 +59,49 @@ extension SmartZoneX on SmartZone {
     switch (this) {
       case SmartZone.home:
         return [
-          'baby', 'cry', 'doorbell', 'door', 'fire', 'alarm', 'smoke',
-          'glass', 'break', 'water', 'knock', 'scream', 'sob',
+          'baby',
+          'cry',
+          'doorbell',
+          'door',
+          'fire',
+          'alarm',
+          'smoke',
+          'glass',
+          'break',
+          'water',
+          'knock',
+          'scream',
+          'sob',
         ];
       case SmartZone.street:
         return [
-          'car', 'horn', 'siren', 'police', 'ambulance', 'traffic',
-          'motorcycle', 'truck', 'vehicle', 'emergency', 'crash',
+          'car',
+          'horn',
+          'siren',
+          'police',
+          'ambulance',
+          'traffic',
+          'motorcycle',
+          'truck',
+          'vehicle',
+          'emergency',
+          'crash',
         ];
       case SmartZone.office:
         return [
-          'phone', 'ring', 'keyboard', 'typing', 'applause', 'clap',
-          'alarm', 'clock', 'notification', 'chime', 'discussion',
-          'speech', 'talk',
+          'phone',
+          'ring',
+          'keyboard',
+          'typing',
+          'applause',
+          'clap',
+          'alarm',
+          'clock',
+          'notification',
+          'chime',
+          'discussion',
+          'speech',
+          'talk',
         ];
     }
   }
@@ -75,34 +117,34 @@ extension SmartZoneX on SmartZone {
 // SettingsProvider
 // ─────────────────────────────────────────────────────────────────────────────
 class SettingsProvider with ChangeNotifier {
-  static const String _themeKey        = 'theme_mode';
-  static const String _vibrationKey    = 'vibration_intensity';
+  static const String _themeKey = 'theme_mode';
+  static const String _vibrationKey = 'vibration_intensity';
   static const String _notificationsKey = 'notifications_enabled';
-  static const String _sensitivityKey  = 'sensitivity';
-  static const String _contactsKey     = 'sos_contacts';
-  static const String _glassKey        = 'glass_intensity';
-  static const String _glowKey         = 'glow_brightness';
-  static const String _animKey         = 'animation_speed';
+  static const String _sensitivityKey = 'sensitivity';
+  static const String _contactsKey = 'sos_contacts';
+  static const String _glassKey = 'glass_intensity';
+  static const String _glowKey = 'glow_brightness';
+  static const String _animKey = 'animation_speed';
   static const String _highContrastKey = 'high_contrast';
-  static const String _largeTextKey    = 'large_text';
-  static const String _screenFlashKey  = 'screen_flash';
-  static const String _flashlightKey   = 'flashlight_enabled';
-  static const String _sosMessageKey   = 'sos_message';
-  static const String _smartZoneKey    = 'smart_zone';
+  static const String _largeTextKey = 'large_text';
+  static const String _screenFlashKey = 'screen_flash';
+  static const String _flashlightKey = 'flashlight_enabled';
+  static const String _sosMessageKey = 'sos_message';
+  static const String _smartZoneKey = 'smart_zone';
 
-  ThemeMode          _themeMode            = ThemeMode.system;
-  VibrationIntensity _vibrationIntensity   = VibrationIntensity.high;
-  bool               _notificationsEnabled = true;
-  double             _sensitivity          = 0.5;
-  List<Contact>      _sosContacts          = [];
-  Color              _accentColor          = const Color(0xFFA855F7);
-  bool               _onboardingCompleted  = false;
-  SmartZone          _smartZone            = SmartZone.home;
+  ThemeMode _themeMode = ThemeMode.system;
+  VibrationIntensity _vibrationIntensity = VibrationIntensity.high;
+  bool _notificationsEnabled = true;
+  double _sensitivity = 0.5;
+  List<Contact> _sosContacts = [];
+  Color _accentColor = const Color(0xFFA855F7);
+  bool _onboardingCompleted = false;
+  SmartZone _smartZone = SmartZone.home;
 
   // Accessibility
   bool _highContrast = false;
-  bool _largeText    = false;
-  bool _screenFlash  = true;
+  bool _largeText = false;
+  bool _screenFlash = true;
 
   // Feedback
   bool _flashlightEnabled = true;
@@ -111,25 +153,25 @@ class SettingsProvider with ChangeNotifier {
   String _sosMessage = "Help! I am deaf and in an emergency. Please assist me.";
 
   // Visual Experience
-  double _glassIntensity  = 0.08; // 0.0 to 0.5
-  double _glowBrightness  = 1.0;  // 0.5 to 2.0
-  double _animationSpeed  = 1.0;  // 0.5 to 2.0
+  double _glassIntensity = 0.08; // 0.0 to 0.5
+  double _glowBrightness = 1.0; // 0.5 to 2.0
+  double _animationSpeed = 1.0; // 0.5 to 2.0
 
   // ── Getters ───────────────────────────────────────────────────────────────
-  ThemeMode          get themeMode            => _themeMode;
-  VibrationIntensity get vibrationIntensity   => _vibrationIntensity;
-  bool               get notificationsEnabled => _notificationsEnabled;
-  bool               get onboardingCompleted  => _onboardingCompleted;
-  double             get sensitivity          => _sensitivity;
-  List<Contact>      get sosContacts          => _sosContacts;
-  Color              get accentColor          => _accentColor;
-  SmartZone          get smartZone            => _smartZone;
+  ThemeMode get themeMode => _themeMode;
+  VibrationIntensity get vibrationIntensity => _vibrationIntensity;
+  bool get notificationsEnabled => _notificationsEnabled;
+  bool get onboardingCompleted => _onboardingCompleted;
+  double get sensitivity => _sensitivity;
+  List<Contact> get sosContacts => _sosContacts;
+  Color get accentColor => _accentColor;
+  SmartZone get smartZone => _smartZone;
 
-  bool   get highContrast      => _highContrast;
-  bool   get largeText         => _largeText;
-  bool   get screenFlash       => _screenFlash;
-  bool   get flashlightEnabled => _flashlightEnabled;
-  String get sosMessage        => _sosMessage;
+  bool get highContrast => _highContrast;
+  bool get largeText => _largeText;
+  bool get screenFlash => _screenFlash;
+  bool get flashlightEnabled => _flashlightEnabled;
+  String get sosMessage => _sosMessage;
 
   double get glassIntensity => _glassIntensity;
   double get glowBrightness => _glowBrightness;
@@ -186,7 +228,8 @@ class SettingsProvider with ChangeNotifier {
 
   Future<void> _saveContacts() async {
     final prefs = await SharedPreferences.getInstance();
-    final String encoded = jsonEncode(_sosContacts.map((c) => c.toJson()).toList());
+    final String encoded =
+        jsonEncode(_sosContacts.map((c) => c.toJson()).toList());
     await prefs.setString(_contactsKey, encoded);
   }
 
@@ -266,16 +309,18 @@ class SettingsProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _onboardingCompleted = prefs.getBool('onboarding_completed') ?? false;
 
-    _themeMode = ThemeMode.values[prefs.getInt(_themeKey) ?? ThemeMode.system.index];
-    _vibrationIntensity = VibrationIntensity.values[
-        prefs.getInt(_vibrationKey) ?? VibrationIntensity.high.index];
+    _themeMode =
+        ThemeMode.values[prefs.getInt(_themeKey) ?? ThemeMode.system.index];
+    _vibrationIntensity = VibrationIntensity
+        .values[prefs.getInt(_vibrationKey) ?? VibrationIntensity.high.index];
     _notificationsEnabled = prefs.getBool(_notificationsKey) ?? true;
-    _sensitivity          = prefs.getDouble(_sensitivityKey) ?? 0.5;
-    _smartZone = SmartZone.values[prefs.getInt(_smartZoneKey) ?? SmartZone.home.index];
+    _sensitivity = prefs.getDouble(_sensitivityKey) ?? 0.5;
+    _smartZone =
+        SmartZone.values[prefs.getInt(_smartZoneKey) ?? SmartZone.home.index];
 
-    _highContrast     = prefs.getBool(_highContrastKey) ?? false;
-    _largeText        = prefs.getBool(_largeTextKey) ?? false;
-    _screenFlash      = prefs.getBool(_screenFlashKey) ?? true;
+    _highContrast = prefs.getBool(_highContrastKey) ?? false;
+    _largeText = prefs.getBool(_largeTextKey) ?? false;
+    _screenFlash = prefs.getBool(_screenFlashKey) ?? true;
     _flashlightEnabled = prefs.getBool(_flashlightKey) ?? true;
 
     _glassIntensity = prefs.getDouble(_glassKey) ?? 0.08;

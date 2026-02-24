@@ -16,10 +16,12 @@ void main() async {
     // Sign in anonymously — gives each device a unique UID (no login screen).
     await AuthService().signInAnonymously();
     // Log this device's last-seen timestamp to Firebase.
-    FirebaseDatabaseService().updatePresence(
-      platform: 'android',
-      appVersion: '1.0.0',
-    ).catchError((e) => debugPrint('Presence update failed: $e'));
+    FirebaseDatabaseService()
+        .updatePresence(
+          platform: 'android',
+          appVersion: '1.0.0',
+        )
+        .catchError((e) => debugPrint('Presence update failed: $e'));
   } catch (e) {
     debugPrint('Firebase init/auth failed (offline mode): $e');
   }
@@ -33,7 +35,8 @@ void main() async {
         ChangeNotifierProvider.value(value: settingsProvider),
         ChangeNotifierProxyProvider<SettingsProvider, SoundProvider>(
           create: (_) => SoundProvider(),
-          update: (_, settings, soundProvider) => soundProvider!..updateSettings(settings),
+          update: (_, settings, soundProvider) =>
+              soundProvider!..updateSettings(settings),
         ),
       ],
       child: const MyApp(),
@@ -52,8 +55,18 @@ class MyApp extends StatelessWidget {
           title: 'HearAlert',
           debugShowCheckedModeBanner: false,
           // Use the dynamic theme generator
-          theme: AppTheme.create(settings.accentColor, Brightness.light),
-          darkTheme: AppTheme.create(settings.accentColor, Brightness.dark),
+          theme: AppTheme.create(
+            settings.accentColor,
+            Brightness.light,
+            highContrast: settings.highContrast,
+            largeText: settings.largeText,
+          ),
+          darkTheme: AppTheme.create(
+            settings.accentColor,
+            Brightness.dark,
+            highContrast: settings.highContrast,
+            largeText: settings.largeText,
+          ),
           themeMode: settings.themeMode,
           home: const SplashScreen(),
         );

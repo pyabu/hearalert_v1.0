@@ -305,7 +305,8 @@ class DepthLayer extends StatelessWidget {
           child: Opacity(
             opacity: 0.3,
             child: ImageFiltered(
-              imageFilter: ImageFilter.blur(sigmaX: blurRadius, sigmaY: blurRadius),
+              imageFilter:
+                  ImageFilter.blur(sigmaX: blurRadius, sigmaY: blurRadius),
               child: Container(
                 decoration: BoxDecoration(
                   color: shadowColor.withOpacity(0.5),

@@ -26,9 +26,15 @@ class AmbientBackground extends StatelessWidget {
               color: AppTheme.primaryNeon.withOpacity(0.3),
             ),
           )
-          .animate(onPlay: (controller) => controller.repeat(reverse: true))
-          .scale(begin: const Offset(1, 1), end: const Offset(1.5, 1.5), duration: 4.seconds)
-          .move(begin: const Offset(0, 0), end: Offset(w * 0.1, h * 0.05), duration: 5.seconds),
+              .animate(onPlay: (controller) => controller.repeat(reverse: true))
+              .scale(
+                  begin: const Offset(1, 1),
+                  end: const Offset(1.5, 1.5),
+                  duration: 4.seconds)
+              .move(
+                  begin: const Offset(0, 0),
+                  end: Offset(w * 0.1, h * 0.05),
+                  duration: 5.seconds),
         ),
 
         // Bottom Right Blob (Purple)
@@ -43,13 +49,19 @@ class AmbientBackground extends StatelessWidget {
               color: AppTheme.secondaryNeon.withOpacity(0.3),
             ),
           )
-          .animate(onPlay: (controller) => controller.repeat(reverse: true))
-          .scale(begin: const Offset(1, 1), end: const Offset(1.3, 1.3), duration: 6.seconds)
-          .move(begin: const Offset(0, 0), end: Offset(-w * 0.1, -h * 0.05), duration: 7.seconds),
+              .animate(onPlay: (controller) => controller.repeat(reverse: true))
+              .scale(
+                  begin: const Offset(1, 1),
+                  end: const Offset(1.3, 1.3),
+                  duration: 6.seconds)
+              .move(
+                  begin: const Offset(0, 0),
+                  end: Offset(-w * 0.1, -h * 0.05),
+                  duration: 7.seconds),
         ),
 
         // Center/Random Blob
-          Positioned(
+        Positioned(
           top: h * 0.4,
           left: w * 0.2,
           child: Container(
@@ -60,9 +72,12 @@ class AmbientBackground extends StatelessWidget {
               color: AppTheme.tectonicBlue.withOpacity(0.15),
             ),
           )
-          .animate(onPlay: (controller) => controller.repeat(reverse: true))
-          .fadeIn(duration: 3.seconds)
-          .move(begin: const Offset(0, 0), end: Offset(w * 0.2, -h * 0.03), duration: 8.seconds),
+              .animate(onPlay: (controller) => controller.repeat(reverse: true))
+              .fadeIn(duration: 3.seconds)
+              .move(
+                  begin: const Offset(0, 0),
+                  end: Offset(w * 0.2, -h * 0.03),
+                  duration: 8.seconds),
         ),
 
         // Blur Filter to diffuse everything
