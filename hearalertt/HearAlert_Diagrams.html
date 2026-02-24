@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HearAlert Project Diagrams</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 40px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        h2 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 50px;
+        }
+
+        .diagram-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .instruction {
+            text-align: center;
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>HearAlert: System Architecture & UML Diagrams</h1>
+
+    <div class="instruction">
+        <strong>Tip:</strong> You can take screenshots of these rendered diagrams and paste them directly into your Word
+        Document!
+    </div>
+
+    <h2>1. System Architecture Diagram</h2>
+    <div class="diagram-container">
+        <div class="mermaid">
+            graph TD
+            %% Styles
+            classDef hardware fill:#f39c12,stroke:#e67e22,stroke-width:2px,color:white;
+            classDef software fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white;
+            classDef ai fill:#9b59b6,stroke:#8e44ad,stroke-width:2px,color:white;
+            classDef storage fill:#2ecc71,stroke:#27ae60,stroke-width:2px,color:white;
+
+            A[Mobile Microphone]:::hardware -->|Raw 16kHz Audio Stream| B(Audio Preprocessor Buffer):::software
+            B -->|MFCC Feature Extraction| C{YAMNet Edge ML Engine}:::ai
+            C -->|TensorFlow Lite Predictions| D[Classification Results Array]:::software
+            D -->|Confidence Scores > 70%| E(Context Management Core):::software
+
+            DB[(Smart Zone Rules: Home/Street)]:::storage -.->|Active Filter Rules| E
+
+            E -->|Filtered Alert Event| F[Multimodal Dispatch Controller]:::software
+
+            F --> G[Liquid Glass UI Canvas]:::software
+            F --> H[Haptic Vibration Motor]:::hardware
+            F --> I[Camera LED Flashlight]:::hardware
+            E --> J[(Local SQLite History DB)]:::storage
+        </div>
+    </div>
+
+    <h2>2. Level 0 Data Flow Diagram (Context)</h2>
+    <div class="diagram-container">
+        <div class="mermaid">
+            graph LR
+            %% Styles
+            classDef entity fill:#e74c3c,stroke:#c0392b,stroke-width:2px,color:white;
+            classDef system fill:#34495e,stroke:#2c3e50,stroke-width:3px,color:white;
+
+            Env[The Environment / Acoustic Space]:::entity -->|Raw Sound Waves| Sys((HearAlert System)):::system
+            User[DHH User]:::entity -->|App Settings & Smart Zones| Sys
+            Sys -->|Haptic Vibration, Visual Flash, Screen Overlay| User
+        </div>
+    </div>
+
+    <h2>3. Level 1 Data Flow Diagram</h2>
+    <div class="diagram-container">
+        <div class="mermaid">
+            graph TD
+            %% Styles
+            classDef process fill:#3498db,stroke:#2980b9,color:white,stroke-width:2px;
+            classDef store fill:#2ecc71,stroke:#27ae60,color:white,stroke-width:2px;
+
+            P1((1.0 Capture <br>Audio)):::process -->|Byte Stream| P2((2.0 TFLite <br>Inference)):::process
+            P2 -->|Raw Predictions| P3((3.0 Smart Zone <br>Filter)):::process
+
+            D1[(Config DB)]:::store -.->|Zone Rules| P3
+
+            P3 -->|Valid Alert Trigger| P4((4.0 Hardware <br>Dispatch)):::process
+            P3 -->|Valid Alert Trigger| P5((5.0 History <br>Logging)):::process
+
+            P4 -->|API Command| UI[Screen / Flash / Motor]
+            P5 -->|Insert Record| D2[(App History DB)]:::store
+        </div>
+    </div>
+
+    <h2>4. UML Case Diagram</h2>
+    <div class="diagram-container">
+        <div class="mermaid">
+            flowchart LR
+            %% Styles
+            classDef actor fill:#f1c40f,stroke:#f39c12,stroke-width:2px,color:black,shape:actor;
+
+            User((User)):::actor
+
+            subgraph HearAlert Application
+            UC1(Start/Stop Monitoring)
+            UC2(Configure Smart Zones)
+            UC3(Adjust UX Visuals)
+            UC4(View Alert History)
+            UC5(Read ASL Guide)
+            UC6(Simulate Flash/Vibrate)
+            end
+
+            User --> UC1
+            User --> UC2
+            User --> UC3
+            User --> UC4
+            User --> UC5
+            User --> UC6
+        </div>
+    </div>
+
+    <h2>5. State Machine: Audio Processing Pipeline</h2>
+    <div class="diagram-container">
+        <div class="mermaid">
+            stateDiagram-v2
+            [*] --> Standby
+            Standby --> Listening : User taps Start
+            Listening --> Buffering : Mic grabs 975ms chunk
+            Buffering --> Inferencing : Buffer Full
+            Inferencing --> AlertTriggered : Confidence > Threshold & Passes Zone Filter
+            Inferencing --> Listening : Confidence Low (Drop)
+            AlertTriggered --> Listening : Dispatch Complete
+            Listening --> Standby : User taps Stop
+        </div>
+    </div>
+
+    <!-- Load Mermaid.js to render the diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: { curve: 'basis' }
+        });
+    </script>
+</body>
+
+</html>

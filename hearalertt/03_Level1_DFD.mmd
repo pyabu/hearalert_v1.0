@@ -1,0 +1,33 @@
+graph TD
+    %% Styles
+    classDef process fill:#E67E22,stroke:#D35400,stroke-width:2px,color:#FFFFFF,rx:20,ry:20;
+    classDef datastore fill:#27AE60,stroke:#2ECC71,stroke-width:2px,color:#FFFFFF;
+    classDef io fill:#9B59B6,stroke:#8E44AD,stroke-width:2px,color:#FFFFFF;
+
+    Input[/Raw Analog Sound\]:::io
+    
+    P1((1.0<br>Capture &<br>Digitize Audio)):::process
+    P2((2.0<br>Extract Audio<br>Features)):::process
+    P3((3.0<br>Execute TFLite<br>Inference)):::process
+    P4((4.0<br>Analyze & Filter<br>Context)):::process
+    P5((5.0<br>Dispatch Hardware<br>Alerts)):::process
+    P6((6.0<br>Log Event<br>History)):::process
+
+    D1[(D1: Smart Zone Settings)]:::datastore
+    D2[(D2: Local History DB)]:::datastore
+    
+    Out1[/Vibration Output\]:::io
+    Out2[/Visual Output\]:::io
+
+    Input --> P1
+    P1 -->|16kHz Digital Stream| P2
+    P2 -->|Mel-Spectrogram Matrix| P3
+    P3 -->|Array of 521 Class Scores| P4
+    
+    D1 -.->|Whitelist Rules| P4
+    P4 -->|Filtered Positive Event| P5
+    P4 -->|Filtered Positive Event| P6
+    
+    P5 -->|Haptic API Call| Out1
+    P5 -->|Render / Flash API Call| Out2
+    P6 -->|Write SQL Record| D2

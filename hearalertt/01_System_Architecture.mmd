@@ -1,0 +1,56 @@
+graph TD
+    %% Global Styles
+    classDef mobile fill:#2C3E50,stroke:#34495E,stroke-width:3px,color:#ECF0F1;
+    classDef hardware fill:#E67E22,stroke:#D35400,stroke-width:2px,color:#FFFFFF,rx:10,ry:10;
+    classDef mlEngine fill:#8E44AD,stroke:#9B59B6,stroke-width:2px,color:#FFFFFF,rx:10,ry:10;
+    classDef logic fill:#2980B9,stroke:#3498DB,stroke-width:2px,color:#FFFFFF,rx:5,ry:5;
+    classDef database fill:#27AE60,stroke:#2ECC71,stroke-width:2px,color:#FFFFFF;
+    classDef external fill:#7F8C8D,stroke:#95A5A6,stroke-width:2px,color:#FFFFFF,stroke-dasharray: 5 5;
+
+    subgraph UserEnvironment[User Environment]
+        Env((Ambient Acoustic Environment)):::external
+    end
+
+    subgraph SmartphoneHardware[Smartphone Hardware]
+        Mic[Microphone Sensor]:::hardware
+        Vib[Haptic Vibration Motor]:::hardware
+        LED[Camera Strobe Flashlight]:::hardware
+        Disp[High-Resolution Display]:::hardware
+    end
+
+    subgraph HearAlertEdge[HearAlert Edge Software Architecture]
+        direction TB
+        
+        subgraph AudioProcessingLoop[Audio Processing Loop]
+            Buffer(Circular Audio Buffer / 975ms):::logic
+            MFCC(MFCC Feature Extractor):::logic
+        end
+        
+        subgraph MLPipeline[Machine Learning Pipeline]
+            YAMNet{TensorFlow Lite Edge Model}:::mlEngine
+            Scores(Classification Probability Array):::logic
+        end
+        
+        subgraph ContextDispatch[Context & Dispatch]
+            SmartZone(Smart Zone Filter Engine):::logic
+            DB[(Local Preferences DB)]:::database
+            History[(Alert History SQLite)]:::database
+            Controller(Multimodal Alert Controller):::logic
+        end
+    end
+
+    %% Data Flow
+    Env -->|Continuous Sound Waves| Mic
+    Mic -->|Raw PCM 16kHz Stream| Buffer
+    Buffer -->|Buffered Frames| MFCC
+    MFCC -->|Acoustic Features| YAMNet
+    YAMNet -->|Inference Execution| Scores
+    Scores -->|Score > 70% Confidence| SmartZone
+    DB -.->|Active Rules Home/Street| SmartZone
+    SmartZone -->|Passed Trigger Conditions| Controller
+    SmartZone -->|Logged Event| History
+    
+    %% Output Dispatch
+    Controller -->|Trigger Action| Vib
+    Controller -->|Trigger Action| LED
+    Controller -->|Render UI| Disp

@@ -1,0 +1,16 @@
+graph LR
+    %% Styles
+    classDef system fill:#2C3E50,stroke:#E74C3C,stroke-width:4px,color:#FFFFFF,rx:15,ry:15;
+    classDef actor fill:#3498DB,stroke:#2980B9,stroke-width:2px,color:#FFFFFF,shape:actor;
+    classDef environment fill:#16A085,stroke:#1ABC9C,stroke-width:2px,color:#FFFFFF,rx:10,ry:10;
+
+    Env((Acoustic Environment)):::environment
+    User((Deaf / Hard-of-Hearing User)):::actor
+    Sys{{"HearAlert Real-Time System\n(Mobile Application)"}}:::system
+
+    %% Flows
+    Env -->|Continuous Ambient Audio Current| Sys
+    User -.->|User Preferences & Configurations| Sys
+    Sys -->|High-Intensity Haptic Feedback| User
+    Sys -->|Strobe LED Visual Alerts| User
+    Sys -->|Liquid UI Warning Overlay| User

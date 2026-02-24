@@ -1,0 +1,47 @@
+# OS Files
+.DS_Store
+*.swp
+*.lock
+
+# Python Caches
+__pycache__/
+*.py[cod]
+
+# HearAlert Datasets and Models (Massive Files)
+hearalertt/datasets/
+hearalertt/datasets_optimized/
+hearalertt/realtime_audio/
+hearalertt/training_data/
+hearalertt/test_samples/
+hearalertt/.embedding_cache/
+hearalertt/.embedding_cache_v2/
+*.npy
+*.xlsx
+*.wav
+*.mp3
+*.ogg
+*.flac
+
+# Document drafts
+*~lock.*
+
+# Models and TFLite
+*.tflite
+*.pb
+*.h5
+*.keras
+
+# Flutter & App Build Files
+hearalertt/mobile_app/build/
+hearalertt/mobile_app/.dart_tool/
+hearalertt/mobile_app/.pub-cache/
+hearalertt/mobile_app/.packages
+hearalertt/mobile_app/.flutter-plugins
+hearalertt/mobile_app/.flutter-plugins-dependencies
+hearalertt/mobile_app/.fvm/
+hearalertt/mobile_app/ios/Pods/
+hearalertt/mobile_app/ios/.symlinks/
+hearalertt/mobile_app/android/.gradle/
+hearalertt/mobile_app/android/app/build/
+*.apk
+*.aab

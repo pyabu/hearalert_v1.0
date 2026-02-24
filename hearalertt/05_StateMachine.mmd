@@ -1,0 +1,29 @@
+stateDiagram-v2
+    %% Styles
+    classDef active fill:#2ECC71,stroke:#27AE60,color:#FFFFFF,font-weight:bold;
+    classDef processing fill:#F39C12,stroke:#D35400,color:#FFFFFF;
+    classDef alert fill:#E74C3C,stroke:#C0392b,color:#FFFFFF,font-weight:bold;
+    classDef neutral fill:#95A5A6,stroke:#7F8C8D,color:#FFFFFF;
+
+    state "SYSTEM STANDBY" as Standby
+    state "ACTIVE LISTENING" as Listening
+    state "BUFFERING AUDIO (975ms)" as Buffering
+    state "NEURAL INFERENCING" as Inferencing
+    state "CRITICAL ALERT TRIGGERED" as AlertTriggered
+
+    Standby ::: neutral
+    Listening ::: active
+    Buffering ::: processing
+    Inferencing ::: processing
+    AlertTriggered ::: alert
+
+    [*] --> Standby
+    Standby --> Listening : User Initiates Monitoring
+    Listening --> Buffering : Microphone Ingests Audio Chunk
+    Buffering --> Inferencing : Buffer Reaches Capacity
+    
+    Inferencing --> AlertTriggered : Confidence > Threshold AND Zone Match
+    Inferencing --> Listening : Confidence Low OR Zone Suppressed
+    
+    AlertTriggered --> Listening : Feedback Dispatch Concluded
+    Listening --> Standby : User Manually Terminates

@@ -1,0 +1,26 @@
+flowchart LR
+    %% Styles
+    classDef actor fill:#F1C40F,stroke:#F39C12,stroke-width:2px,color:#333333;
+    classDef usecase fill:#ECF0F1,stroke:#BDC3C7,stroke-width:2px,color:#2C3E50,rx:15,ry:15;
+    classDef wrapper fill:#FFFFFF,stroke:#34495E,stroke-width:3px,stroke-dasharray: 5 5;
+
+    ActorUser((DHH User)):::actor
+
+    subgraph SystemBoundary[HearAlert System Boundary]
+        direction TB
+        UC1([Start/Stop Real-Time Monitoring]):::usecase
+        UC2([Select Smart Zone <br> Home/Street/Office]):::usecase
+        UC3([Adjust Visual UI Intesity]):::usecase
+        UC4([View Statistical Analytics & History]):::usecase
+        UC5([Access Offline ASL Reference Guide]):::usecase
+        UC6([Test Hardware Actuators]):::usecase
+    end
+    
+    class SystemBoundary wrapper;
+
+    ActorUser ==> UC1
+    ActorUser --> UC2
+    ActorUser --> UC3
+    ActorUser --> UC4
+    ActorUser --> UC5
+    ActorUser -.->|Diagnostic Use| UC6
