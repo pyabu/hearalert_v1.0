@@ -1,0 +1,341 @@
+training_config:
+  name: hearalert_audio_classifier
+  version: 1
+  created: '2026-02-20T12:55:09.526829'
+  model:
+    base: yamnet
+    transfer_learning: true
+    fine_tune_layers: 5
+  audio:
+    sample_rate: 16000
+    duration_ms: 1000
+    channels: 1
+    normalize: true
+  training:
+    epochs: 50
+    batch_size: 32
+    learning_rate: 0.001
+    early_stopping:
+      patience: 10
+      min_delta: 0.001
+  augmentation:
+    enabled: true
+    noise_injection: 0.1
+    time_shift: 0.2
+    pitch_shift: true
+dataset:
+  name: hearalert_training_dataset
+  version: 1
+  created: '2026-02-20T12:54:39.763483'
+  total_files: 19243
+  categories:
+  - name: baby_cry
+    display_name: Baby Crying
+    count: 603
+    priority: 10
+  - name: car_horn
+    display_name: Car Horn
+    count: 563
+    priority: 10
+  - name: traffic
+    display_name: Traffic/Vehicle
+    count: 795
+    priority: 8
+  - name: train
+    display_name: Train
+    count: 563
+    priority: 9
+  - name: siren
+    display_name: Emergency Siren
+    count: 562
+    priority: 10
+  - name: fire_alarm
+    display_name: Fire/Alarm
+    count: 792
+    priority: 10
+  - name: glass_breaking
+    display_name: Glass Breaking
+    count: 556
+    priority: 9
+  - name: door_knock
+    display_name: Door Knock
+    count: 793
+    priority: 8
+  - name: doorbell
+    display_name: Doorbell
+    count: 560
+    priority: 8
+  - name: phone_ring
+    display_name: Phone/Alarm Ring
+    count: 558
+    priority: 7
+  - name: dog_bark
+    display_name: Dog Barking
+    count: 561
+    priority: 7
+  - name: cat_meow
+    display_name: Cat Meowing
+    count: 552
+    priority: 5
+  - name: helicopter
+    display_name: Helicopter
+    count: 557
+    priority: 6
+  - name: thunderstorm
+    display_name: Thunderstorm
+    count: 560
+    priority: 7
+  - name: smoke_alarm
+    display_name: Smoke Alarm
+    count: 300
+    priority: 10
+  - name: car_alarm
+    display_name: Car Alarm
+    count: 300
+    priority: 9
+  - name: alarm_clock
+    display_name: Alarm Clock
+    count: 300
+    priority: 8
+  - name: microwave_beep
+    display_name: Microwave Beep
+    count: 300
+    priority: 7
+  - name: knock_knock
+    display_name: Knocking
+    count: 300
+    priority: 8
+  - name: water_running
+    display_name: Water Running
+    count: 300
+    priority: 6
+  - name: speech
+    display_name: Human Voice/Speech
+    count: 868
+    priority: 8
+  - name: coughing
+    display_name: Coughing
+    count: 561
+    priority: 7
+  - name: breathing
+    display_name: Heavy Breathing
+    count: 795
+    priority: 7
+  - name: footsteps
+    display_name: Footsteps
+    count: 559
+    priority: 6
+  - name: door_creaking
+    display_name: Door Opening
+    count: 555
+    priority: 8
+  - name: washing_machine
+    display_name: Washing Machine
+    count: 562
+    priority: 6
+  - name: vacuum_cleaner
+    display_name: Vacuum Cleaner
+    count: 559
+    priority: 5
+  - name: keyboard_typing
+    display_name: Keyboard/Mouse
+    count: 785
+    priority: 4
+  - name: clock_tick
+    display_name: Clock Ticking
+    count: 562
+    priority: 4
+  - name: chainsaw
+    display_name: Power Tools
+    count: 796
+    priority: 8
+  - name: gunshot_firework
+    display_name: Gunshot/Fireworks
+    count: 568
+    priority: 10
+  - name: airplane
+    display_name: Airplane
+    count: 566
+    priority: 5
+  - name: background
+    display_name: Background/Silence
+    count: 1132
+    priority: 0
+categories:
+  baby_cry:
+    display_name: Baby Crying
+    file_count: 603
+    priority: 10
+  car_horn:
+    display_name: Car Horn
+    file_count: 563
+    priority: 10
+  traffic:
+    display_name: Traffic/Vehicle
+    file_count: 795
+    priority: 8
+  train:
+    display_name: Train
+    file_count: 563
+    priority: 9
+  siren:
+    display_name: Emergency Siren
+    file_count: 562
+    priority: 10
+  fire_alarm:
+    display_name: Fire/Alarm
+    file_count: 792
+    priority: 10
+  glass_breaking:
+    display_name: Glass Breaking
+    file_count: 556
+    priority: 9
+  door_knock:
+    display_name: Door Knock
+    file_count: 793
+    priority: 8
+  doorbell:
+    display_name: Doorbell
+    file_count: 560
+    priority: 8
+  phone_ring:
+    display_name: Phone/Alarm Ring
+    file_count: 558
+    priority: 7
+  dog_bark:
+    display_name: Dog Barking
+    file_count: 561
+    priority: 7
+  cat_meow:
+    display_name: Cat Meowing
+    file_count: 552
+    priority: 5
+  helicopter:
+    display_name: Helicopter
+    file_count: 557
+    priority: 6
+  thunderstorm:
+    display_name: Thunderstorm
+    file_count: 560
+    priority: 7
+  smoke_alarm:
+    display_name: Smoke Alarm
+    file_count: 300
+    priority: 10
+  car_alarm:
+    display_name: Car Alarm
+    file_count: 300
+    priority: 9
+  alarm_clock:
+    display_name: Alarm Clock
+    file_count: 300
+    priority: 8
+  microwave_beep:
+    display_name: Microwave Beep
+    file_count: 300
+    priority: 7
+  knock_knock:
+    display_name: Knocking
+    file_count: 300
+    priority: 8
+  water_running:
+    display_name: Water Running
+    file_count: 300
+    priority: 6
+  speech:
+    display_name: Human Voice/Speech
+    file_count: 868
+    priority: 8
+  coughing:
+    display_name: Coughing
+    file_count: 561
+    priority: 7
+  breathing:
+    display_name: Heavy Breathing
+    file_count: 795
+    priority: 7
+  footsteps:
+    display_name: Footsteps
+    file_count: 559
+    priority: 6
+  door_creaking:
+    display_name: Door Opening
+    file_count: 555
+    priority: 8
+  washing_machine:
+    display_name: Washing Machine
+    file_count: 562
+    priority: 6
+  vacuum_cleaner:
+    display_name: Vacuum Cleaner
+    file_count: 559
+    priority: 5
+  keyboard_typing:
+    display_name: Keyboard/Mouse
+    file_count: 785
+    priority: 4
+  clock_tick:
+    display_name: Clock Ticking
+    file_count: 562
+    priority: 4
+  chainsaw:
+    display_name: Power Tools
+    file_count: 796
+    priority: 8
+  gunshot_firework:
+    display_name: Gunshot/Fireworks
+    file_count: 568
+    priority: 10
+  airplane:
+    display_name: Airplane
+    file_count: 566
+    priority: 5
+  background:
+    display_name: Background/Silence
+    file_count: 1132
+    priority: 0
+splits:
+  train: 15383
+  validation: 1922
+  test: 1938
+training_results:
+  accuracy: 0.6343799233436584
+  val_accuracy: 0.6831425428390503
+  best_epoch: 90
+  model_path: /Users/abusaleem/Hearalert-version-1.1/hearalert-1.0.1/hearalertt/mobile_app/assets/models/hearalert_classifier.tflite
+  labels_path: /Users/abusaleem/Hearalert-version-1.1/hearalert-1.0.1/hearalertt/mobile_app/assets/models/hearalert_labels.txt
+  categories:
+  - baby_cry
+  - car_horn
+  - traffic
+  - train
+  - siren
+  - fire_alarm
+  - glass_breaking
+  - door_knock
+  - doorbell
+  - phone_ring
+  - dog_bark
+  - cat_meow
+  - helicopter
+  - thunderstorm
+  - smoke_alarm
+  - car_alarm
+  - alarm_clock
+  - microwave_beep
+  - knock_knock
+  - water_running
+  - speech
+  - coughing
+  - breathing
+  - footsteps
+  - door_creaking
+  - washing_machine
+  - vacuum_cleaner
+  - keyboard_typing
+  - clock_tick
+  - chainsaw
+  - gunshot_firework
+  - airplane
+  - background
+  model_size_kb: 704.6328125

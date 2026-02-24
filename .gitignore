@@ -43,5 +43,6 @@ hearalertt/mobile_app/ios/Pods/
 hearalertt/mobile_app/ios/.symlinks/
 hearalertt/mobile_app/android/.gradle/
 hearalertt/mobile_app/android/app/build/
+hearalertt/mobile_app/.build_tools/
 *.apk
 *.aab

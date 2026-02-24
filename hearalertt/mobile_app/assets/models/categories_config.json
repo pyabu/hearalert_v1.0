@@ -1,0 +1,523 @@
+[
+  {
+    "id": "airplane",
+    "label": "Airplane",
+    "priority": 5,
+    "alert_type": "low",
+    "color": "#4169E1",
+    "vibration_pattern": [
+      0,
+      1200,
+      400,
+      1200
+    ]
+  },
+  {
+    "id": "alarm_clock",
+    "label": "Alarm Clock",
+    "priority": 8,
+    "alert_type": "high",
+    "color": "#00008B",
+    "vibration_pattern": [
+      0,
+      180,
+      120,
+      180,
+      120,
+      180,
+      120,
+      180
+    ]
+  },
+  {
+    "id": "baby_cry",
+    "label": "Baby Crying",
+    "priority": 10,
+    "alert_type": "critical",
+    "color": "#FF69B4",
+    "vibration_pattern": [
+      0,
+      60,
+      80,
+      60,
+      80,
+      60,
+      80,
+      200,
+      60,
+      80,
+      60,
+      80,
+      60,
+      300
+    ]
+  },
+  {
+    "id": "background",
+    "label": "Background/Silence",
+    "priority": 0,
+    "alert_type": "none",
+    "color": "#000000",
+    "vibration_pattern": []
+  },
+  {
+    "id": "breathing",
+    "label": "Heavy Breathing",
+    "priority": 7,
+    "alert_type": "high",
+    "color": "#87CEEB",
+    "vibration_pattern": [
+      0,
+      600,
+      400,
+      600,
+      400
+    ]
+  },
+  {
+    "id": "car_alarm",
+    "label": "Car Alarm",
+    "priority": 9,
+    "alert_type": "critical",
+    "color": "#DC143C",
+    "vibration_pattern": [
+      0,
+      250,
+      80,
+      250,
+      80,
+      250,
+      80,
+      250,
+      80,
+      250,
+      80,
+      250
+    ]
+  },
+  {
+    "id": "car_horn",
+    "label": "Car Horn",
+    "priority": 10,
+    "alert_type": "critical",
+    "color": "#CD5C5C",
+    "vibration_pattern": [
+      0,
+      600,
+      200,
+      600
+    ]
+  },
+  {
+    "id": "cat_meow",
+    "label": "Cat Meowing",
+    "priority": 5,
+    "alert_type": "medium",
+    "color": "#F0E68C",
+    "vibration_pattern": [
+      0,
+      120,
+      150,
+      280
+    ]
+  },
+  {
+    "id": "chainsaw",
+    "label": "Power Tools",
+    "priority": 8,
+    "alert_type": "high",
+    "color": "#FF4500",
+    "vibration_pattern": [
+      0,
+      250,
+      80,
+      250,
+      80,
+      250,
+      100,
+      800
+    ]
+  },
+  {
+    "id": "clock_tick",
+    "label": "Clock Ticking",
+    "priority": 4,
+    "alert_type": "low",
+    "color": "#DAA520",
+    "vibration_pattern": [
+      0,
+      50,
+      950
+    ]
+  },
+  {
+    "id": "coughing",
+    "label": "Coughing",
+    "priority": 7,
+    "alert_type": "high",
+    "color": "#FF7F50",
+    "vibration_pattern": [
+      0,
+      100,
+      60,
+      100,
+      60,
+      100
+    ]
+  },
+  {
+    "id": "dog_bark",
+    "label": "Dog Barking",
+    "priority": 7,
+    "alert_type": "high",
+    "color": "#D2691E",
+    "vibration_pattern": [
+      0,
+      160,
+      100,
+      160
+    ]
+  },
+  {
+    "id": "door_creaking",
+    "label": "Door Opening",
+    "priority": 8,
+    "alert_type": "high",
+    "color": "#A0522D",
+    "vibration_pattern": [
+      0,
+      800
+    ]
+  },
+  {
+    "id": "door_knock",
+    "label": "Door Knock",
+    "priority": 8,
+    "alert_type": "high",
+    "color": "#8B4513",
+    "vibration_pattern": [
+      0,
+      120,
+      80,
+      120,
+      300,
+      120,
+      80,
+      120
+    ]
+  },
+  {
+    "id": "doorbell",
+    "label": "Doorbell",
+    "priority": 8,
+    "alert_type": "high",
+    "color": "#FFD700",
+    "vibration_pattern": [
+      0,
+      180,
+      120,
+      380
+    ]
+  },
+  {
+    "id": "fire_alarm",
+    "label": "Fire/Alarm",
+    "priority": 10,
+    "alert_type": "critical",
+    "color": "#FF4500",
+    "vibration_pattern": [
+      0,
+      200,
+      100,
+      200,
+      100,
+      200,
+      500,
+      200,
+      100,
+      200,
+      100,
+      200
+    ]
+  },
+  {
+    "id": "footsteps",
+    "label": "Footsteps",
+    "priority": 6,
+    "alert_type": "medium",
+    "color": "#8B4513",
+    "vibration_pattern": [
+      0,
+      140,
+      260,
+      140,
+      260,
+      140
+    ]
+  },
+  {
+    "id": "glass_breaking",
+    "label": "Glass Breaking",
+    "priority": 9,
+    "alert_type": "critical",
+    "color": "#E0FFFF",
+    "vibration_pattern": [
+      0,
+      30,
+      20,
+      30,
+      20,
+      30,
+      20,
+      30,
+      20,
+      30,
+      20,
+      600
+    ]
+  },
+  {
+    "id": "gunshot_firework",
+    "label": "Gunshot/Fireworks",
+    "priority": 10,
+    "alert_type": "critical",
+    "color": "#DC143C",
+    "vibration_pattern": [
+      0,
+      50,
+      50,
+      50,
+      50,
+      50,
+      50,
+      50,
+      50,
+      900
+    ]
+  },
+  {
+    "id": "helicopter",
+    "label": "Helicopter",
+    "priority": 6,
+    "alert_type": "medium",
+    "color": "#778899",
+    "vibration_pattern": [
+      0,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80
+    ]
+  },
+  {
+    "id": "keyboard_typing",
+    "label": "Keyboard/Mouse",
+    "priority": 4,
+    "alert_type": "low",
+    "color": "#2F4F4F",
+    "vibration_pattern": [
+      0,
+      45,
+      45,
+      45,
+      45,
+      45,
+      45,
+      45
+    ]
+  },
+  {
+    "id": "knock_knock",
+    "label": "Knocking",
+    "priority": 8,
+    "alert_type": "high",
+    "color": "#DEB887",
+    "vibration_pattern": [
+      0,
+      100,
+      60,
+      100,
+      60,
+      100,
+      60,
+      100
+    ]
+  },
+  {
+    "id": "microwave_beep",
+    "label": "Microwave Beep",
+    "priority": 7,
+    "alert_type": "high",
+    "color": "#9370DB",
+    "vibration_pattern": [
+      0,
+      220,
+      80,
+      220,
+      80,
+      220
+    ]
+  },
+  {
+    "id": "phone_ring",
+    "label": "Phone/Alarm Ring",
+    "priority": 7,
+    "alert_type": "high",
+    "color": "#4B0082",
+    "vibration_pattern": [
+      0,
+      350,
+      180,
+      350,
+      180,
+      350
+    ]
+  },
+  {
+    "id": "siren",
+    "label": "Emergency Siren",
+    "priority": 10,
+    "alert_type": "critical",
+    "color": "#FF0000",
+    "vibration_pattern": [
+      0,
+      700,
+      100,
+      700,
+      100,
+      700,
+      100,
+      700
+    ]
+  },
+  {
+    "id": "smoke_alarm",
+    "label": "Smoke Alarm",
+    "priority": 10,
+    "alert_type": "critical",
+    "color": "#A52A2A",
+    "vibration_pattern": [
+      0,
+      150,
+      75,
+      150,
+      75,
+      150,
+      800
+    ]
+  },
+  {
+    "id": "speech",
+    "label": "Human Voice/Speech",
+    "priority": 8,
+    "alert_type": "high",
+    "color": "#6B5B95",
+    "vibration_pattern": [
+      0,
+      150,
+      80,
+      80,
+      40,
+      150,
+      80,
+      80
+    ]
+  },
+  {
+    "id": "thunderstorm",
+    "label": "Thunderstorm",
+    "priority": 7,
+    "alert_type": "high",
+    "color": "#483D8B",
+    "vibration_pattern": [
+      0,
+      80,
+      50,
+      150,
+      100,
+      300,
+      150,
+      700
+    ]
+  },
+  {
+    "id": "traffic",
+    "label": "Traffic/Vehicle",
+    "priority": 8,
+    "alert_type": "high",
+    "color": "#808080",
+    "vibration_pattern": [
+      0,
+      400,
+      250,
+      400
+    ]
+  },
+  {
+    "id": "train",
+    "label": "Train",
+    "priority": 9,
+    "alert_type": "critical",
+    "color": "#2F4F4F",
+    "vibration_pattern": [
+      0,
+      150,
+      150,
+      150,
+      150,
+      600,
+      150,
+      600
+    ]
+  },
+  {
+    "id": "vacuum_cleaner",
+    "label": "Vacuum Cleaner",
+    "priority": 5,
+    "alert_type": "low",
+    "color": "#708090",
+    "vibration_pattern": [
+      0,
+      2000
+    ]
+  },
+  {
+    "id": "washing_machine",
+    "label": "Washing Machine",
+    "priority": 6,
+    "alert_type": "medium",
+    "color": "#4682B4",
+    "vibration_pattern": [
+      0,
+      450,
+      450,
+      450,
+      450,
+      450
+    ]
+  },
+  {
+    "id": "water_running",
+    "label": "Water Running",
+    "priority": 6,
+    "alert_type": "medium",
+    "color": "#00FFFF",
+    "vibration_pattern": [
+      0,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80
+    ]
+  }
+]

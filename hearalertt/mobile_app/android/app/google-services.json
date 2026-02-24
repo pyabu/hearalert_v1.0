@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "54494962021",
+    "project_id": "hear-alert",
+    "storage_bucket": "hear-alert.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:54494962021:android:024e54499da44e5fd8c18c",
+        "android_client_info": {
+          "package_name": "com.company.hearalert1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAaD8gX7ZV8w7IKqpQYtFOvzMpn58itmc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
