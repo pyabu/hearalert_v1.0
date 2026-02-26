@@ -277,12 +277,18 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
       return;
     }
 
-    // Throttle duplicate alerts - further reduced for extreme sensitivity (500ms)
-    if (_lastEvent != null &&
-        _lastEvent!.label == result.displayName &&
-        DateTime.now().difference(_lastEvent!.timestamp) <
-            const Duration(milliseconds: 500)) {
-      return;
+    // ── ALERT-ONCE LOGIC ─────────────────────────────────────────────────
+    // Same sound: suppress for 30 seconds (alert ONCE, then stop repeating)
+    // Different sound: allow after a 3-second gap
+    if (_lastEvent != null) {
+      final elapsed = DateTime.now().difference(_lastEvent!.timestamp);
+      if (_lastEvent!.label == result.displayName) {
+        // SAME sound still playing — suppress for 30 seconds
+        if (elapsed < const Duration(seconds: 30)) return;
+      } else {
+        // DIFFERENT sound — allow after 3 seconds to prevent cascade
+        if (elapsed < const Duration(seconds: 3)) return;
+      }
     }
 
     debugPrint(
@@ -361,13 +367,18 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
     // ── DEAF ACCESSIBILITY: Auto-trigger all alerts ──────────────────────
     // Bypassing Smart Zone filter to ensure no alerts are missed.
 
-    // Throttle: wait 2 seconds before allowing ANY new alert (same or different label).
-    // This prevents the "fire alarm → vehicle → doorbell" cascade from YAMNet.
-    final throttleDuration = const Duration(seconds: 2);
-
-    if (_lastEvent != null &&
-        DateTime.now().difference(_lastEvent!.timestamp) < throttleDuration) {
-      return;
+    // ── ALERT-ONCE LOGIC ─────────────────────────────────────────────────
+    // Same sound: suppress for 30 seconds (alert ONCE, then stop repeating)
+    // Different sound: allow after a 3-second gap
+    if (_lastEvent != null) {
+      final elapsed = DateTime.now().difference(_lastEvent!.timestamp);
+      if (_lastEvent!.label == result.label) {
+        // SAME sound still playing — suppress for 30 seconds
+        if (elapsed < const Duration(seconds: 30)) return;
+      } else {
+        // DIFFERENT sound — allow after 3 seconds to prevent cascade
+        if (elapsed < const Duration(seconds: 3)) return;
+      }
     }
 
     // Log the alert trigger

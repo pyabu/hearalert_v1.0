@@ -1,6 +1,7 @@
 flowchart TD
     %% Python Training Layer
-    subgraph 1.0 Dataset Engineering (Python)
+    %% Python Training Layer
+    subgraph Layer1["1.0 Dataset Engineering (Python)"]
         ESC[ESC-50 Sound Dataset \nFiltered 'Car Horn']
         SYN1[Rich Synthetics / Overlapping Noise]
         AUG[Time-Shift, Pitch-Shift, Mix Audio]
@@ -9,7 +10,7 @@ flowchart TD
     end
 
     %% Training Pipeline Layer
-    subgraph 2.0 Feature Extraction & Training
+    subgraph Layer2["2.0 Feature Extraction & Training"]
         YAMNET[YAMNet Pre-Trained Model \nFeature Extractor]
         DNN[Dense Neural Network \nSoftmax Classification]
         AUG --> |Spectrogram Output| YAMNET
@@ -17,7 +18,7 @@ flowchart TD
     end
 
     %% Mobile Integration Layer
-    subgraph 3.0 Mobile Deployment (Flutter/Dart)
+    subgraph Layer3["3.0 Mobile Deployment (Flutter/Dart)"]
         TFL[TFLite Model \nQuantized Model Binary]
         FLUT[AudioClassifierService \n16kHz Buffer Streaming]
         DNN --> |Export .tflite| TFL

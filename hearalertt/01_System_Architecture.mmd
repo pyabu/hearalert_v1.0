@@ -33,8 +33,8 @@ graph TD
         
         subgraph ContextDispatch[Context & Dispatch]
             SmartZone(Smart Zone Filter Engine):::logic
-            DB[(Local Preferences DB)]:::database
-            History[(Alert History SQLite)]:::database
+            DB[(Local Preferences)]:::database
+            History[(Alert History Log)]:::database
             Controller(Multimodal Alert Controller):::logic
         end
     end

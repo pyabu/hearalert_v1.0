@@ -204,6 +204,10 @@ class HearAlertClassifierService {
   List<String>? _labels;
   bool _isInitialized = false;
 
+  // Sliding window for majority vote
+  static const int _votingWindowSize = 3;
+  final List<HearAlertResult> _recentDetections = [];
+
   final StreamController<List<HearAlertResult>> _resultController = StreamController.broadcast();
   Stream<List<HearAlertResult>> get detectionStream => _resultController.stream;
 
@@ -387,6 +391,9 @@ class HearAlertClassifierService {
       }
     }
 
+    // Return early if nothing was > threshold
+    if (results.isEmpty) return [];
+
     // Sort by priority first, then by confidence
     results.sort((a, b) {
       if (a.priority != b.priority) {
@@ -395,10 +402,44 @@ class HearAlertClassifierService {
       return b.confidence.compareTo(a.confidence);
     });
 
-    if (results.isNotEmpty) {
-      final top = results.first;
-      log('🎯 HEARALERT: ${top.displayName} (${(top.confidence * 100).toStringAsFixed(1)}%)');
-      _resultController.add(results);
+    final topRaw = results.first;
+
+    // ── Apply Majority Vote (Temporal Smoothing) ─────────────────────────
+    _recentDetections.add(topRaw);
+    if (_recentDetections.length > _votingWindowSize) {
+      _recentDetections.removeAt(0);
+    }
+
+    final votes = <String, int>{};
+    final bestResult = <String, HearAlertResult>{};
+    for (final r in _recentDetections) {
+      // Vote strictly by category ID (e.g. fire_alarm, door_knock)
+      votes[r.categoryId] = (votes[r.categoryId] ?? 0) + 1;
+      // Keep highest confidence item for the winner
+      if (!(bestResult.containsKey(r.categoryId)) || r.confidence > bestResult[r.categoryId]!.confidence) {
+        bestResult[r.categoryId] = r;
+      }
+    }
+
+    String? winnerId;
+    int maxVotes = 0;
+    votes.forEach((id, count) {
+      if (count > maxVotes) {
+        maxVotes = count;
+        winnerId = id;
+      }
+    });
+
+    final needMajority = _recentDetections.length >= _votingWindowSize ? 2 : 1;
+    
+    if (winnerId != null && maxVotes >= needMajority) {
+      final winner = bestResult[winnerId]!;
+      log('🎯 HearAlert CONFIRMED ($maxVotes/$_votingWindowSize): ${winner.displayName} (${(winner.confidence * 100).toStringAsFixed(1)}%)');
+      _resultController.add([winner]);
+      return [winner];
+    } else {
+      log('🔇 HearAlert SMOOTHING: No majority yet (votes: $votes)');
+      return [];
     }
 
     return results.take(3).toList();

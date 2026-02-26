@@ -14,7 +14,7 @@ graph TD
     P6((6.0<br>Log Event<br>History)):::process
 
     D1[(D1: Smart Zone Settings)]:::datastore
-    D2[(D2: Local History DB)]:::datastore
+    D2[(D2: Local Storage)]:::datastore
     
     Out1[/Vibration Output\]:::io
     Out2[/Visual Output\]:::io
@@ -30,4 +30,4 @@ graph TD
     
     P5 -->|Haptic API Call| Out1
     P5 -->|Render / Flash API Call| Out2
-    P6 -->|Write SQL Record| D2
+    P6 -->|Save Event Log| D2

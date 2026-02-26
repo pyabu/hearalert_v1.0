@@ -319,34 +319,35 @@ class AudioClassifierService {
           _recentDetections.removeAt(0);
         }
         
-        // Count votes for each label in the window
+        // Count votes by CATEGORY (not exact label) so related sounds vote together
+        // e.g., "Fire alarm" + "Alarm" + "Smoke detector" → all count as ALARM
         final votes = <String, int>{};
         final bestConf = <String, double>{};
         final bestResult = <String, ClassificationResult>{};
         for (final r in _recentDetections) {
-          votes[r.label] = (votes[r.label] ?? 0) + 1;
-          if ((bestConf[r.label] ?? 0) < r.confidence) {
-            bestConf[r.label] = r.confidence;
-            bestResult[r.label] = r;
+          final category = _getCategoryForLabel(r.label);
+          votes[category] = (votes[category] ?? 0) + 1;
+          if ((bestConf[category] ?? 0) < r.confidence) {
+            bestConf[category] = r.confidence;
+            bestResult[category] = r;
           }
         }
         
-        // Find the label with the most votes
-        String? winnerLabel;
+        // Find the category with the most votes
+        String? winnerCategory;
         int maxVotes = 0;
-        votes.forEach((label, count) {
+        votes.forEach((category, count) {
           if (count > maxVotes) {
             maxVotes = count;
-            winnerLabel = label;
+            winnerCategory = category;
           }
         });
         
         // Only emit if the winner has at least 2 votes (majority in window of 3)
-        // OR if the window isn't full yet and confidence is very high (>50%)
         final needMajority = _recentDetections.length >= _votingWindowSize ? 2 : 1;
-        if (winnerLabel != null && maxVotes >= needMajority) {
-          final winner = bestResult[winnerLabel]!;
-          debugPrint('🔊 YAMNet CONFIRMED ($maxVotes/$_votingWindowSize): ${winner.label} (${(winner.confidence*100).toStringAsFixed(1)}%)');
+        if (winnerCategory != null && maxVotes >= needMajority) {
+          final winner = bestResult[winnerCategory]!;
+          debugPrint('🔊 YAMNet CONFIRMED ($maxVotes/$_votingWindowSize): ${winner.label} [category: $winnerCategory] (${(winner.confidence*100).toStringAsFixed(1)}%)');
           _resultController.add([winner]);
         } else {
           debugPrint('🔇 YAMNet SMOOTHING: no majority yet (votes: $votes)');
@@ -449,6 +450,42 @@ class AudioClassifierService {
     debugPrint('Microphone stopped.');
   }
 
+  /// Maps related YAMNet labels into unified categories for majority-vote.
+  String _getCategoryForLabel(String label) {
+    final l = label.toLowerCase();
+    // ALARM / EMERGENCY
+    if (l.contains('fire') || l.contains('smoke') || l.contains('alarm') ||
+        l.contains('siren') || l.contains('ambulance') || l.contains('police')) return 'ALARM';
+    // DOOR
+    if (l.contains('knock') || (l.contains('door') && !l.contains('doorbell'))) return 'DOOR';
+    // BELL
+    if (l.contains('bell') || l.contains('chime') || l.contains('ding')) return 'BELL';
+    // SPEECH
+    if (l.contains('speech') || l.contains('voice') || l.contains('talk') ||
+        l.contains('conversation') || l.contains('narration')) return 'SPEECH';
+    // VEHICLE
+    if (l.contains('horn') || l.contains('honk') || l.contains('vehicle') ||
+        l.contains('car') || l.contains('truck') || l.contains('engine') ||
+        l.contains('traffic') || l.contains('motor')) return 'VEHICLE';
+    // MUSIC
+    if (l.contains('music') || l.contains('singing') || l.contains('song') ||
+        l.contains('guitar') || l.contains('piano') || l.contains('drum')) return 'MUSIC';
+    // ANIMAL
+    if (l.contains('dog') || l.contains('bark') || l.contains('cat') ||
+        l.contains('bird') || l.contains('chirp') || l.contains('meow')) return 'ANIMAL';
+    // BABY
+    if (l.contains('baby') || l.contains('cry') || l.contains('infant')) return 'BABY';
+    // GUNSHOT
+    if (l.contains('gun') || l.contains('explosion') || l.contains('blast') ||
+        l.contains('firework')) return 'GUNSHOT';
+    // GLASS
+    if (l.contains('glass') || l.contains('break') || l.contains('shatter')) return 'GLASS';
+    // PHONE
+    if (l.contains('phone') || l.contains('telephone') || l.contains('ringtone')) return 'PHONE';
+    // No match — use exact label
+    return label;
+  }
+
   void dispose() {
     stop();
     _interpreter?.close();
@@ -458,5 +495,3 @@ class AudioClassifierService {
     _rawAudioController.close();
   }
 }
-
-

@@ -10,7 +10,7 @@ flowchart TD
     P4((4.0\nAlert Generator))
     
     %% Data Stores
-    DB[(Event History / Firebase)]
+    DB[(Event Log)]
 
     %% Flow
     ENV -- Physical Acoustic Waves --> P1
@@ -18,7 +18,7 @@ flowchart TD
     P2 -- Detected Labels & Confidence Scores --> P3
     P3 -- Valid Event / Filtered Signal --> P4
     P4 -- Vibration & Strobe API Call --> USER
-    P4 -- Log Sound Event --> DB
+    P4 -- Save Event --> DB
     
     %% Styling
     classDef process fill:#f9f,stroke:#333,stroke-width:2px;

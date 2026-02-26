@@ -19,7 +19,7 @@ flowchart TD
         ZONE --> |Trigger Verified Event| UI[30FPS Spectrum Analyzer UI Update]
         ZONE --> |Trigger Action| HAPTIC[Vibration Engine specific pattern]
         ZONE --> |Trigger Action| STROBE[Camera LED Flash Strobe]
-        ZONE --> |Firebase Sync| DB[(Realtime Analytics Cloud Database)]
+        ZONE --> |Sync Event| DB[(Remote Event Log)]
     end
 
     style MIC fill:#eee,stroke:#333
