@@ -1,0 +1,35 @@
+flowchart TD
+    subgraph 1. Inlet Pipeline Layer
+        MIC[Hardware Microphone] --> |AudioStreamer| PCM[16kHz PCM Float32 Audio Buffer]
+    end
+
+    subgraph 2. Processing Layer \nThe Brain
+        PCM --> |Process 15,600 samples| YAMNET[YAMNet Inference TFLite\n521 Background Categories]
+        YAMNET --> |1024D Embeddings| CUSTOM[HearAlert Custom Classifier\nSpecific High-Risk Sounds]
+    end
+
+    subgraph 3. Filtration Layer \nThe Rules
+        YAMNET --> |Labels & Scores| CONF[Confidence Filtering > 0.45]
+        CUSTOM --> |Top Label & Score| CONF
+        CONF --> |Valid Sound| THROTTLE[Throttle / Frequency Cap]
+        THROTTLE --> |Debounced Event| ZONE[Smart Zone Context Filter\ne.g., 'Street Mode']
+    end
+
+    subgraph 4. Outlet Action Layer \nThe Brawn
+        ZONE --> |Trigger Verified Event| UI[30FPS Spectrum Analyzer UI Update]
+        ZONE --> |Trigger Action| HAPTIC[Vibration Engine specific pattern]
+        ZONE --> |Trigger Action| STROBE[Camera LED Flash Strobe]
+        ZONE --> |Firebase Sync| DB[(Realtime Analytics Cloud Database)]
+    end
+
+    style MIC fill:#eee,stroke:#333
+    style PCM fill:#bbf,stroke:#333
+    style YAMNET fill:#f9f,stroke:#333
+    style CUSTOM fill:#ff9,stroke:#333
+    style CONF fill:#dfd,stroke:#333
+    style THROTTLE fill:#dfd,stroke:#333
+    style ZONE fill:#dfd,stroke:#333
+    style UI fill:#eee,stroke:#333
+    style HAPTIC fill:#fbb,stroke:#333
+    style STROBE fill:#fff,stroke:#333,stroke-width:2px;
+    style DB fill:#ffb,stroke:#333

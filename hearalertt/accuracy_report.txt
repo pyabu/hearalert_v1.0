@@ -1,86 +1,89 @@
 HearAlert Audio Classifier — Accuracy Report
 ============================================================
 
-Overall Test Accuracy  : 59.54%
-Best Train Accuracy    : 55.35%
-Best Val Accuracy      : 56.06%
-Training Samples       : 225,979
-Test Samples           : 28,248
+Macro F1-Score         : 65.36%
+Macro Precision        : 76.43%
+Macro Recall           : 63.93%
+Overall Test Accuracy  : 63.93%
+Best Train Accuracy    : 54.18%
+Best Val Accuracy      : 55.32%
+Training Samples       : 186,935
+Test Samples           : 23,367
 
 Per-Class Accuracy:
 ----------------------------------------
-  airplane                   38.93%
+  airplane                   41.78%
   alarm_clock                100.00%
-  baby_cry                   42.57%
-  background                 92.45%
-  breathing                  46.82%
-  car_alarm                  100.00%
-  car_horn                   36.05%
-  cat_meow                   68.05%
-  chainsaw                   55.39%
-  clock_tick                 34.43%
-  coughing                   29.10%
-  dog_bark                   36.99%
-  door_creaking              87.15%
-  door_knock                 17.30%
-  doorbell                   63.76%
-  fire_alarm                 69.29%
-  footsteps                  94.74%
-  glass_breaking             23.04%
-  gunshot_firework           36.63%
-  helicopter                 38.55%
-  keyboard_typing            43.98%
-  knock_knock                100.00%
-  microwave_beep             100.00%
-  phone_ring                 37.87%
-  siren                      97.98%
+  baby_cry                   41.05%
+  background                 92.52%
+  breathing                  47.61%
+  car_alarm                  94.24%
+  car_horn                   97.87%
+  cat_meow                   39.05%
+  chainsaw                   56.27%
+  clock_tick                 49.58%
+  coughing                   28.52%
+  dog_bark                   34.52%
+  door_creaking              67.70%
+  door_knock                 33.54%
+  doorbell                   100.00%
+  fire_alarm                 100.00%
+  footsteps                  97.56%
+  glass_breaking             25.37%
+  gunshot_firework           37.65%
+  helicopter                 38.89%
+  keyboard_typing            46.05%
+  knock_knock                96.72%
+  microwave_beep             84.02%
+  phone_ring                 44.52%
+  siren                      100.00%
   smoke_alarm                100.00%
-  speech                     77.35%
-  thunderstorm               39.50%
-  traffic                    25.84%
-  train                      40.57%
-  vacuum_cleaner             52.00%
-  washing_machine            38.52%
+  speech                     79.49%
+  thunderstorm               42.40%
+  traffic                    47.18%
+  train                      65.45%
+  vacuum_cleaner             41.25%
+  washing_machine            38.91%
   water_running              100.00%
 
 
 Full Classification Report:
                   precision    recall  f1-score   support
 
-        airplane      0.836     0.389     0.531       863
-     alarm_clock      1.000     1.000     1.000       451
-        baby_cry      0.905     0.426     0.579       855
-      background      0.967     0.925     0.945      1404
-       breathing      0.894     0.468     0.615      1194
-       car_alarm      1.000     1.000     1.000       480
-        car_horn      0.367     0.360     0.364       860
-        cat_meow      0.090     0.681     0.160       817
-        chainsaw      0.974     0.554     0.706      1141
-      clock_tick      0.895     0.344     0.497       819
-        coughing      0.202     0.291     0.239       835
-        dog_bark      0.388     0.370     0.379       857
-   door_creaking      0.767     0.872     0.816       825
-      door_knock      0.638     0.173     0.272      1110
-        doorbell      0.994     0.638     0.777       803
-      fire_alarm      0.968     0.693     0.808      1107
-       footsteps      0.947     0.947     0.947       837
-  glass_breaking      0.234     0.230     0.232       855
-gunshot_firework      0.489     0.366     0.419       819
-      helicopter      0.933     0.385     0.545       825
- keyboard_typing      0.884     0.440     0.587      1105
-     knock_knock      0.311     1.000     0.474       486
-  microwave_beep      0.996     1.000     0.998       496
-      phone_ring      0.619     0.379     0.470       816
-           siren      0.999     0.980     0.989       843
-     smoke_alarm      1.000     1.000     1.000       450
-          speech      0.970     0.774     0.861      1223
-    thunderstorm      0.917     0.395     0.552       838
-         traffic      0.968     0.258     0.408      1157
-           train      0.872     0.406     0.554       843
-  vacuum_cleaner      0.221     0.520     0.310       900
- washing_machine      0.891     0.385     0.538       849
-   water_running      0.992     1.000     0.996       485
+        airplane      0.805     0.418     0.550       852
+     alarm_clock      0.983     1.000     0.992       235
+        baby_cry      0.920     0.411     0.568       838
+      background      0.984     0.925     0.954      1364
+       breathing      0.927     0.476     0.629      1193
+       car_alarm      1.000     0.942     0.970       486
+        car_horn      0.262     0.979     0.413       328
+        cat_meow      0.282     0.391     0.328       822
+        chainsaw      0.972     0.563     0.713      1189
+      clock_tick      0.179     0.496     0.263       825
+        coughing      0.335     0.285     0.308       838
+        dog_bark      0.347     0.345     0.346       846
+   door_creaking      0.978     0.677     0.800       257
+      door_knock      0.871     0.335     0.484      1112
+        doorbell      0.980     1.000     0.990       251
+      fire_alarm      1.000     1.000     1.000       243
+       footsteps      0.972     0.976     0.974       246
+  glass_breaking      0.256     0.254     0.255       812
+gunshot_firework      0.864     0.376     0.524       842
+      helicopter      0.964     0.389     0.554       828
+ keyboard_typing      0.931     0.461     0.616      1114
+     knock_knock      0.657     0.967     0.783       244
+  microwave_beep      1.000     0.840     0.913       244
+      phone_ring      0.274     0.445     0.340       840
+           siren      0.920     1.000     0.958       253
+     smoke_alarm      1.000     1.000     1.000       247
+          speech      0.946     0.795     0.864      1224
+    thunderstorm      0.589     0.424     0.493       849
+         traffic      0.963     0.472     0.633      1153
+           train      0.134     0.655     0.222       825
+  vacuum_cleaner      0.953     0.412     0.576       834
+ washing_machine      0.972     0.389     0.556       884
+   water_running      1.000     1.000     1.000       249
 
-        accuracy                          0.562     28248
-       macro avg      0.762     0.595     0.623     28248
-    weighted avg      0.766     0.562     0.606     28248
+        accuracy                          0.547     23367
+       macro avg      0.764     0.639     0.654     23367
+    weighted avg      0.746     0.547     0.590     23367

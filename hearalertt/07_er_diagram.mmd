@@ -1,0 +1,30 @@
+erDiagram
+    %% Entities
+    USER {
+        string user_id PK
+        string email
+        string device_token "FCM Token"
+        string smart_zone_mode "Home / Street"
+        int vibration_intensity "1 to 3"
+    }
+    
+    SOUND_EVENT {
+        string event_id PK
+        string label "e.g., Fire Alarm"
+        float confidence "e.g., 0.95"
+        datetime timestamp
+        string severity "Critical/Warning/Info"
+        string user_id FK
+    }
+    
+    DEVICE_ALERT {
+        string alert_id PK
+        boolean haptic_triggered
+        boolean flash_triggered
+        string screen_status
+        string event_id FK
+    }
+
+    %% Relationships
+    USER ||--o{ SOUND_EVENT : "logs"
+    SOUND_EVENT ||--|| DEVICE_ALERT : "triggers"

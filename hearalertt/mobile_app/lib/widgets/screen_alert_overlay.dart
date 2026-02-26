@@ -453,6 +453,56 @@ class _AlertOverlayContentState extends State<_AlertOverlayContent>
     final config = _getAlertConfig(widget.event.label);
     final size = MediaQuery.of(context).size;
 
+    // ── Compact top banner for "info" events (speech, music, ambient) ──
+    if (widget.event.type == 'info') {
+      return Positioned(
+        top: 0,
+        left: 0,
+        right: 0,
+        child: Material(
+          color: Colors.transparent,
+          child: SafeArea(
+            bottom: false,
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              decoration: BoxDecoration(
+                color: config.color.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: config.color.withOpacity(0.4)),
+              ),
+              child: Row(
+                children: [
+                  Icon(config.icon, color: config.color, size: 20),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      config.displayMessage,
+                      style: TextStyle(
+                        color: config.color,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                    '${(widget.event.confidence * 100).toInt()}%',
+                    style: TextStyle(
+                      color: config.color.withOpacity(0.7),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // ── Full screen overlay for emergency/warning events ──
     return Material(
       color: Colors.transparent,
       child: AnimatedBuilder(

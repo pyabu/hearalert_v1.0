@@ -151,6 +151,7 @@ class ContactsScreen extends StatelessWidget {
   void _showAddContactDialog(BuildContext context) {
     final nameCtrl = TextEditingController();
     final phoneCtrl = TextEditingController();
+    final fcmCtrl = TextEditingController();
     String relation = 'Family';
 
     showDialog(
@@ -246,6 +247,29 @@ class ContactsScreen extends StatelessWidget {
                   onChanged: (v) =>
                       setDialogState(() => relation = v ?? 'Family'),
                 ),
+                const SizedBox(height: 14),
+                // FCM Token field (Optional)
+                TextField(
+                  controller: fcmCtrl,
+                  style: GoogleFonts.inter(color: AppTheme.textPrimary),
+                  decoration: InputDecoration(
+                    labelText: 'FCM Device Token (Optional)',
+                    labelStyle: GoogleFonts.inter(color: AppTheme.textMuted),
+                    helperText: 'Required for push notifications',
+                    helperStyle: GoogleFonts.inter(color: AppTheme.primary.withOpacity(0.6)),
+                    prefixIcon: const Icon(LucideIcons.smartphone,
+                        size: 18, color: AppTheme.accentViolet),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: AppTheme.glassHigh),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide:
+                          const BorderSide(color: AppTheme.primary, width: 2),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -259,6 +283,8 @@ class ContactsScreen extends StatelessWidget {
               onPressed: () {
                 final name = nameCtrl.text.trim();
                 final phone = phoneCtrl.text.trim();
+                final fcmToken = fcmCtrl.text.trim();
+                
                 if (name.isEmpty || phone.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -270,7 +296,12 @@ class ContactsScreen extends StatelessWidget {
                   return;
                 }
                 context.read<SettingsProvider>().addContact(
-                      Contact(name: name, phone: phone, relation: relation),
+                      Contact(
+                        name: name,
+                        phone: phone,
+                        relation: relation,
+                        fcmToken: fcmToken.isNotEmpty ? fcmToken : null,
+                      ),
                     );
                 Navigator.pop(ctx);
                 ScaffoldMessenger.of(context).showSnackBar(

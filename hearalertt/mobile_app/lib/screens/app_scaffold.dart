@@ -13,6 +13,8 @@ import 'package:mobile_app/screens/history_screen.dart';
 import 'package:mobile_app/screens/settings_screen.dart';
 import 'package:mobile_app/widgets/liquid_background.dart';
 import 'package:mobile_app/widgets/screen_alert_overlay.dart';
+import 'package:mobile_app/widgets/sound_alert_dialog.dart';
+import 'package:mobile_app/widgets/baby_cry_alert_dialog.dart';
 import 'package:mobile_app/theme/app_theme.dart';
 import 'package:mobile_app/models/models.dart';
 
@@ -27,6 +29,9 @@ class _AppScaffoldState extends State<AppScaffold>
   int _index = 0;
   late AnimationController _badgeController;
   late AnimationController _navController;
+  DateTime? _lastAlertTimestamp;
+  DateTime? _lastBabyCryAlertTimestamp;
+  SoundProvider? _soundProviderRef;
 
   static const _navItems = [
     _NavItem(LucideIcons.home, LucideIcons.home, 'Home'),
@@ -56,14 +61,49 @@ class _AppScaffoldState extends State<AppScaffold>
     )..forward();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SoundProvider>().updateSettings(
+      final soundProvider = context.read<SoundProvider>();
+      soundProvider.updateSettings(
             context.read<SettingsProvider>(),
           );
+      _soundProviderRef = soundProvider;
+      _soundProviderRef!.addListener(_checkForAlerts);
     });
+  }
+
+  void _checkForAlerts() {
+    if (_soundProviderRef == null || !mounted) return;
+    
+    // Check Baby Cry Alerts first
+    final lastBabyCry = _soundProviderRef!.lastBabyCryDetection;
+    if (lastBabyCry != null && _lastBabyCryAlertTimestamp != lastBabyCry.timestamp) {
+      _lastBabyCryAlertTimestamp = lastBabyCry.timestamp;
+      showDialog(
+        context: context,
+        barrierDismissible: !lastBabyCry.isHighPriority,
+        builder: (context) => BabyCryAlertDialog(prediction: lastBabyCry),
+      );
+      // Wait to not show both dialogs at exactly the same time. Since baby cry 
+      // is most important, skip general alert this frame.
+      return; 
+    }
+
+    final lastEvent = _soundProviderRef!.lastEvent;
+    if (lastEvent != null && 
+        (lastEvent.type == 'emergency' || lastEvent.type == 'warning')) {
+      if (_lastAlertTimestamp != lastEvent.timestamp) {
+        _lastAlertTimestamp = lastEvent.timestamp;
+        showDialog(
+          context: context,
+          barrierDismissible: lastEvent.type != 'emergency', // critical alerts must be acknowledged
+          builder: (context) => SoundAlertDialog(event: lastEvent),
+        );
+      }
+    }
   }
 
   @override
   void dispose() {
+    _soundProviderRef?.removeListener(_checkForAlerts);
     _badgeController.dispose();
     _navController.dispose();
     super.dispose();

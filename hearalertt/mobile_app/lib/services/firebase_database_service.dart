@@ -51,12 +51,14 @@ class FirebaseDatabaseService {
   Future<void> updatePresence({
     String? platform,
     String? appVersion,
+    String? fcmToken,
   }) async {
     final data = <String, dynamic>{
       'lastSeen': ServerValue.timestamp,
     };
     if (platform != null) data['deviceInfo/platform'] = platform;
     if (appVersion != null) data['deviceInfo/appVersion'] = appVersion;
+    if (fcmToken != null) data['fcmToken'] = fcmToken;
     await _userRef.update(data);
   }
 

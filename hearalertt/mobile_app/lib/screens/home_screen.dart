@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:mobile_app/services/audio_classifier_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -330,118 +332,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         .scale(begin: const Offset(0.92, 0.92), end: const Offset(1, 1));
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // SPECTRUM ANALYZER — real waveform data, 30 bars
-  // ─────────────────────────────────────────────────────────────────────────
-  Widget _buildSpectrumCard() {
-    return Selector<
-        SoundProvider,
-        ({
-          double amplitude,
-          bool isListening,
-          SoundEvent? event,
-          List<double> waveform
-        })>(
-      selector: (_, p) => (
-        amplitude: p.amplitude,
-        isListening: p.isListening,
-        event: p.lastEvent,
-        waveform: p.waveformData,
-      ),
-      builder: (_, data, __) {
-        final isEmergency = data.event?.isEmergency == true;
+  Widget _buildSpectrumCard() => const _RealtimeSpectrumCard();
 
-        return LiquidGlassContainer(
-          width: double.infinity,
-          height: 118,
-          borderRadius: 24,
-          opacity: 0.07,
-          glow: data.isListening,
-          glowColor: isEmergency ? AppTheme.danger : AppTheme.primary,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: RepaintBoundary(
-                    child: CustomPaint(
-                      painter: _SpectrumPainter(
-                        waveformData: data.waveform,
-                        amplitude: data.amplitude,
-                        isListening: data.isListening,
-                        isEmergency: isEmergency,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 14,
-                left: 16,
-                right: 16,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'SPECTRUM ANALYZER',
-                      style: GoogleFonts.inter(
-                        fontSize: 9 * AppTheme.textScale,
-                        fontWeight: FontWeight.w700,
-                        color: AppTheme.primary,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                    if (data.event != null)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color:
-                              (isEmergency ? AppTheme.danger : AppTheme.success)
-                                  .withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(
-                            color: (isEmergency
-                                    ? AppTheme.danger
-                                    : AppTheme.success)
-                                .withOpacity(0.30),
-                          ),
-                        ),
-                        child: Text(
-                          '${(data.event!.confidence * 100).toInt()}% CONF',
-                          style: GoogleFonts.inter(
-                            fontSize: 9 * AppTheme.textScale,
-                            fontWeight: FontWeight.w700,
-                            color: isEmergency
-                                ? AppTheme.danger
-                                : AppTheme.success,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              // Frequency labels bottom
-              Positioned(
-                bottom: 6,
-                left: 16,
-                right: 16,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: ['20Hz', '250Hz', '1kHz', '4kHz', '20kHz']
-                      .map((f) => Text(f,
-                          style: GoogleFonts.inter(
-                              fontSize: 7 * AppTheme.textScale,
-                              color: AppTheme.textMuted.withOpacity(0.5))))
-                      .toList(),
-                ),
-              ),
-            ],
-          ),
-        ).animate().fadeIn(delay: 120.ms).slideY(begin: 0.07, end: 0);
-      },
-    );
-  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // SMART ZONES — 3 tappable chips: Home / Street / Office
@@ -1038,7 +930,85 @@ class _StatCard extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Neural ring painter
+// Real-Time Spectrum Analyzer — 30fps AnimationController + direct stream
+// ─────────────────────────────────────────────────────────────────────────────
+class _RealtimeSpectrumCard extends StatefulWidget {
+  const _RealtimeSpectrumCard();
+  @override
+  State<_RealtimeSpectrumCard> createState() => _RealtimeSpectrumCardState();
+}
+
+class _RealtimeSpectrumCardState extends State<_RealtimeSpectrumCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ticker;
+  StreamSubscription<List<double>>? _sub;
+  List<double> _waveform = [];
+  final _service = AudioClassifierService();
+
+  @override
+  void initState() {
+    super.initState();
+    _ticker = AnimationController(vsync: this, duration: const Duration(seconds: 1))..repeat();
+    _sub = _service.visualizerStream.listen((data) { _waveform = data; });
+  }
+
+  @override
+  void dispose() {
+    _ticker.dispose();
+    _sub?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = Provider.of<SoundProvider>(context, listen: false);
+    final isListening = p.isListening;
+    final lastEvent = p.lastEvent;
+    final isEmergency = lastEvent?.isEmergency == true;
+    return AnimatedBuilder(
+      animation: _ticker,
+      builder: (_, __) => LiquidGlassContainer(
+        width: double.infinity, height: 118, borderRadius: 24, opacity: 0.07,
+        glow: isListening, glowColor: isEmergency ? AppTheme.danger : AppTheme.primary,
+        child: Stack(children: [
+          Positioned.fill(child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: CustomPaint(painter: _SpectrumPainter(
+              waveformData: _waveform, amplitude: p.amplitude,
+              isListening: isListening, isEmergency: isEmergency,
+              tick: _ticker.value,
+            )),
+          )),
+          Positioned(top: 14, left: 16, right: 16,
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text('SPECTRUM ANALYZER', style: GoogleFonts.inter(
+                fontSize: 9 * AppTheme.textScale, fontWeight: FontWeight.w700,
+                color: AppTheme.primary, letterSpacing: 2)),
+              if (lastEvent != null)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: (isEmergency ? AppTheme.danger : AppTheme.success).withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: (isEmergency ? AppTheme.danger : AppTheme.success).withOpacity(0.30))),
+                  child: Text('${(lastEvent.confidence * 100).toInt()}% CONF',
+                    style: GoogleFonts.inter(fontSize: 9 * AppTheme.textScale,
+                      fontWeight: FontWeight.w700,
+                      color: isEmergency ? AppTheme.danger : AppTheme.success))),
+            ])),
+          Positioned(bottom: 6, left: 16, right: 16,
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: ['20Hz','250Hz','1kHz','4kHz','20kHz']
+                .map((f) => Text(f, style: GoogleFonts.inter(
+                  fontSize: 7 * AppTheme.textScale,
+                  color: AppTheme.textMuted.withOpacity(0.5)))).toList())),
+        ]),
+      ).animate().fadeIn(delay: 120.ms).slideY(begin: 0.07, end: 0),
+    );
+  }
+}
+
+
 // ─────────────────────────────────────────────────────────────────────────────
 class _NeuralRingPainter extends CustomPainter {
   final double progress, amplitude;
@@ -1121,74 +1091,82 @@ class _NeuralRingPainter extends CustomPainter {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Spectrum Painter — uses real waveformData or amplitude fallback
+// Spectrum Painter — ALWAYS animated. Real waveform when mic is on, sine-wave idle otherwise.
 // ─────────────────────────────────────────────────────────────────────────────
 class _SpectrumPainter extends CustomPainter {
   final List<double> waveformData;
   final double amplitude;
   final bool isListening;
   final bool isEmergency;
+  final double tick; // 0.0…1.0 from AnimationController, drives idle animation
 
-  static final _rng = math.Random(42);
   static const _bars = 30;
-  static final _fallbackMults =
-      List.generate(_bars, (_) => 0.2 + _rng.nextDouble() * 0.8);
 
-  _SpectrumPainter({
+  const _SpectrumPainter({
     required this.waveformData,
     required this.amplitude,
     required this.isListening,
     required this.isEmergency,
+    required this.tick,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (!isListening) return;
-
-    const paddingH = 16.0;
+    const paddingH   = 16.0;
     const paddingTop = 36.0;
-    const paddingBottom = 22.0;
+    const paddingBot = 22.0;
     final availW = size.width - paddingH * 2;
-    final barW = (availW / _bars) - 2.5;
-    final maxH = size.height - paddingTop - paddingBottom;
+    final barW   = (availW / _bars) - 2.5;
+    final maxH   = size.height - paddingTop - paddingBot;
+
+    // Peak-normalise real waveform data so bars fill 20–100% of height
+    final double peak = waveformData.isNotEmpty
+        ? waveformData.map((v) => v.abs()).fold(0.0, math.max)
+        : 0.0;
+    final double norm  = peak > 0.001 ? peak : 1.0;
+    final bool hasData = waveformData.isNotEmpty && isListening;
 
     for (int i = 0; i < _bars; i++) {
       double barHeight;
-      if (waveformData.isNotEmpty) {
-        // Map waveform index to bar index
-        final wi = (i / _bars * waveformData.length)
-            .toInt()
-            .clamp(0, waveformData.length - 1);
-        barHeight = (waveformData[wi].abs() * maxH).clamp(4.0, maxH);
+
+      if (hasData) {
+        // — Real microphone waveform —
+        final wi = (i / _bars * waveformData.length).toInt().clamp(0, waveformData.length - 1);
+        final norm2 = (waveformData[wi].abs() / norm).clamp(0.0, 1.0);
+        barHeight = (norm2 * maxH * 0.92 + 4.0).clamp(4.0, maxH);
       } else {
-        // Amplitude-based fallback
-        barHeight = (6 + amplitude * maxH * _fallbackMults[i]).clamp(4.0, maxH);
+        // — Idle sine-wave animation — always visible even before mic starts
+        final phase = tick * 2 * math.pi;
+        final sine  = math.sin(phase + i * 0.45) * 0.5 + 0.5; // 0..1
+        final idle  = isListening
+            ? (amplitude * maxH * 8.0 * (0.3 + sine * 0.7)).clamp(6.0, maxH)
+            : (maxH * 0.08 + sine * maxH * 0.12).clamp(4.0, maxH * 0.22);
+        barHeight = idle;
       }
 
-      final x = paddingH + i * (availW / _bars);
-      final y = size.height - barHeight - paddingBottom;
-      final t = i / _bars;
+      final x  = paddingH + i * (availW / _bars);
+      final y  = size.height - barHeight - paddingBot;
+      final t  = i / _bars;
+      final op = isListening ? 0.92 : 0.35; // dim when mic off
 
       final Color c1 = isEmergency
           ? Color.lerp(AppTheme.danger, AppTheme.accentOrange, t)!
           : Color.lerp(AppTheme.primary, AppTheme.secondary, t)!;
 
-      // Glow blur
+      // Glow
       canvas.drawRRect(
-        RRect.fromRectAndRadius(
-            Rect.fromLTWH(x, y, barW, barHeight), const Radius.circular(3)),
+        RRect.fromRectAndRadius(Rect.fromLTWH(x, y, barW, barHeight), const Radius.circular(3)),
         Paint()
-          ..color = c1.withOpacity(0.22)
+          ..color = c1.withOpacity(isListening ? 0.25 : 0.10)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
       );
 
-      // Bar with gradient
+      // Bar
       canvas.drawRRect(
-        RRect.fromRectAndRadius(
-            Rect.fromLTWH(x, y, barW, barHeight), const Radius.circular(3)),
+        RRect.fromRectAndRadius(Rect.fromLTWH(x, y, barW, barHeight), const Radius.circular(3)),
         Paint()
           ..shader = LinearGradient(
-            colors: [c1.withOpacity(0.92), c1.withOpacity(0.22)],
+            colors: [c1.withOpacity(op), c1.withOpacity(op * 0.25)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ).createShader(Rect.fromLTWH(x, y, barW, barHeight)),
@@ -1197,8 +1175,6 @@ class _SpectrumPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _SpectrumPainter old) =>
-      old.amplitude != amplitude ||
-      old.isListening != isListening ||
-      old.waveformData != waveformData;
+  bool shouldRepaint(covariant _SpectrumPainter old) => true; // always repaint at 30fps
 }
+

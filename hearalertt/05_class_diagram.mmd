@@ -1,0 +1,48 @@
+classDiagram
+    %% Core State Provider
+    class SoundProvider {
+      +List<SoundEvent> history
+      +AudioClassifierService classifier
+      +bool isListening
+      +startListening()
+      +stopListening()
+      -_handleHearAlertDetection(HearAlertResult)
+    }
+
+    %% AI Classification Services
+    class AudioClassifierService {
+      -Interpreter _interpreter
+      -int _bufferSize
+      -HearAlertClassifierService _hearAlertService
+      +Stream<List<ClassificationResult>> detectionStream
+      +initialize()
+      -runInference(Float32List buffer)
+    }
+
+    class HearAlertClassifierService {
+      -Map<String, HearAlertCategory> _categoriesConfig
+      -Interpreter _customInterpreter
+      +classifyEmbeddings(List<double> embeddings)
+      +shouldTriggerAlert() bool
+    }
+
+    %% Hardware / Alert Action Engine
+    class AlertService {
+      +triggerFireAlarm()
+      +triggerBabyCry()
+      +triggerSiren()
+      +triggerCustomAlert(String message, List<int> pattern)
+      -_triggerFlashlightPattern(int duration)
+    }
+
+    %% Analytics
+    class FirebaseDatabaseService {
+      +logSoundEvent(SoundEvent)
+      +getUserHistory()
+    }
+
+    %% App UI / Data Flow Binding 
+    SoundProvider --> AudioClassifierService : Binds to Stream
+    AudioClassifierService *-- HearAlertClassifierService : Contains Secondary Model
+    SoundProvider --> AlertService : Triggers Specific Hardware
+    SoundProvider --> FirebaseDatabaseService : Dispatches Logs

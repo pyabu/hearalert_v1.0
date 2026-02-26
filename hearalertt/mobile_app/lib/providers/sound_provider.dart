@@ -358,25 +358,14 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
 
   /// Handle detection with priority-based throttling
   void _handlePriorityDetection(ClassificationResult result) {
-    // Smart Zone filter — skip sounds not relevant to active zone
-    if (_settings != null && !_settings!.smartZone.allowsSound(result.label)) {
-      debugPrint(
-          '🔇 YAMNet "${result.label}" filtered by Smart Zone (${_settings!.smartZone.label})');
-      return;
-    }
+    // ── DEAF ACCESSIBILITY: Auto-trigger all alerts ──────────────────────
+    // Bypassing Smart Zone filter to ensure no alerts are missed.
 
-    // Reduced throttle for faster consecutive alerts (deaf accessibility)
-    final throttleDuration = result.priority != null
-        ? Duration(
-            milliseconds:
-                PrioritySoundsDatabase.getThrottleDuration(result.priority!)
-                        .inMilliseconds ~/
-                    4)
-        : const Duration(milliseconds: 800);
+    // Throttle: wait 2 seconds before allowing ANY new alert (same or different label).
+    // This prevents the "fire alarm → vehicle → doorbell" cascade from YAMNet.
+    final throttleDuration = const Duration(seconds: 2);
 
-    // Throttle: don't trigger if same event happened recently
     if (_lastEvent != null &&
-        _lastEvent!.label == result.label &&
         DateTime.now().difference(_lastEvent!.timestamp) < throttleDuration) {
       return;
     }
@@ -414,7 +403,22 @@ class SoundProvider with ChangeNotifier, WidgetsBindingObserver {
         .catchError((e) => debugPrint('Firebase logSoundEvent error: $e'));
 
     // Trigger Alerts based on priority severity
-    _triggerAlertForSound(result);
+    // Skip vibration/flash/popup for ambient, everyday sounds
+    final ambientSounds = {
+      'speech', 'music', 'singing', 'song', 'conversation',
+      'laughter', 'laugh', 'applause', 'clap', 'chatter',
+      'crowd', 'whispering', 'humming', 'whistling', 'snoring',
+      'cough', 'sneeze', 'breathing', 'footsteps', 'typing',
+      'writing', 'clicking', 'tapping', 'wind', 'rain', 'water',
+      'stream', 'waves', 'thunder', 'insect', 'cricket',
+    };
+    final lowerLabel = result.label.toLowerCase();
+    final isAmbient = ambientSounds.any((s) => lowerLabel.contains(s));
+    if (isAmbient) {
+      debugPrint('💬 Ambient sound "${result.label}" — showing banner only, no popup/vibration');
+    } else {
+      _triggerAlertForSound(result);
+    }
 
     // Auto dismiss - faster for critical sounds
     final dismissDelay = result.priority == SoundPriority.critical

@@ -1,0 +1,52 @@
+flowchart TD
+    %% Audio Intake Segment
+    subgraph 1.0 Mobile Sensor Acquisition
+        MIC((Device Mic Array))
+        BUF(16kHz Buffer Accumulator)
+        NORM(Amplitude Normalizer)
+        MIC --> |Analog to Digital| BUF
+        BUF --> NORM
+    end
+
+    %% Edge AI Pipeline
+    subgraph 2.0 Dual TFLite Architecture
+        YAM(YAMNet General Inference)
+        HEAR(HearAlert Custom Classifier)
+        NORM --> |> 0.01 Amplitude| YAM
+        NORM --> |Skip Inference| DISCARD((Trash/Save Battery))
+        YAM --> |1024D Embeddings Vector| HEAR
+    end
+
+    %% Logic & Debounce Filters
+    subgraph 3.0 Processing Engine
+        GATE(Confidence > 45%)
+        ZONE(Priority Smart Zone)
+        DEBOUNCE(500ms Throttle\nDuplicate Eraser)
+        HEAR --> |Baby Cry: 65%| GATE
+        GATE --> |Pass| ZONE
+        ZONE --> |Allowed| DEBOUNCE
+        GATE --> |Block| DISCARD
+    end
+
+    %% Alerts Segment
+    subgraph 4.0 Physical Hardware Dispatch
+        HAPTIC(Custom Vibration Engine)
+        FLASH(LED Camera Flash Strobe)
+        UI(High Contrast Full-Screen Takeover)
+        DEBOUNCE --> |Dispatch Fire Alarm Profile| HAPTIC
+        DEBOUNCE --> |Dispatch Fire Alarm Profile| FLASH
+        DEBOUNCE --> UI
+    end
+    
+    %% Styling
+    style MIC fill:#ffcccc,stroke:#333
+    style BUF fill:#ccbbff,stroke:#333
+    style NORM fill:#ccbbff,stroke:#333
+    style YAM fill:#ffd700,stroke:#333
+    style HEAR fill:#ff8c00,stroke:#333
+    style DEBOUNCE fill:#98fb98,stroke:#333
+    style GATE fill:#87cefa,stroke:#333
+    style DISCARD fill:#ccc,stroke:#333,stroke-dasharray: 5 5
+    style HAPTIC fill:#ff69b4,stroke:#333,stroke-width:2px;
+    style FLASH fill:#fffafa,stroke:#333,stroke-width:2px;
+    style UI fill:#eee8aa,stroke:#333

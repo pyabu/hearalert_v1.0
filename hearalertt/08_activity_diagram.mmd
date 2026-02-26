@@ -1,0 +1,28 @@
+stateDiagram-v2
+    [*] --> Standby: App Opened
+    Standby --> Listening: User Enables Mic
+    Listening --> IngestingAudio: Capture 16kHz
+    
+    state IngestingAudio {
+        [*] --> BufferAccumulation
+        BufferAccumulation --> CheckAmplitude: Frame Ready
+        CheckAmplitude --> BufferAccumulation : Amplitude < 0.01\n(Ignore Silence)
+        CheckAmplitude --> MachineLearningInference : Amplitude >= 0.01
+    }
+    
+    IngestingAudio --> VerifyOutputs: Raw Tensors Extracted
+    VerifyOutputs --> ThrottleFilter: Score > 45% & Valid Class
+    VerifyOutputs --> Listening: Low Confidence / Irrelevant
+    
+    ThrottleFilter --> DispatchAlerts: Past 500ms Delay
+    ThrottleFilter --> Listening: Duplicate Alert Throttle Block
+    
+    state DispatchAlerts {
+        [*] --> TriggerVibrationEngine
+        [*] --> TriggerCameraLEDStrobe
+        [*] --> DrawRedScreenOverlay
+        [*] --> LogFirebaseHistory
+    }
+    
+    DispatchAlerts --> Listening: Reset Loop
+    Listening --> [*]: User Suspends App

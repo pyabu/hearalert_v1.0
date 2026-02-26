@@ -1,0 +1,30 @@
+flowchart TD
+    %% Entities
+    ENV[Environment / Audio Source]
+    USER[Deaf / Hard-of-Hearing User]
+    
+    %% Processes
+    P1((1.0\nAudio Ingestion))
+    P2((2.0\nAI Classification))
+    P3((3.0\nConfidence Filtering))
+    P4((4.0\nAlert Generator))
+    
+    %% Data Stores
+    DB[(Event History / Firebase)]
+
+    %% Flow
+    ENV -- Physical Acoustic Waves --> P1
+    P1 -- 16kHz PCM Float32 Buffer --> P2
+    P2 -- Detected Labels & Confidence Scores --> P3
+    P3 -- Valid Event / Filtered Signal --> P4
+    P4 -- Vibration & Strobe API Call --> USER
+    P4 -- Log Sound Event --> DB
+    
+    %% Styling
+    classDef process fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef entity fill:#bbf,stroke:#333,stroke-width:2px;
+    classDef db fill:#ffb,stroke:#333,stroke-width:2px;
+    
+    class P1,P2,P3,P4 process;
+    class ENV,USER entity;
+    class DB db;

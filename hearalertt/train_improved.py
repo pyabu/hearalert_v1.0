@@ -286,37 +286,50 @@ def main():
     cw = compute_class_weight("balanced", classes=np.unique(y_train), y=y_train)
     cw_dict = dict(enumerate(cw))
 
+    # ── Feature Normalization ──────────────────────────────────────────────────
+    print("\n[3/5] Normalizing features (StandardScaler)...")
+    from sklearn.preprocessing import StandardScaler
+    import json
+    
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_val   = scaler.transform(X_val)
+    X_test  = scaler.transform(X_test)
+    
+    scaler_path = MODEL_OUTPUT / "scaler.json"
+    scaler_data = {
+        "mean": scaler.mean_.tolist(),
+        "scale": scaler.scale_.tolist()
+    }
+    with open(scaler_path, "w") as f:
+        json.dump(scaler_data, f)
+    print("  ✓ Scaler JSON exported")
+
     # ── 5. Build improved model ───────────────────────────────────────────────
-    print("\n[3/5] Building improved classifier...")
+    print("\n[4/5] Building improved classifier...")
 
     inp = tf.keras.Input(shape=(1024,))
 
-    # Block 1 — 768
-    x = tf.keras.layers.Dense(768, kernel_initializer="he_normal", kernel_regularizer=tf.keras.regularizers.l2(1e-4))(inp)
+    # Block 1 — 512
+    x = tf.keras.layers.Dense(512, kernel_initializer="he_normal", kernel_regularizer=tf.keras.regularizers.l2(1e-4))(inp)
     x = tf.keras.layers.BatchNormalization()(x)
     x = tf.keras.layers.Activation("relu")(x)
-    x = tf.keras.layers.Dropout(0.45)(x)
+    x = tf.keras.layers.Dropout(0.40)(x)
 
-    # Block 2 — 512
-    x = tf.keras.layers.Dense(512, kernel_initializer="he_normal", kernel_regularizer=tf.keras.regularizers.l2(1e-4))(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-    x = tf.keras.layers.Activation("relu")(x)
-    x = tf.keras.layers.Dropout(0.35)(x)
-
-    # Block 3 — 256
+    # Block 2 — 256
     x = tf.keras.layers.Dense(256, kernel_initializer="he_normal", kernel_regularizer=tf.keras.regularizers.l2(1e-4))(x)
     x = tf.keras.layers.BatchNormalization()(x)
     x = tf.keras.layers.Activation("relu")(x)
-    x = tf.keras.layers.Dropout(0.25)(x)
+    x = tf.keras.layers.Dropout(0.30)(x)
 
-    # Block 4 — 128
+    # Block 3 — 128
     x = tf.keras.layers.Dense(128, kernel_initializer="he_normal")(x)
     x = tf.keras.layers.BatchNormalization()(x)
     x = tf.keras.layers.Activation("relu")(x)
     x = tf.keras.layers.Dropout(0.20)(x)
 
     out = tf.keras.layers.Dense(num_classes, activation="softmax")(x)
-    model = tf.keras.Model(inp, out, name="hearalert_v2")
+    model = tf.keras.Model(inp, out, name="hearalert_v3_normalized")
     model.summary()
 
     model.compile(
@@ -360,13 +373,20 @@ def main():
     print("\n[5/5] Evaluating on held-out test set...")
     y_pred = np.argmax(model.predict(X_test, verbose=0), axis=1)
 
-    report = classification_report(
+    report_dict = classification_report(
+        y_test, y_pred,
+        target_names=categories,
+        output_dict=True,
+        zero_division=0,
+    )
+    
+    report_text = classification_report(
         y_test, y_pred,
         target_names=categories,
         digits=3,
         zero_division=0,
     )
-    print("\n" + report)
+    print("\n" + report_text)
 
     # Confusion matrix (compact)
     cm = confusion_matrix(y_test, y_pred)
@@ -374,12 +394,19 @@ def main():
     # Per-class accuracy
     per_class_acc = cm.diagonal() / cm.sum(axis=1).clip(1)
     test_acc = np.mean(per_class_acc)
+    
+    macro_precision = report_dict['macro avg']['precision']
+    macro_recall = report_dict['macro avg']['recall']
+    macro_f1 = report_dict['macro avg']['f1-score']
 
     # Save accuracy report
     report_path = BASE_DIR / "accuracy_report.txt"
     with open(report_path, "w") as f:
         f.write("HearAlert Audio Classifier — Accuracy Report\n")
         f.write("=" * 60 + "\n\n")
+        f.write(f"Macro F1-Score         : {macro_f1:.2%}\n")
+        f.write(f"Macro Precision        : {macro_precision:.2%}\n")
+        f.write(f"Macro Recall           : {macro_recall:.2%}\n")
         f.write(f"Overall Test Accuracy  : {test_acc:.2%}\n")
         f.write(f"Best Train Accuracy    : {best_train:.2%}\n")
         f.write(f"Best Val Accuracy      : {best_val:.2%}\n")
@@ -390,7 +417,7 @@ def main():
         for i, cat in enumerate(categories):
             f.write(f"  {cat:<26} {per_class_acc[i]:.2%}\n")
         f.write("\n\nFull Classification Report:\n")
-        f.write(report)
+        f.write(report_text)
 
     # ── 6. Export TFLite ──────────────────────────────────────────────────────
     print("\nExporting TFLite model...")

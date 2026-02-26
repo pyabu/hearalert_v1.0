@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:developer';
+import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
@@ -55,6 +55,7 @@ class AudioClassifierService {
   final StreamController<List<int>> _rawAudioController = StreamController.broadcast();
   Stream<List<int>> get rawAudioStream => _rawAudioController.stream;
 
+  bool _isProcessing = false;
   bool _isRecording = false;
   DateTime _lastHeartbeat = DateTime.now();
   double _maxAmplitudeRecently = 0.0;
@@ -70,59 +71,67 @@ class AudioClassifierService {
   int _inputLength = 15600; 
   int get inputLength => _inputLength;
   
-  // Sliding window with 75% overlap for faster detection
-  static const double _overlapRatio = 0.75;
+  // Sliding window with 0% overlap to prevent budget Android phones from lagging out/freezing
+  static const double _overlapRatio = 0.0;
   int get _slideLength => (_inputLength * (1 - _overlapRatio)).toInt();
   
   List<double> _audioBuffer = [];
 
+  // Cached output tensor info (set during initialization after resize)
+  Map<int, List<int>> _cachedOutputShapes = {};
+  int _scoresIndex = 0;
+  int _embeddingsIndex = 1;
+  int _numOutputTensors = 0;
+  bool _shapesCalibrated = false;
+
+  // Sliding window for temporal smoothing (majority-vote)
+  // Only emit a detection when 2+ of last 3 chunks agree on the same label
+  static const int _votingWindowSize = 3;
+  final List<ClassificationResult> _recentDetections = [];
+
   Future<void> initialize() async {
     try {
-      log('Initializing AudioClassifierService...');
+      debugPrint('Initializing AudioClassifierService...');
 
       if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
-        log('Skipping TFLite initialization on Desktop (mock mode).');
+        debugPrint('Skipping TFLite initialization on Desktop (mock mode).');
         return;
       }
       
       // Load Model with CPU optimization to avoid SELinux hardware probing issues
       final options = InterpreterOptions()..threads = 4;
       _interpreter = await Interpreter.fromAsset('assets/models/yamnet.tflite', options: options);
-      log('Model loaded successfully with 4 CPU threads.');
+      debugPrint('Model loaded successfully with 4 CPU threads.');
 
       if (_interpreter != null) {
+        // YAMNet has a DYNAMIC input shape [1].
+        // Resize to [15600] for proper inference.
+        _interpreter!.resizeInputTensor(0, [_inputLength]);
         _interpreter!.allocateTensors();
+        
         final inputTensor = _interpreter!.getInputTensor(0);
-        final outputTensor = _interpreter!.getOutputTensor(0);
-        log('Input shape: ${inputTensor.shape}');
-        log('Output shape: ${outputTensor.shape}');
+        debugPrint('Input shape: ${inputTensor.shape}');
         
-        // Check for embeddings output (usually index 1 in YAMNet)
-        if (_interpreter!.getOutputTensors().length > 1) {
-            try {
-              final embeddingTensor = _interpreter!.getOutputTensor(1);
-              log('Embedding Output shape: ${embeddingTensor.shape}');
-            } catch (e) {
-              log('Could not inspect embedding tensor: $e');
-            }
+        // Read API-reported shapes (may be stale [1, N] for dynamic models)
+        final allOutputs = _interpreter!.getOutputTensors();
+        _numOutputTensors = allOutputs.length;
+        for (int i = 0; i < allOutputs.length; i++) {
+          final shape = allOutputs[i].shape;
+          _cachedOutputShapes[i] = List<int>.from(shape);
+          debugPrint('Output tensor $i shape (API): $shape');
+          if (shape.isNotEmpty && shape.last == 521) _scoresIndex = i;
+          else if (shape.isNotEmpty && shape.last == 1024) _embeddingsIndex = i;
         }
-        
-        _inputShape = inputTensor.shape;
-        // Calculate total length (e.g. [1, 15600] -> 15600)
-        _inputLength = _inputShape.isNotEmpty 
-            ? _inputShape.reduce((a, b) => a * b) 
-            : 15600;
-            
-        log('Set calculated input length to: $_inputLength');
+        debugPrint('Scores idx=$_scoresIndex, Embeddings idx=$_embeddingsIndex');
       }
 
       // Load Labels
       final labelData = await rootBundle.loadString('assets/models/yamnet_class_map.csv');
       _labels = _parseLabels(labelData);
-      log('Labels loaded: ${_labels?.length} entries.');
+      debugPrint('Labels loaded: ${_labels?.length} entries.');
 
     } catch (e) {
-      log('Error initializing AudioClassifierService: $e');
+      debugPrint('Error initializing AudioClassifierService: $e');
     }
   }
 
@@ -146,7 +155,7 @@ class AudioClassifierService {
 
   Future<void> start() async {
     if (_isRecording) {
-      log('AudioClassifierService: Already recording. Ignoring start request.');
+      debugPrint('AudioClassifierService: Already recording. Ignoring start request.');
       return;
     }
     
@@ -156,7 +165,7 @@ class AudioClassifierService {
       if (!status.isGranted) {
         status = await Permission.microphone.request();
         if (!status.isGranted) {
-          log('Microphone permission denied.');
+          debugPrint('Microphone permission denied.');
           return;
         }
       }
@@ -166,7 +175,7 @@ class AudioClassifierService {
 
     try {
       if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
-        log('AudioStreamer not supported on Desktop. Skipping real audio.');
+        debugPrint('AudioStreamer not supported on Desktop. Skipping real audio.');
         // Mock recording state for UI verification
         _isRecording = true;
         _resultController.add([]); // Emitting empty results to verify stream listeners
@@ -189,15 +198,15 @@ class AudioClassifierService {
           _processAudioSamplesFloat(samples);
         },
         onError: (error) {
-          log('AudioStreamer error: $error');
+          debugPrint('AudioStreamer error: $error');
         },
         cancelOnError: true,
       );
       
-      log('Microphone started with AudioStreamer at ${sampleRate}Hz.');
+      debugPrint('Microphone started with AudioStreamer at ${sampleRate}Hz.');
 
     } catch (e) {
-      log('Error starting microphone: $e');
+      debugPrint('Error starting microphone: $e');
       _isRecording = false;
     }
   }
@@ -228,10 +237,16 @@ class AudioClassifierService {
     _audioBuffer.addAll(samples);
 
     // Sliding window inference - process when buffer is full
-    if (_audioBuffer.length >= _inputLength) {
+    // Replaced while with if, and added _isProcessing check to prevent UI lockup 
+    if (!_isProcessing && _audioBuffer.length >= _inputLength) {
         final inputChunk = _audioBuffer.sublist(0, _inputLength);
         _audioBuffer = _audioBuffer.sublist(_slideLength);
         _runInference(inputChunk);
+    } else if (_isProcessing && _audioBuffer.length > _inputLength * 3) {
+        // C++ inference is taking too long for this specific CPU.
+        // Drop the oldest frames and keep ONLY the most recent continuous 1-second burst.
+        debugPrint('⚠️ Audio Buffer Overflowing - Dropping stale frames to catch up.');
+        _audioBuffer = _audioBuffer.sublist(_audioBuffer.length - _inputLength);
     }
   }
 
@@ -239,210 +254,191 @@ class AudioClassifierService {
 
 
   Future<void> _runInference(List<double> inputBuffer) async {
-    if (_interpreter == null || _labels == null) return;
-
+    if (_interpreter == null || _labels == null || _isProcessing) return;
+    
+    _isProcessing = true;
     try {
-      // YAMNet model expects input shape [1, 15600] as confirmed by Python test
-      // and dynamic tensor allocation. Forcing 1D [15600] can cause silent failures.
-      var input = Float32List.fromList(inputBuffer).reshape([1, _inputLength]);
-      
-      // Output 0: Scores [1, 521]
-      int outputClasses = 521;
-      try {
-         final outputShape = _interpreter!.getOutputTensor(0).shape;
-         if (outputShape.isNotEmpty) {
-             outputClasses = outputShape.last;
-         }
-      } catch (_) {}
+      await Future.delayed(Duration.zero);
 
-      var outputBuffer = List.filled(1 * outputClasses, 0.0).reshape([1, outputClasses]);
-      
-      // Output 1: Embeddings [1, 1024]
-      List<double>? embeddings;
-      Map<int, Object> outputs = {0: outputBuffer};
-      
-      if (_interpreter!.getOutputTensors().length > 1) {
-          // Prepare buffer for embeddings
-          var embeddingBuffer = List.filled(1 * 1024, 0.0).reshape([1, 1024]);
-          outputs[1] = embeddingBuffer;
-      }
-      
-      // Run inference on YAMNet
-      _interpreter!.runForMultipleInputs([input], outputs);
-      
-      // Extract embeddings if available
-      if (outputs.containsKey(1)) {
-          embeddings = (outputs[1] as List)[0].cast<double>();
-      }
-      
-      // Heartbeat Logging
-      final amplitude = inputBuffer.fold<double>(0, (max, v) => v.abs() > max ? v.abs() : max);
-      _maxAmplitudeRecently = amplitude > _maxAmplitudeRecently ? amplitude : _maxAmplitudeRecently;
-      if (DateTime.now().difference(_lastHeartbeat).inSeconds >= 3) {
-          log('🎤 AUDIO HEARTBEAT: Amp=${amplitude.toStringAsFixed(4)} (Max Recently=${_maxAmplitudeRecently.toStringAsFixed(4)})');
-          _lastHeartbeat = DateTime.now();
-          _maxAmplitudeRecently = 0.0;
-      }
+      // ── Step 1: Flat Float32List input of exactly 15600 samples ──────────
+      final input = Float32List.fromList(inputBuffer);
 
-      // 1. ALWAYS run custom HearAlert classification if embeddings available
-      if (embeddings != null) {
-          if (!_hearAlertService.isInitialized) {
-              await _hearAlertService.initialize();
-          }
-          await _hearAlertService.classifyEmbeddings(embeddings);
-      }
-      
-      // 2. Process YAMNet results
-      final List<double> scores = outputBuffer[0];
-      final results = _getTopResults(scores);
-      
-      if (results.isNotEmpty) {
-          final topResult = results.first;
-          log('🔊 YAMNet: ${topResult.label} (${(topResult.confidence * 100).toStringAsFixed(1)}%)');
-          
-          // Fallback keyword mapping if custom model isn't picking it up
-          await _mapToHearAlertCategories(topResult);
-          
-          _resultController.add(results);
-      }
-    } catch (e) {
-      log('Inference error: $e');
-    }
-  }
-  
-  /// Map YAMNet detection to HearAlert categories for better display names
-  Future<void> _mapToHearAlertCategories(ClassificationResult yamnetResult) async {
-    final categoryMappings = <String, List<String>>{
-      'baby_cry': ['crying baby', 'baby crying', 'infant crying'],
-      'dog_bark': ['dog', 'bark', 'barking', 'growl', 'howl', 'dog barking'],
-      'cat_meow': ['cat', 'meow', 'purr', 'hiss'],
-      'car_horn': ['car horn', 'vehicle horn', 'honking', 'horn', 'beep, horn'],
-      'siren': ['siren', 'ambulance', 'police', 'fire engine', 'emergency vehicle'],
-      'fire_alarm': ['fire alarm', 'smoke detector', 'alarm'],
-      'glass_breaking': ['glass breaking', 'breaking', 'shatter'],
-      'door_knock': ['knock', 'door knock', 'knocking'],
-      'doorbell': ['doorbell', 'ding-dong', 'bell'],
-      'phone_ring': ['telephone', 'ringtone', 'phone', 'ringing'],
-      'traffic': ['traffic', 'engine', 'car', 'vehicle'],
-      'train': ['train', 'railroad', 'locomotive'],
-      'helicopter': ['helicopter', 'rotor'],
-      'thunderstorm': ['thunder', 'thunderstorm', 'lightning'],
-      'speech': ['speech', 'talking', 'voice', 'conversation', 'male speech', 'female speech'],
-      'coughing': ['cough', 'coughing'],
-      'breathing': ['breathing', 'snoring', 'wheezing'],
-      'footsteps': ['footsteps', 'walking', 'running'],
-      'door_creaking': ['door', 'creak', 'squeak'],
-      'washing_machine': ['washing machine', 'laundry'],
-      'vacuum_cleaner': ['vacuum', 'vacuum cleaner'],
-      'keyboard_typing': ['keyboard', 'typing', 'clicking', 'computer keyboard'],
-      'clock_tick': ['clock', 'tick', 'ticking'],
-      'chainsaw': ['chainsaw', 'power tool'],
-      'gunshot_firework': ['gunshot', 'firework', 'explosion', 'cap gun', 'bang'],
-      'airplane': ['airplane', 'aircraft', 'jet', 'fixed-wing aircraft'],
-    };
-    
-    final yamnetLabel = yamnetResult.label.toLowerCase();
-    
-    for (final entry in categoryMappings.entries) {
-      for (final keyword in entry.value) {
-        if (yamnetLabel.contains(keyword)) {
-          log('📍 Mapped "${yamnetResult.label}" → "${entry.key}"');
-          break;
+      // ── Step 2: Allocate ALL output buffers ──────────────────────────────
+      // runForMultipleInputs requires ALL tensors in the map.
+      // Scores [1, 521] and embeddings [1, 1024] use API shapes.
+      // ONLY the spectrogram tensor (64 cols) needs [96, 64] override.
+      final outputs = <int, Object>{};
+      for (int i = 0; i < _numOutputTensors; i++) {
+        final shape = List<int>.from(_cachedOutputShapes[i] ?? [1]);
+        // Override the spectrogram tensor's row dimension (the only one that changes)
+        if (shape.length == 2 && shape.last == 64 && shape[0] == 1) {
+          shape[0] = 96; // YAMNet produces 96 spectrogram frames for 15600 samples
+        }
+        if (shape.length == 2) {
+          outputs[i] = List.generate(shape[0], (_) => List<double>.filled(shape[1], 0.0));
+        } else {
+          outputs[i] = List<double>.filled(shape[0], 0.0);
         }
       }
+
+      // ── Step 3: Run inference ─────────────────────────────────────────────
+      _interpreter!.runForMultipleInputs([input], outputs);
+
+      // ── Step 4: Mean-pool 96 frames into single vectors ──────────────────
+      // YAMNet outputs 96 frames (one per 10ms window). We average them.
+      List<double> flatScores = _meanPoolFrames(outputs[_scoresIndex], _labels!.length);
+      List<double> flatEmbeddings = _meanPoolFrames(outputs[_embeddingsIndex], 1024);
+
+      // ── Step 5: Heartbeat log ─────────────────────────────────────────────
+      final amplitude = inputBuffer.fold<double>(0, (m, v) => v.abs() > m ? v.abs() : m);
+      if (DateTime.now().difference(_lastHeartbeat).inSeconds >= 3) {
+        final topScores = List<double>.from(flatScores)..sort((a, b) => b.compareTo(a));
+        final top3 = topScores.take(3).map((s) => s.toStringAsFixed(3)).toList();
+        debugPrint('🎤 HEARTBEAT amp=${amplitude.toStringAsFixed(4)} scores=${flatScores.length} emb=${flatEmbeddings.length} top3=$top3');
+        _lastHeartbeat = DateTime.now();
+      }
+
+      // ── Step 6: Custom HearAlert model ────────────────────────────────────
+      if (flatEmbeddings.isNotEmpty && flatEmbeddings.any((e) => e != 0.0)) {
+        if (!_hearAlertService.isInitialized) await _hearAlertService.initialize();
+        final hearResults = await _hearAlertService.classifyEmbeddings(flatEmbeddings);
+        if (hearResults.isNotEmpty) {
+          debugPrint('🎯 HearAlert: ${hearResults.first.displayName} (${(hearResults.first.confidence*100).toStringAsFixed(1)}%)');
+        }
+      }
+
+      // ── Step 7: YAMNet results → temporal smoothing via majority vote ─────
+      final results = _buildResults(flatScores);
+      if (results.isNotEmpty) {
+        final candidate = results.first;
+        debugPrint('🔊 YAMNet RAW: ${candidate.label} (${(candidate.confidence*100).toStringAsFixed(1)}%)');
+        
+        // Add to sliding window
+        _recentDetections.add(candidate);
+        if (_recentDetections.length > _votingWindowSize) {
+          _recentDetections.removeAt(0);
+        }
+        
+        // Count votes for each label in the window
+        final votes = <String, int>{};
+        final bestConf = <String, double>{};
+        final bestResult = <String, ClassificationResult>{};
+        for (final r in _recentDetections) {
+          votes[r.label] = (votes[r.label] ?? 0) + 1;
+          if ((bestConf[r.label] ?? 0) < r.confidence) {
+            bestConf[r.label] = r.confidence;
+            bestResult[r.label] = r;
+          }
+        }
+        
+        // Find the label with the most votes
+        String? winnerLabel;
+        int maxVotes = 0;
+        votes.forEach((label, count) {
+          if (count > maxVotes) {
+            maxVotes = count;
+            winnerLabel = label;
+          }
+        });
+        
+        // Only emit if the winner has at least 2 votes (majority in window of 3)
+        // OR if the window isn't full yet and confidence is very high (>50%)
+        final needMajority = _recentDetections.length >= _votingWindowSize ? 2 : 1;
+        if (winnerLabel != null && maxVotes >= needMajority) {
+          final winner = bestResult[winnerLabel]!;
+          debugPrint('🔊 YAMNet CONFIRMED ($maxVotes/$_votingWindowSize): ${winner.label} (${(winner.confidence*100).toStringAsFixed(1)}%)');
+          _resultController.add([winner]);
+        } else {
+          debugPrint('🔇 YAMNet SMOOTHING: no majority yet (votes: $votes)');
+        }
+      }
+
+    } catch (e) {
+      debugPrint('❌ Inference error: $e');
+    } finally {
+      _isProcessing = false;
     }
   }
 
-  List<ClassificationResult> _getTopResults(List<double> scores) {
-    if (_labels == null) return [];
-    
-    // ALWAYS find and log the top detection for debugging
-    double maxScore = 0.0;
-    int maxIndex = 0;
+  /// Mean-pool N frames of shape [N, dim] into a single [dim] vector.
+  List<double> _meanPoolFrames(Object? output, int expectedDim) {
+    if (output == null) return List.filled(expectedDim, 0.0);
+    if (output is List && output.isNotEmpty && output[0] is List) {
+      // 2D: [[frame0], [frame1], ...] → average all frames
+      final numFrames = output.length;
+      final dim = (output[0] as List).length;
+      final pooled = List<double>.filled(dim, 0.0);
+      for (int f = 0; f < numFrames; f++) {
+        final frame = output[f] as List;
+        for (int d = 0; d < dim; d++) {
+          pooled[d] += (frame[d] as num).toDouble();
+        }
+      }
+      for (int d = 0; d < dim; d++) {
+        pooled[d] /= numFrames;
+      }
+      return pooled;
+    } else if (output is List) {
+      return output.map((e) => (e as num).toDouble()).toList();
+    }
+    return List.filled(expectedDim, 0.0);
+  }
+
+  /// Build ClassificationResult list from raw YAMNet scores.
+  /// ALWAYS returns the top result so detectionStream always fires,
+  /// but explicitly ignores Silence and pure background noise.
+  List<ClassificationResult> _buildResults(List<double> scores) {
+    if (_labels == null || scores.isEmpty) return [];
+
+    // Ignore these generic background classes so they don't overwrite real sounds
+    final ignoreLabels = {
+      'silence',
+      'background noise',
+      'noise'
+    };
+
+    // Find top score of a VALID sound
+    int maxIdx = -1;
+    double maxScore = 0;
     for (int i = 0; i < scores.length; i++) {
       if (scores[i] > maxScore) {
+        final labelLabel = _labels![i].toLowerCase();
+        // Skip ignored background classes
+        if (ignoreLabels.contains(labelLabel)) continue;
+
         maxScore = scores[i];
-        maxIndex = i;
+        maxIdx = i;
       }
     }
-    
-    // Log every detection for debugging
-    if (maxIndex < _labels!.length) {
-      log('🎧 TOP SOUND: ${_labels![maxIndex]} (${(maxScore * 100).toStringAsFixed(1)}%) Index: $maxIndex');
-    }
-    
-    // First, check for any priority sounds that exceed their thresholds
-    final priorityResults = <ClassificationResult>[];
-    final regularResults = <ClassificationResult>[];
-    
-    for (int i = 0; i < scores.length; i++) {
-        final score = scores[i];
-        final prioritySound = PrioritySoundsDatabase.getByIndex(i);
-        
-        // Priority threshold: 0.30 (min sensitivity) to 0.01 (max sensitivity) - optimized for deaf users
-        final priorityThreshold = 0.30 - (currentSensitivity * 0.29);
-        
-        if (prioritySound != null && score > priorityThreshold) {
-            // Priority sound detected - apply confidence boost
-            final boostedScore = score * prioritySound.confidenceBoost;
-            
-            priorityResults.add(ClassificationResult(
-                prioritySound.displayName,
-                score,
-                DateTime.now(),
-                boostedConfidence: boostedScore,
-                yamnetIndex: i,
-                isPriority: true,
-                priority: prioritySound.priority,
-                severity: prioritySound.severity,
-            ));
-        }
-    }
-    
-    // Sort priority results by boosted confidence
-    priorityResults.sort((a, b) => b.boostedConfidence.compareTo(a.boostedConfidence));
-    
-    // If we have priority detections, return them
-    if (priorityResults.isNotEmpty) {
-        log('✅ PRIORITY DETECTED: ${priorityResults.first.label} (${(priorityResults.first.boostedConfidence * 100).toStringAsFixed(1)}%)');
-        return priorityResults.take(3).toList();
-    }
-    
-    // ALWAYS return top result as fallback (for debugging even if low confidence)
-    final List<MapEntry<int, double>> indexedScores = [];
-    // Base threshold: 0.40 (min sensitivity) to 0.05 (max sensitivity) - more sensitive for accessibility
-    final baseThreshold = 0.40 - (currentSensitivity * 0.35);
-    for (int i = 0; i < scores.length; i++) {
-        // Include sounds above dynamic threshold
-        if (scores[i] > baseThreshold) {
-          indexedScores.add(MapEntry(i, scores[i]));
-        }
+
+    // Must be at least 1% confident (since mobile mics are bad, rely on YAMNet top score)
+    // Must be at least 15% confident to avoid false positives
+    if (maxIdx == -1 || maxScore < 0.15 || maxIdx >= _labels!.length) {
+      debugPrint('🔊 YAMNet Ignored (too low): max score=${maxScore.toStringAsFixed(4)}');
+      return [];
     }
 
-    indexedScores.sort((a, b) => b.value.compareTo(a.value));
-    
-    for (int i = 0; i < 3 && i < indexedScores.length; i++) {
-        final index = indexedScores[i].key;
-        final score = indexedScores[i].value;
-        
-        if (index < _labels!.length) {
-            // Check if this might be a priority sound by keyword
-            final keywordMatch = PrioritySoundsDatabase.getByKeyword(_labels![index]);
-            
-            regularResults.add(ClassificationResult(
-                _labels![index], 
-                score, 
-                DateTime.now(),
-                boostedConfidence: keywordMatch != null ? score * keywordMatch.confidenceBoost : score,
-                yamnetIndex: index,
-                isPriority: keywordMatch != null,
-                priority: keywordMatch?.priority,
-                severity: keywordMatch?.severity,
-            ));
-        }
-    }
+    final label = _labels![maxIdx];
+    final prioritySound = PrioritySoundsDatabase.getByKeyword(label)
+        ?? PrioritySoundsDatabase.getByIndex(maxIdx);
+    final boosted = prioritySound != null
+        ? maxScore * prioritySound.confidenceBoost
+        : maxScore;
 
-    return regularResults;
+    debugPrint('🎧 TOP VALID: $label (${(maxScore*100).toStringAsFixed(1)}%)');
+
+    return [
+      ClassificationResult(
+        label,
+        maxScore,
+        DateTime.now(),
+        boostedConfidence: boosted,
+        yamnetIndex: maxIdx,
+        isPriority: prioritySound != null,
+        priority: prioritySound?.priority,
+        severity: prioritySound?.severity,
+      )
+    ];
   }
 
   Future<void> stop() async {
@@ -450,7 +446,7 @@ class AudioClassifierService {
     _micStreamSubscription = null;
     _isRecording = false;
     _audioBuffer.clear();
-    log('Microphone stopped.');
+    debugPrint('Microphone stopped.');
   }
 
   void dispose() {
@@ -462,3 +458,5 @@ class AudioClassifierService {
     _rawAudioController.close();
   }
 }
+
+

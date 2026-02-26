@@ -1,0 +1,28 @@
+flowchart LR
+    subgraph Data Contributors
+        SND((\nSound Sources\nCar Horns))
+        NEG((\nNegative Data\nSilence/Noise))
+    end
+
+    subgraph Audio_Recognition_System 
+        UC1[Capture Real-Time Audio]
+        UC2[Differentiate Horn from Ambient]
+        UC3[Compute Confidence Score]
+        UC4[Trigger Dedicated Horn Alert]
+    end
+
+    %% User Interactions
+    SND --> UC1
+    NEG --> UC1
+    
+    %% System Interactions
+    SYS((\nDetection\nEngine)) -.-> UC2
+    SYS -.-> UC3
+
+    %% Caregiver Interactions
+    DHH((\nDeaf User\n)) --> UC4
+    
+    style SND fill:#f99,stroke:#333,stroke-width:2px;
+    style NEG fill:#eee,stroke:#333,stroke-width:2px;
+    style DHH fill:#bbf,stroke:#333,stroke-width:2px;
+    style SYS fill:#f9f,stroke:#333,stroke-width:2px;

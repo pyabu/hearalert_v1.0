@@ -8,7 +8,6 @@ import 'package:mobile_app/providers/sound_provider.dart';
 import 'package:mobile_app/providers/settings_provider.dart';
 import 'package:mobile_app/theme/app_theme.dart';
 import 'package:mobile_app/widgets/glass_container.dart';
-import 'package:mobile_app/widgets/baby_cry_alert_dialog.dart';
 import 'package:mobile_app/models/models.dart';
 
 class RealtimeAlertsScreen extends StatefulWidget {
@@ -22,8 +21,6 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
     with TickerProviderStateMixin {
   late AnimationController _ringController;
   late AnimationController _pulseController;
-  DateTime? _lastBabyCryAlertShown;
-  SoundProvider? _soundProviderRef;
 
   @override
   void initState() {
@@ -37,31 +34,10 @@ class _RealtimeAlertsScreenState extends State<RealtimeAlertsScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     )..repeat(reverse: true);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _soundProviderRef = context.read<SoundProvider>();
-      _soundProviderRef!.addListener(_checkForBabyCryAlert);
-    });
-  }
-
-  void _checkForBabyCryAlert() {
-    final soundProvider = context.read<SoundProvider>();
-    final lastDetection = soundProvider.lastBabyCryDetection;
-    if (lastDetection != null && mounted) {
-      if (_lastBabyCryAlertShown != lastDetection.timestamp) {
-        _lastBabyCryAlertShown = lastDetection.timestamp;
-        showDialog(
-          context: context,
-          barrierDismissible: !lastDetection.isHighPriority,
-          builder: (context) => BabyCryAlertDialog(prediction: lastDetection),
-        );
-      }
-    }
   }
 
   @override
   void dispose() {
-    _soundProviderRef?.removeListener(_checkForBabyCryAlert);
     _ringController.dispose();
     _pulseController.dispose();
     super.dispose();

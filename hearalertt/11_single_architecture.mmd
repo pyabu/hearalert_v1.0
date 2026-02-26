@@ -1,0 +1,36 @@
+flowchart TD
+    %% Python Training Layer
+    subgraph 1.0 Dataset Engineering (Python)
+        ESC[ESC-50 Sound Dataset \nFiltered 'Car Horn']
+        SYN1[Rich Synthetics / Overlapping Noise]
+        AUG[Time-Shift, Pitch-Shift, Mix Audio]
+        ESC --> AUG
+        SYN1 --> AUG
+    end
+
+    %% Training Pipeline Layer
+    subgraph 2.0 Feature Extraction & Training
+        YAMNET[YAMNet Pre-Trained Model \nFeature Extractor]
+        DNN[Dense Neural Network \nSoftmax Classification]
+        AUG --> |Spectrogram Output| YAMNET
+        YAMNET --> |1024D Embeddings| DNN
+    end
+
+    %% Mobile Integration Layer
+    subgraph 3.0 Mobile Deployment (Flutter/Dart)
+        TFL[TFLite Model \nQuantized Model Binary]
+        FLUT[AudioClassifierService \n16kHz Buffer Streaming]
+        DNN --> |Export .tflite| TFL
+        TFL --> FLUT
+        FLUT --> |Conf > 0.45| ALERT((Haptic Alert Engine))
+    end
+    
+    %% Styling
+    style ESC fill:#ccffcc,stroke:#333
+    style SYN1 fill:#ccffcc,stroke:#333
+    style AUG fill:#bbf,stroke:#333
+    style YAMNET fill:#ffd700,stroke:#333
+    style DNN fill:#ffaa00,stroke:#333
+    style TFL fill:#ffb,stroke:#333
+    style FLUT fill:#dfd,stroke:#333
+    style ALERT fill:#ff9999,stroke:#333,stroke-width:2px;

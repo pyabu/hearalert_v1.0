@@ -210,8 +210,8 @@ class HearAlertClassifierService {
   // Model configuration
   static const String _modelPath = 'assets/models/hearalert_classifier.tflite';
   static const String _labelsPath = 'assets/models/hearalert_labels.txt';
-  static const double _minConfidenceThreshold = 0.15;
-  static const double _criticalThreshold = 0.40;
+  static const double _minConfidenceThreshold = 0.45; // Increased to prevent false positives on silence
+  static const double _criticalThreshold = 0.70;
 
   bool get isInitialized => _isInitialized;
 
@@ -251,6 +251,7 @@ class HearAlertClassifierService {
 
       // Load Metadata First
       await _loadMetadata();
+      await _loadScaler();
 
       if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
         log('Skipping HearAlert model initialization on Desktop (mock mode).');
@@ -291,6 +292,22 @@ class HearAlertClassifierService {
     }
   }
 
+  List<double>? _scalerMean;
+  List<double>? _scalerScale;
+
+  Future<void> _loadScaler() async {
+    try {
+      final jsonString = await rootBundle.loadString('assets/models/scaler.json');
+      final data = jsonDecode(jsonString) as Map<String, dynamic>;
+      
+      _scalerMean = (data['mean'] as List).cast<num>().map((n) => n.toDouble()).toList();
+      _scalerScale = (data['scale'] as List).cast<num>().map((n) => n.toDouble()).toList();
+      log('✓ StandardScaler loaded successfully');
+    } catch (e) {
+      log('⚠️ Could not load scaler.json: $e. Using unscaled raw embeddings.');
+    }
+  }
+
   /// Process YAMNet embeddings through HearAlert model
   /// The HearAlert model was trained on YAMNet embeddings (1024-dimensional)
   Future<List<HearAlertResult>> classifyEmbeddings(List<double> yamnetEmbeddings) async {
@@ -299,8 +316,19 @@ class HearAlertClassifierService {
     }
 
     try {
+      // Apply Standardization if available
+      List<double> processedEmbeddings = yamnetEmbeddings.toList();
+      if (_scalerMean != null && _scalerScale != null) {
+        for (int i = 0; i < processedEmbeddings.length; i++) {
+          final scaleVal = _scalerScale![i];
+          if (scaleVal != 0) {
+            processedEmbeddings[i] = (processedEmbeddings[i] - _scalerMean![i]) / scaleVal;
+          }
+        }
+      }
+
       // Input: YAMNet embeddings [1024]
-      var input = Float32List.fromList(yamnetEmbeddings).reshape([1, 1024]);
+      var input = Float32List.fromList(processedEmbeddings).reshape([1, 1024]);
       
       // Output: Category probabilities
       int numClasses = _labels!.length;
@@ -318,14 +346,32 @@ class HearAlertClassifierService {
   }
 
   List<HearAlertResult> _getTopResults(List<double> scores) {
-    if (_labels == null) return [];
+    if (_labels == null) {
+      log('⚠️ HearAlert Error: _labels is null! Inference was blocked.');
+      return [];
+    }
+
+    double maxScore = 0.0;
+    int maxIndex = 0;
+    for (int i = 0; i < scores.length; i++) {
+      if (scores[i] > maxScore) {
+        maxScore = scores[i];
+        maxIndex = i;
+      }
+    }
+    
+    if (maxIndex < _labels!.length) {
+      log('🧠 HearAlert RAW MAX: ${_labels![maxIndex]} at ${(maxScore * 100).toStringAsFixed(2)}%');
+    }
 
     final results = <HearAlertResult>[];
     
     for (int i = 0; i < scores.length && i < _labels!.length; i++) {
       final score = scores[i];
       final categoryId = _labels![i];
-      final category = HearAlertCategories.getCategory(categoryId);
+      
+      // Pull dynamic configuration from Python build first, fallback to hardcoded
+      final category = _categoriesConfig[categoryId] ?? HearAlertCategories.getCategory(categoryId);
       
       if (category != null && score >= _minConfidenceThreshold) {
         results.add(HearAlertResult(

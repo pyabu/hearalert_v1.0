@@ -1,0 +1,30 @@
+flowchart TD
+    %% Entities
+    RAW[Raw Audio Dataset \ne.g. positive/negative wavs]
+    AUG[Augmented Dataset \nPitch Shift, Noise Addition]
+    
+    %% Processes
+    P1((1.0\nAudio Preprocessing))
+    P2((2.0\nFeature Extraction))
+    P3((3.0\nModel Training))
+    P4((4.0\nModel Quantization))
+    
+    %% Output
+    MODEL[(Optimized TFLite Model)]
+
+    %% Flow
+    RAW --> P1
+    P1 --> AUG
+    AUG --> |16kHz Mono| P2
+    P2 --> |YAMNet Embeddings| P3
+    P3 --> |Weights & Biases| P4
+    P4 --> |INT8/Float16| MODEL
+    
+    %% Styling
+    classDef process fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef entity fill:#bbf,stroke:#333,stroke-width:2px;
+    classDef db fill:#ffb,stroke:#333,stroke-width:2px;
+    
+    class P1,P2,P3,P4 process;
+    class RAW,AUG entity;
+    class MODEL db;

@@ -141,6 +141,8 @@ class SettingsProvider with ChangeNotifier {
   bool _onboardingCompleted = false;
   SmartZone _smartZone = SmartZone.home;
 
+  List<Contact> get contacts => _sosContacts;
+
   // Accessibility
   bool _highContrast = false;
   bool _largeText = false;
@@ -240,27 +242,6 @@ class SettingsProvider with ChangeNotifier {
     await prefs.setDouble(_sensitivityKey, _sensitivity);
   }
 
-  Future<void> setGlassIntensity(double value) async {
-    _glassIntensity = value.clamp(0.0, 0.5);
-    notifyListeners();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble(_glassKey, _glassIntensity);
-  }
-
-  Future<void> setGlowBrightness(double value) async {
-    _glowBrightness = value.clamp(0.5, 2.0);
-    notifyListeners();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble(_glowKey, _glowBrightness);
-  }
-
-  Future<void> setAnimationSpeed(double value) async {
-    _animationSpeed = value.clamp(0.5, 2.0);
-    notifyListeners();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble(_animKey, _animationSpeed);
-  }
-
   Future<void> setHighContrast(bool value) async {
     _highContrast = value;
     notifyListeners();
@@ -323,9 +304,9 @@ class SettingsProvider with ChangeNotifier {
     _screenFlash = prefs.getBool(_screenFlashKey) ?? true;
     _flashlightEnabled = prefs.getBool(_flashlightKey) ?? true;
 
-    _glassIntensity = prefs.getDouble(_glassKey) ?? 0.08;
-    _glowBrightness = prefs.getDouble(_glowKey) ?? 1.0;
-    _animationSpeed = prefs.getDouble(_animKey) ?? 1.0;
+    _glassIntensity = 0.08;
+    _glowBrightness = 1.0;
+    _animationSpeed = 1.0;
     _sosMessage = prefs.getString(_sosMessageKey) ??
         "Help! I am deaf and in an emergency. Please assist me.";
 

@@ -1,0 +1,31 @@
+flowchart LR
+    subgraph Users
+        DHH((\nDeaf / HoH User\n))
+        Care((\nCaregiver / Family\n))
+    end
+
+    subgraph HearAlert System
+        UC1[Start/Stop Microphone Listening]
+        UC2[Configure Sensitivities & Intents]
+        UC3[Select Smart Zone Mode]
+        UC4[Receive Tactile/Visual Alert]
+        UC5[Review Alert Analytics History]
+    end
+
+    %% User Interactions
+    DHH --> UC1
+    DHH --> UC2
+    DHH --> UC3
+    DHH --> UC4
+    
+    %% System Interactions
+    SYS((Mobile Device OS\nSensors)) -.-> UC1
+    SYS -.-> UC4
+
+    %% Caregiver Interactions
+    Care --> UC5
+    DHH --> UC5
+    
+    style DHH fill:#bbf,stroke:#333,stroke-width:2px;
+    style SYS fill:#f9f,stroke:#333,stroke-width:2px;
+    style Care fill:#ddf,stroke:#333,stroke-width:2px;

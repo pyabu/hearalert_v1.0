@@ -2,6 +2,7 @@
 // Maps all 26 trained audio categories to display messages and vibration patterns
 
 import 'package:flutter/services.dart';
+import 'package:vibration/vibration.dart';
 
 /// Priority levels for sound alerts
 enum AlertPriority { critical, high, medium, low, info }
@@ -32,10 +33,19 @@ class SoundAlertConfig {
     this.minConfidence = 0.5,
   });
 
-  /// Trigger vibration with this pattern
+  /// Trigger completely unique vibration matrix
   Future<void> triggerVibration() async {
     try {
-      // Use HapticFeedback for basic vibration
+      bool? hasVibrator = await Vibration.hasVibrator();
+      bool? hasCustomVibrationsSupport = await Vibration.hasCustomVibrationsSupport();
+
+      if (hasVibrator == true && hasCustomVibrationsSupport == true) {
+        // Play the exact millisecond array [wait, vibrate, wait, vibrate...]
+        await Vibration.vibrate(pattern: vibrationPattern);
+        return;
+      }
+
+      // Android/iOS Fallback for generic haptics if custom arrays blocked
       switch (priority) {
         case AlertPriority.critical:
           await HapticFeedback.heavyImpact();
@@ -105,7 +115,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Siren Alert',
       description: 'Ambulance, police, or fire truck siren detected',
       priority: AlertPriority.critical,
-      vibrationPattern: [0, 200, 100, 200, 100, 200, 100, 200, 100, 200],
+      vibrationPattern: [0, 600, 200, 600, 200, 600, 200, 600], // Slower wailing sweeps pattern
       icon: '🚨',
       colorHex: 0xFFFF4444,
       minConfidence: 0.4,
@@ -118,7 +128,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'FIRE ALARM',
       description: 'Fire or smoke alarm detected - check surroundings',
       priority: AlertPriority.critical,
-      vibrationPattern: [0, 1000, 500, 1000, 500, 1000],
+      vibrationPattern: [0, 1500, 500, 1500, 500, 1500], // Extremely long, continuous blare
       icon: '🔥',
       colorHex: 0xFFFF0000,
       minConfidence: 0.35,
@@ -133,6 +143,32 @@ class RealtimeAlertDatabase {
       priority: AlertPriority.critical,
       vibrationPattern: [0, 100, 50, 100, 50, 100, 50, 100],
       icon: '💥',
+      colorHex: 0xFFDC143C,
+      minConfidence: 0.45,
+    ),
+
+    'smoke_alarm': SoundAlertConfig(
+      soundId: 'smoke_alarm',
+      displayName: 'Smoke Alarm',
+      alertMessage: '💨 Smoke Alarm Detected!',
+      shortMessage: 'Smoke Alarm',
+      description: 'Smoke or fire alarm going off. Evacuate if necessary.',
+      priority: AlertPriority.critical,
+      vibrationPattern: [0, 150, 75, 150, 75, 150, 800],
+      icon: '💨',
+      colorHex: 0xFFA52A2A,
+      minConfidence: 0.35,
+    ),
+
+    'car_alarm': SoundAlertConfig(
+      soundId: 'car_alarm',
+      displayName: 'Car Alarm',
+      alertMessage: '🚗 Car alarm is ringing!',
+      shortMessage: 'Car Alarm',
+      description: 'A car alarm is going off nearby.',
+      priority: AlertPriority.critical,
+      vibrationPattern: [0, 250, 80, 250, 80, 250, 80, 250, 80, 250, 80, 250],
+      icon: '🚗',
       colorHex: 0xFFDC143C,
       minConfidence: 0.45,
     ),
@@ -161,7 +197,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Glass Break',
       description: 'Window or glass breaking sound - check security',
       priority: AlertPriority.high,
-      vibrationPattern: [0, 100, 50, 100, 50, 100, 50, 100],
+      vibrationPattern: [0, 50, 50, 150, 50, 50, 50, 100], // Sharp, erratic shattering pulse
       icon: '💔',
       colorHex: 0xFF00CED1,
       minConfidence: 0.4,
@@ -174,7 +210,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Traffic',
       description: 'Vehicle and traffic sounds detected',
       priority: AlertPriority.high,
-      vibrationPattern: [0, 400, 200, 400],
+      vibrationPattern: [0, 200, 150, 300, 200, 250], // Staggered, rumbling engine pattern
       icon: '🚦',
       colorHex: 0xFF808080,
       minConfidence: 0.5,
@@ -200,7 +236,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Doorbell',
       description: 'Someone rang your doorbell',
       priority: AlertPriority.high,
-      vibrationPattern: [0, 400, 200, 400],
+      vibrationPattern: [0, 600, 200, 600], // Ding... Dong pattern
       icon: '🔔',
       colorHex: 0xFF32CD32,
       minConfidence: 0.45,
@@ -226,7 +262,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Door Opening',
       description: 'A door is being opened or closed',
       priority: AlertPriority.high,
-      vibrationPattern: [0, 250, 150, 250],
+      vibrationPattern: [0, 800, 100, 50], // Long creak followed by a subtle click
       icon: '🚪',
       colorHex: 0xFFA0522D,
       minConfidence: 0.45,
@@ -239,9 +275,48 @@ class RealtimeAlertDatabase {
       shortMessage: 'Power Tools',
       description: 'Chainsaw or power tool sound nearby',
       priority: AlertPriority.high,
-      vibrationPattern: [0, 400, 200, 400, 200, 400],
+      vibrationPattern: [0, 50, 50, 50, 50, 800], // Engine pull cord then continuous rev
       icon: '⚡',
       colorHex: 0xFFFF4500,
+      minConfidence: 0.45,
+    ),
+
+    'knock_knock': SoundAlertConfig(
+      soundId: 'knock_knock',
+      displayName: 'Knocking',
+      alertMessage: '🚪 Rapid knocking detected!',
+      shortMessage: 'Knocking',
+      description: 'Someone is knocking quickly on a door.',
+      priority: AlertPriority.high,
+      vibrationPattern: [0, 100, 60, 100, 60, 100, 60, 100],
+      icon: '🚪',
+      colorHex: 0xFFDEB887,
+      minConfidence: 0.4,
+    ),
+
+    'alarm_clock': SoundAlertConfig(
+      soundId: 'alarm_clock',
+      displayName: 'Alarm Clock',
+      alertMessage: '⏰ Alarm clock is ringing!',
+      shortMessage: 'Alarm Clock',
+      description: 'An alarm clock is going off nearby.',
+      priority: AlertPriority.high,
+      vibrationPattern: [0, 180, 120, 180, 120, 180, 120, 180],
+      icon: '⏰',
+      colorHex: 0xFF00008B,
+      minConfidence: 0.45,
+    ),
+
+    'microwave_beep': SoundAlertConfig(
+      soundId: 'microwave_beep',
+      displayName: 'Microwave Beep',
+      alertMessage: '⏲️ Microwave is beeping!',
+      shortMessage: 'Microwave',
+      description: 'A microwave has finished cooking.',
+      priority: AlertPriority.high,
+      vibrationPattern: [0, 220, 80, 220, 80, 220],
+      icon: '⏲️',
+      colorHex: 0xFF9370DB,
       minConfidence: 0.45,
     ),
 
@@ -256,7 +331,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Phone Ringing',
       description: 'Your phone or a phone nearby is ringing',
       priority: AlertPriority.medium,
-      vibrationPattern: [0, 500, 300, 500],
+      vibrationPattern: [0, 400, 150, 400, 1000, 400, 150, 400], // Brrr-brrr... brrr-brrr pattern
       icon: '📱',
       colorHex: 0xFF1E90FF,
       minConfidence: 0.5,
@@ -269,7 +344,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Dog Barking',
       description: 'A dog is barking nearby',
       priority: AlertPriority.medium,
-      vibrationPattern: [0, 300, 200, 300],
+      vibrationPattern: [0, 150, 100, 150, 400, 150], // Ruff ruff... ruff pattern
       icon: '🐕',
       colorHex: 0xFFA0522D,
       minConfidence: 0.45,
@@ -282,7 +357,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Thunder',
       description: 'Thunderstorm or lightning nearby',
       priority: AlertPriority.medium,
-      vibrationPattern: [0, 800, 500, 800],
+      vibrationPattern: [0, 100, 100, 600, 200, 400], // Lightning strike followed by rolling thunder
       icon: '⛈️',
       colorHex: 0xFF4169E1,
       minConfidence: 0.5,
@@ -308,7 +383,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Breathing',
       description: 'Heavy breathing or snoring sounds',
       priority: AlertPriority.medium,
-      vibrationPattern: [0, 300, 200, 300],
+      vibrationPattern: [0, 800, 800, 800, 800], // Long, slow rhythmic inhales and exhales
       icon: '😮‍💨',
       colorHex: 0xFF87CEEB,
       minConfidence: 0.5,
@@ -321,7 +396,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Helicopter',
       description: 'Helicopter flying overhead',
       priority: AlertPriority.medium,
-      vibrationPattern: [0, 500, 300, 500],
+      vibrationPattern: [0, 100, 100, 100, 100, 100, 100, 100, 100], // Fast, continuous rotary chopping
       icon: '🚁',
       colorHex: 0xFF708090,
       minConfidence: 0.5,
@@ -334,7 +409,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Footsteps',
       description: 'Someone walking or approaching',
       priority: AlertPriority.medium,
-      vibrationPattern: [0, 200, 150, 200, 150, 200],
+      vibrationPattern: [0, 150, 400, 150, 400, 150], // Slow, steady walking pace
       icon: '👣',
       colorHex: 0xFF8B4513,
       minConfidence: 0.5,
@@ -347,9 +422,22 @@ class RealtimeAlertDatabase {
       shortMessage: 'Washer',
       description: 'Washing machine cycle in progress',
       priority: AlertPriority.medium,
-      vibrationPattern: [0, 400, 300, 400],
+      vibrationPattern: [0, 200, 50, 200, 50, 600, 200, 600], // Agitating cycle ending in spin cycle
       icon: '🧺',
       colorHex: 0xFF4682B4,
+      minConfidence: 0.5,
+    ),
+
+    'water_running': SoundAlertConfig(
+      soundId: 'water_running',
+      displayName: 'Water Running',
+      alertMessage: '🚰 Water is running!',
+      shortMessage: 'Water Running',
+      description: 'A sink, shower, or water source is running.',
+      priority: AlertPriority.medium,
+      vibrationPattern: [0, 80, 80, 80, 80, 80, 80, 80, 80],
+      icon: '🚰',
+      colorHex: 0xFF00FFFF,
       minConfidence: 0.5,
     ),
 
@@ -364,7 +452,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Cat',
       description: 'A cat is meowing nearby',
       priority: AlertPriority.low,
-      vibrationPattern: [0, 200, 200, 200],
+      vibrationPattern: [0, 400, 300, 100], // Long purr ending in a sharp mew
       icon: '🐱',
       colorHex: 0xFFDDA0DD,
       minConfidence: 0.5,
@@ -377,7 +465,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Vacuum',
       description: 'Vacuum cleaner is in use',
       priority: AlertPriority.low,
-      vibrationPattern: [0, 300, 200, 300],
+      vibrationPattern: [0, 2000], // Extremely long, monotonous drone
       icon: '🧹',
       colorHex: 0xFF708090,
       minConfidence: 0.55,
@@ -403,7 +491,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Typing',
       description: 'Keyboard or mouse clicking sounds',
       priority: AlertPriority.info,
-      vibrationPattern: [0, 100, 100, 100],
+      vibrationPattern: [0, 30, 80, 40, 60, 30, 50, 40, 70, 30], // Rapid, randomized clacking cadence
       icon: '⌨️',
       colorHex: 0xFF2F4F4F,
       minConfidence: 0.55,
@@ -416,7 +504,7 @@ class RealtimeAlertDatabase {
       shortMessage: 'Clock',
       description: 'Clock ticking sound detected',
       priority: AlertPriority.info,
-      vibrationPattern: [0, 100, 200, 100],
+      vibrationPattern: [0, 30, 970, 30, 970, 30], // Very short blips exactly 1 second apart
       icon: '🕐',
       colorHex: 0xFFDAA520,
       minConfidence: 0.55,

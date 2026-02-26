@@ -48,7 +48,7 @@ dependencies:
   vibration: ^3.1.4
   timeago: ^3.7.1
   audio_streamer: ^4.2.2
-  url_launcher: ^6.3.1
+  url_launcher: ^6.3.2
   torch_light: ^1.1.0
   speech_to_text: ^7.3.0
   flutter_tts: ^4.2.5
@@ -59,6 +59,7 @@ dependencies:
   firebase_core: ^3.9.0
   firebase_database: ^11.1.7
   firebase_auth: ^5.3.4
+  firebase_messaging: ^15.2.10
 
 dev_dependencies:
   flutter_test:

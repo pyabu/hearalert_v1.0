@@ -1,0 +1,27 @@
+sequenceDiagram
+    autonumber
+    actor User as Deaf User
+    participant Mic as Device Microphone
+    participant App as HearAlert App (Isolate)
+    participant TFLite as AI Inference Engine
+    participant Alert as Hardware Dispatcher
+
+    User->>App: Clicks "Start Listening"
+    App->>Mic: Request Audio Stream
+    loop Continuous Monitoring
+        Mic-->>App: Stream 16kHz PCM Buffer
+        App->>TFLite: Send Buffer (15,600 samples)
+        note over TFLite: Edge Processing (0ms cloud latency)
+        TFLite-->>App: Array of Confidences [Fire Alarm: 92%, Siren: 5%]
+        
+        alt Confidence > Threshold & Not Throttled
+            App->>Alert: Trigger Specialized Pattern (e.g. SOS)
+            Alert-->>User: Intense Haptic Vibration
+            Alert-->>User: Strobe LED Flash
+            App-->>User: High-Contrast Screen Takeover
+        else Noise or Silence
+            App->>App: Discard Frame (Save Battery)
+        end
+    end
+    User->>App: Clicks "Stop Listening"
+    App->>Mic: Release Audio Resources

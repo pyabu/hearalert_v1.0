@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app/config/realtime_alert_config.dart';
-
 import 'package:mobile_app/theme/app_theme.dart';
+import 'package:mobile_app/models/models.dart';
+import 'package:mobile_app/providers/settings_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Full-screen alert overlay for real-time sound detection
 class RealtimeAlertOverlay extends StatefulWidget {
@@ -80,6 +83,34 @@ class _RealtimeAlertOverlayState extends State<RealtimeAlertOverlay>
     }
     if (mounted) {
       setState(() => _flashing = false);
+    }
+  }
+
+  Future<void> _sendEmergencySMS(List<Contact> contacts, String alertLabel) async {
+    if (contacts.isEmpty) return;
+
+    // Use the first emergency contact for the Demo
+    final primaryContact = contacts.first;
+    final phone = primaryContact.phone.replaceAll(RegExp(r'[\\s\\-()]'), '');
+    
+    final message = '[HearAlert EMERGENCY]: A critical sound ($alertLabel) was detected near me. Please check if I am safe.';
+    
+    final Uri smsUri = Uri(
+      scheme: 'sms',
+      path: phone,
+      queryParameters: <String, String>{
+        'body': message,
+      },
+    );
+
+    try {
+      if (await canLaunchUrl(smsUri)) {
+        await launchUrl(smsUri);
+      } else {
+        debugPrint('Could not launch SMS intent');
+      }
+    } catch (e) {
+      debugPrint('Error launching SMS: $e');
     }
   }
 
@@ -203,29 +234,70 @@ class _RealtimeAlertOverlayState extends State<RealtimeAlertOverlay>
 
                         const SizedBox(height: 48),
 
-                        // Dismiss button
-                        OutlinedButton.icon(
-                          onPressed: widget.onDismiss,
-                          icon: const Icon(Icons.close, color: Colors.white),
-                          label: Text(
-                            'TAP TO DISMISS',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18 * AppTheme.textScale,
-                              fontWeight: FontWeight.bold,
+                        // Action buttons row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Alert Contact Button (Only if contacts exist)
+                            Consumer<SettingsProvider>(
+                              builder: (context, settings, child) {
+                                if (settings.contacts.isEmpty) {
+                                  return const SizedBox.shrink();
+                                }
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 16.0),
+                                  child: FilledButton.icon(
+                                    onPressed: () => _sendEmergencySMS(
+                                        settings.contacts, alertConfig?.shortMessage ?? widget.label),
+                                    icon: const Icon(Icons.emergency_share, color: Colors.white),
+                                    label: Text(
+                                      'ALERT CONTACT',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16 * AppTheme.textScale,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    style: FilledButton.styleFrom(
+                                      backgroundColor: Colors.white.withOpacity(0.3),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24,
+                                        vertical: 16,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 32,
-                              vertical: 16,
+
+                            // Dismiss button
+                            OutlinedButton.icon(
+                              onPressed: widget.onDismiss,
+                              icon: const Icon(Icons.close, color: Colors.white),
+                              label: Text(
+                                'DISMISS',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16 * AppTheme.textScale,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 16,
+                                ),
+                                side:
+                                    const BorderSide(color: Colors.white, width: 2),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
                             ),
-                            side:
-                                const BorderSide(color: Colors.white, width: 2),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
+                          ],
                         ),
 
                         const SizedBox(height: 24),

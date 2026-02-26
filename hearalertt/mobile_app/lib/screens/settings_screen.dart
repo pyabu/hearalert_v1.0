@@ -12,6 +12,7 @@ import 'package:mobile_app/widgets/deaf_accessibility.dart';
 import 'package:mobile_app/models/models.dart';
 import 'package:mobile_app/screens/contacts_screen.dart';
 import 'package:mobile_app/screens/asl_guide_screen.dart'; // Added this import
+import 'package:mobile_app/screens/test_alerts_screen.dart';
 // import 'package:mobile_app/screens/signal_guide_screen.dart'; // Removed this import as it's no longer used
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -129,31 +130,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
-                        child: const Column(
+                        child: Column(
                           children: [
                             _VibrationSelector(),
                             _BiosonicDivider(),
                             _FlashlightToggle(),
+                            _BiosonicDivider(),
+                            _TestAlertsLink(),
                           ],
                         ),
                       )
                           .animate()
                           .fadeIn(delay: 200.ms)
-                          .slideY(begin: 0.06, end: 0),
-
-                      const SizedBox(height: 24),
-
-                      // ── Visual Experience ──────────────────────────
-                      _sectionLabel('Visual Experience', LucideIcons.sparkles),
-                      const SizedBox(height: 12),
-                      LiquidGlassContainer(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        child: const _VisualSliders(),
-                      )
-                          .animate()
-                          .fadeIn(delay: 225.ms)
                           .slideY(begin: 0.06, end: 0),
 
                       const SizedBox(height: 24),
@@ -544,8 +532,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onPressed: () {
               final s = context.read<SettingsProvider>();
               s.setSensitivity(0.5);
-              s.setGlassIntensity(0.08);
-              s.setGlowBrightness(1.0);
               s.setSmartZone(SmartZone.home);
               s.toggleNotifications(true);
               s.setHighContrast(false);
@@ -905,58 +891,6 @@ class _SmartZoneSelector extends StatelessWidget {
               ),
             );
           }),
-        ],
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Visual Sliders — Glass Intensity + Glow Brightness + Animation Speed
-// ─────────────────────────────────────────────────────────────────────────────
-class _VisualSliders extends StatelessWidget {
-  const _VisualSliders();
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<SettingsProvider>(
-      builder: (_, s, __) => Column(
-        children: [
-          _SliderTile(
-            icon: LucideIcons.layers,
-            iconColor: AppTheme.accentViolet,
-            label: 'Glass Intensity',
-            subtitle: 'Opacity of glass card surfaces',
-            value: s.glassIntensity,
-            min: 0.02,
-            max: 0.5,
-            displayValue: '${(s.glassIntensity / 0.5 * 100).toInt()}%',
-            onChanged: s.setGlassIntensity,
-          ),
-          const _BiosonicDivider(),
-          _SliderTile(
-            icon: LucideIcons.sun,
-            iconColor: AppTheme.accentYellow,
-            label: 'Glow Brightness',
-            subtitle: 'Intensity of neon glow effects',
-            value: s.glowBrightness,
-            min: 0.5,
-            max: 2.0,
-            displayValue: '${((s.glowBrightness - 0.5) / 1.5 * 100).toInt()}%',
-            onChanged: s.setGlowBrightness,
-          ),
-          const _BiosonicDivider(),
-          _SliderTile(
-            icon: LucideIcons.timer,
-            iconColor: AppTheme.accentOrange,
-            label: 'Animation Speed',
-            subtitle: 'Speed of UI transitions & effects',
-            value: s.animationSpeed,
-            min: 0.5,
-            max: 2.0,
-            displayValue: '${((s.animationSpeed - 0.5) / 1.5 * 100).toInt()}%',
-            onChanged: s.setAnimationSpeed,
-          ),
         ],
       ),
     );
@@ -1456,6 +1390,47 @@ class _TestChipState extends State<_TestChip> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _TestAlertsLink extends StatelessWidget {
+  const _TestAlertsLink();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.blueAccent.withOpacity(0.2),
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(LucideIcons.code, color: Colors.blueAccent),
+      ),
+      title: Text(
+        'Developer: Test Alerts',
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+          fontSize: 16 * AppTheme.textScale,
+        ),
+      ),
+      subtitle: Text(
+        'Trigger UI & vibration patterns manually',
+        style: TextStyle(
+          color: Colors.white.withOpacity(0.6),
+          fontSize: 14 * AppTheme.textScale,
+        ),
+      ),
+      trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white54, size: 16),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const TestAlertsScreen()),
+        );
+      },
     );
   }
 }
